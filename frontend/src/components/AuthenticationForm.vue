@@ -82,7 +82,7 @@ import { reactive, toRefs } from 'vue';
 import firebase from 'firebase';
 
 export default {
-  name: 'Authentication',
+  name: 'AuthenticationForm',
   props: ['mode'],
   components: {
     IonHeader,
