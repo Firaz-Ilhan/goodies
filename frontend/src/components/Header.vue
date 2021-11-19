@@ -1,51 +1,54 @@
 <template>
-<ion-app>
-  <ion-menu side="end" content-id="main-content">
-    <ion-header>
-      <ion-toolbar translucent>
-        <ion-title>Menu</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content>
-      <ion-list>
-        <ion-item>
-          <ion-icon :icon="personCircle" slot="start"></ion-icon>
-          <ion-label>Profil</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon :icon="bagCheck" slot="start"></ion-icon>
-          <ion-label>Bestellen</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon :icon="cart" slot="start"></ion-icon>
-          <ion-label>Einkaufen &#38; Liefern</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon :icon="settings" slot="start"></ion-icon>
-          <ion-label>Einstellungen</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon :icon="logOut" slot="start"></ion-icon>
-          <ion-label>Abmelden</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-content>
-  </ion-menu>
+  <ion-app>
+    <ion-menu side="end" content-id="main-content">
+      <ion-header>
+        <ion-toolbar translucent>
+          <ion-title>Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <!-- TODO choose between router-link wrap or href -->
+          <router-link to="/example">
+            <ion-item button>
+              <ion-icon :icon="personCircle" slot="start"></ion-icon>
+              <ion-label>Profil</ion-label>
+            </ion-item>
+          </router-link>
+          <ion-item>
+            <ion-icon :icon="bagCheck" slot="start"></ion-icon>
+            <ion-label>Bestellen</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon :icon="cart" slot="start"></ion-icon>
+            <ion-label>Einkaufen &#38; Liefern</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon :icon="settings" slot="start"></ion-icon>
+            <ion-label>Einstellungen</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon :icon="logOut" slot="start"></ion-icon>
+            <ion-label>Abmelden</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
 
-  <div id="main-content">
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="end">
-          <ion-menu-button></ion-menu-button>
-        </ion-buttons>
-        <ion-title>{{ title }}</ion-title>
-      </ion-toolbar>
-    </ion-header>
-  </div>
-</ion-app>
+    <div id="main-content">
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-menu-button></ion-menu-button>
+          </ion-buttons>
+          <ion-title>{{ title }}</ion-title>
+        </ion-toolbar>
+      </ion-header>
+    </div>
+  </ion-app>
 </template>
 
-<script>
+<script lang="ts">
 import {
   IonContent,
   IonHeader,
@@ -55,9 +58,10 @@ import {
   IonMenu,
   IonTitle,
   IonToolbar,
-} from "@ionic/vue";
-import { bagCheck, cart, logOut, personCircle, settings } from "ionicons/icons";
-import { defineComponent } from "vue";
+} from '@ionic/vue';
+import { bagCheck, cart, logOut, personCircle, settings } from 'ionicons/icons';
+import { defineComponent } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -74,6 +78,12 @@ export default defineComponent({
     return { personCircle, cart, bagCheck, settings, logOut };
   },
 
-  props: ["title"],
+  props: ['title'],
 });
 </script>
+
+<style scoped>
+a {
+  text-decoration: none;
+}
+</style>
