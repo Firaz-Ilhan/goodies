@@ -34,6 +34,7 @@
         </ion-fab-button>
       </ion-fab>
     </ion-content>
+    <Header title="Home" />
   </ion-page>
 </template>
 
@@ -57,9 +58,14 @@ import { defineComponent } from 'vue';
 import { add } from 'ionicons/icons';
 import { useRouter } from 'vue-router';
 import firebase from 'firebase';
+import { IonPage } from "@ionic/vue";
+import { defineComponent } from "vue";
+import { add } from "ionicons/icons";
+import { useRouter } from "vue-router";
+import Header from "../components/Header.vue";
 
 export default defineComponent({
-  name: 'Home',
+  name: "Home",
   components: {
     IonHeader,
     IonTitle,
@@ -74,6 +80,8 @@ export default defineComponent({
     IonLabel,
     IonBadge,
     IonItem,
+    IonPage,
+    Header,
   },
   setup() {
     const logout = () => {
