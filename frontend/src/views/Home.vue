@@ -17,7 +17,11 @@
         </ion-item>
       </ion-list>
 
-      <ion-button @click="() => router.push('/onboarding')">Go to Onboarding </ion-button>
+      <ion-button @click="() => router.push('/onboarding')"
+        >Go to Onboarding
+      </ion-button>
+
+      <ion-button @click="() => logout()">Logout</ion-button>
 
       <ion-fab
         vertical="bottom"
@@ -34,23 +38,55 @@
 </template>
 
 <script lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+import {
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonFab,
+  IonFabButton,
+  IonNote,
+  IonButton,
+  IonIcon,
+  IonList,
+  IonCheckbox,
+  IonLabel,
+  IonBadge,
+  IonItem,
+} from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { add } from 'ionicons/icons';
 import { useRouter } from 'vue-router';
+import firebase from 'firebase';
 
 export default defineComponent({
   name: 'Home',
   components: {
-    IonContent,
     IonHeader,
-    IonPage,
     IonTitle,
     IonToolbar,
+    IonFab,
+    IonFabButton,
+    IonNote,
+    IonButton,
+    IonIcon,
+    IonList,
+    IonCheckbox,
+    IonLabel,
+    IonBadge,
+    IonItem,
   },
   setup() {
+    const logout = () => {
+      firebase
+        .auth()
+        .signOut()
+        .catch((error) => {
+          alert(error);
+        });
+    };
     return {
       router: useRouter(),
+      logout,
       add,
     };
   },

@@ -12,7 +12,7 @@
   </ion-page>
 </template>
 
-<script>
+<script lang="ts">
 import { IonContent, IonPage, IonicSwiper } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import SwiperCore, { Pagination } from 'swiper';
