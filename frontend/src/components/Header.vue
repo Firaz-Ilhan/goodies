@@ -50,18 +50,21 @@
 
 <script lang="ts">
 import {
+  IonApp,
+  IonButtons,
   IonContent,
   IonHeader,
   IonIcon,
   IonItem,
+  IonLabel,
   IonList,
   IonMenu,
+  IonMenuButton,
   IonTitle,
-  IonToolbar,
+  IonToolbar
 } from '@ionic/vue';
 import { bagCheck, cart, logOut, personCircle, settings } from 'ionicons/icons';
 import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
 
 export default defineComponent({
   components: {
@@ -73,6 +76,10 @@ export default defineComponent({
     IonTitle,
     IonToolbar,
     IonIcon,
+    IonApp,
+    IonLabel,
+    IonMenuButton,
+    IonButtons,
   },
   setup() {
     return { personCircle, cart, bagCheck, settings, logOut };
