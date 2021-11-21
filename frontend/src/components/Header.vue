@@ -1,5 +1,5 @@
 <template>
-  <ion-app>
+  <div>
     <ion-menu side="end" content-id="main-content">
       <ion-header>
         <ion-toolbar translucent>
@@ -10,7 +10,7 @@
         <ion-list>
           <!-- TODO choose between router-link wrap or href -->
           <router-link to="/example">
-            <ion-item button>
+            <ion-item button detail="false">
               <ion-icon :icon="personCircle" slot="start"></ion-icon>
               <ion-label>Profil</ion-label>
             </ion-item>
@@ -27,7 +27,7 @@
             <ion-icon :icon="settings" slot="start"></ion-icon>
             <ion-label>Einstellungen</ion-label>
           </ion-item>
-          <ion-item>
+          <ion-item button detail="false" @click="logout">
             <ion-icon :icon="logOut" slot="start"></ion-icon>
             <ion-label>Abmelden</ion-label>
           </ion-item>
@@ -45,24 +45,24 @@
         </ion-toolbar>
       </ion-header>
     </div>
-  </ion-app>
+  </div>
 </template>
 
 <script lang="ts">
 import {
-  IonApp,
-  IonButtons,
   IonContent,
   IonHeader,
   IonIcon,
   IonItem,
-  IonLabel,
   IonList,
   IonMenu,
-  IonMenuButton,
   IonTitle,
-  IonToolbar
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonLabel,
 } from '@ionic/vue';
+import firebase from 'firebase';
 import { bagCheck, cart, logOut, personCircle, settings } from 'ionicons/icons';
 import { defineComponent } from 'vue';
 
@@ -76,16 +76,23 @@ export default defineComponent({
     IonTitle,
     IonToolbar,
     IonIcon,
-    IonApp,
-    IonLabel,
-    IonMenuButton,
     IonButtons,
+    IonMenuButton,
+    IonLabel,
   },
   setup() {
-    return { personCircle, cart, bagCheck, settings, logOut };
+    const logout = () => {
+      firebase
+        .auth()
+        .signOut()
+        .catch((error: Error) => {
+          alert(error.message);
+        });
+    };
+    return { personCircle, cart, bagCheck, settings, logOut, logout };
   },
 
-  props: ['title'],
+  props: { title: String },
 });
 </script>
 

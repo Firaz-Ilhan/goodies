@@ -1,11 +1,8 @@
 <template>
   <ion-page>
+    <Header title="Home" />
+
     <ion-content>
-      <ion-header :translucent="true">
-        <ion-toolbar>
-          <ion-title>Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
       <ion-list>
         <ion-item>
           <ion-checkbox slot="start"></ion-checkbox>
@@ -21,8 +18,6 @@
         >Go to Onboarding
       </ion-button>
 
-      <ion-button @click="() => logout()">Logout</ion-button>
-
       <ion-fab
         vertical="bottom"
         horizontal="end"
@@ -34,15 +29,11 @@
         </ion-fab-button>
       </ion-fab>
     </ion-content>
-    <Header title="Home" />
   </ion-page>
 </template>
 
 <script lang="ts">
 import {
-  IonHeader,
-  IonTitle,
-  IonToolbar,
   IonFab,
   IonFabButton,
   IonNote,
@@ -54,7 +45,6 @@ import {
   IonBadge,
   IonItem,
 } from '@ionic/vue';
-import firebase from 'firebase';
 import { IonPage } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { add } from 'ionicons/icons';
@@ -64,9 +54,6 @@ import Header from '../components/Header.vue';
 export default defineComponent({
   name: 'Home',
   components: {
-    IonHeader,
-    IonTitle,
-    IonToolbar,
     IonFab,
     IonFabButton,
     IonNote,
@@ -81,17 +68,8 @@ export default defineComponent({
     Header,
   },
   setup() {
-    const logout = () => {
-      firebase
-        .auth()
-        .signOut()
-        .catch((error) => {
-          alert(error);
-        });
-    };
     return {
       router: useRouter(),
-      logout,
       add,
     };
   },
