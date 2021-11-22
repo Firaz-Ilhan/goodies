@@ -9,15 +9,18 @@
       <ion-content>
         <ion-list id="menu-list">
           <router-link to="/profile">
-            <ion-item button detail="false" active>
+            <ion-item detail="false" button>
               <ion-icon :icon="personCircle" slot="start"></ion-icon>
               <ion-label>Profil</ion-label>
             </ion-item>
           </router-link>
-          <ion-item>
-            <ion-icon :icon="bagCheck" slot="start"></ion-icon>
-            <ion-label>Bestellen</ion-label>
-          </ion-item>
+          <router-link to="/orders" button>
+            <ion-item detail="false">
+              <ion-icon :icon="bagCheck" slot="start"></ion-icon>
+              <ion-label>Bestellen</ion-label>
+            </ion-item>
+          </router-link>
+
           <ion-item>
             <ion-icon :icon="cart" slot="start"></ion-icon>
             <ion-label>Einkaufen &#38; Liefern</ion-label>
@@ -64,6 +67,7 @@ import {
   IonMenuButton,
   IonLabel,
   alertController,
+  IonBackButton,
 } from '@ionic/vue';
 import firebase from 'firebase';
 import { bagCheck, cart, logOut, personCircle, settings } from 'ionicons/icons';
@@ -82,6 +86,7 @@ export default defineComponent({
     IonButtons,
     IonMenuButton,
     IonLabel,
+    IonBackButton,
   },
   setup() {
     const presentLogoutAlert = async () => {

@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <AuthenticationForm :mode="'login'"></AuthenticationForm>
-  </div>
+  <AuthenticationForm :mode="'login'" />
 </template>
 
 <script lang="ts">
