@@ -1,7 +1,6 @@
 <template>
   <ion-page>
     <Header title="Home" />
-
     <ion-content>
       <ion-list>
         <ion-item>
