@@ -120,12 +120,12 @@ export default defineComponent({
 
     createOrder() {
       if (this.list.length > 0) {
-        const creator = firebase.auth().currentUser!;
+        const creator = firebase.auth().currentUser;
         db.collection('test')
           .add({
             name: this.name,
             list: this.list,
-            createdBy: creator.uid,
+            createdBy: creator!.uid,
           })
           .then((res) => {
             if (res.id) this.closeModal();
