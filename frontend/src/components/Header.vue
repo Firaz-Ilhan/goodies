@@ -14,8 +14,8 @@
               <ion-label>Profil</ion-label>
             </ion-item>
           </router-link>
-          <router-link to="/orders" button>
-            <ion-item detail="false">
+          <router-link to="/orders">
+            <ion-item detail="false" button>
               <ion-icon :icon="bagCheck" slot="start"></ion-icon>
               <ion-label>Bestellen</ion-label>
             </ion-item>
@@ -38,7 +38,7 @@
     </ion-menu>
 
     <div id="main-content">
-      <ion-header>
+      <ion-header class="ion-margin-bottom">
         <ion-toolbar>
           <ion-buttons slot="start" v-if="hasBackButton">
             <ion-back-button default-href="/home"></ion-back-button>

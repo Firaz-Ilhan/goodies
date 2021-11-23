@@ -26,12 +26,21 @@
           >
             <ion-item>
               <ion-label position="floating">Email</ion-label>
-              <ion-input v-model="email" type="email" required></ion-input>
+              <ion-input
+                v-model="email"
+                type="email"
+                autocomplete="email"
+                autofocus
+                required
+              ></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="floating">Password</ion-label>
               <ion-input
                 v-model="password"
+                :autocomplete="
+                  mode === login ? 'current-password' : 'new-password'
+                "
                 type="password"
                 required
               ></ion-input>
@@ -139,10 +148,9 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.error-message {
-  color: #842029;
-  background-color: #f8d7da;
-  border-color: #f5c2c7;
+
+p {
+  margin-top: 2rem;
   text-align: center;
 }
 </style>
