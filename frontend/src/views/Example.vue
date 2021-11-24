@@ -17,7 +17,7 @@
   </ion-page>
 </template>
 
-<script>
+<script lang="ts">
 import {
   IonBackButton,
   IonButtons,
@@ -43,10 +43,11 @@ export default defineComponent({
   },
   setup() {
     const content = ref();
+
     const scrollToBottom = () => {
       content.value.$el.scrollToBottom(300);
     };
-    return { heart };
+    return { heart, scrollToBottom };
   },
 });
 </script>

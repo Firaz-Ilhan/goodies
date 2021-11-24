@@ -20,20 +20,43 @@
             <img class="selectionbuttons" src="../assets/home/bestellen.png">
           </router-link>
       </div>>
-    </ion-content>
+    <Header title="Home" />
+      </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonPage } from "@ionic/vue";
-import { defineComponent } from "vue";
-import { add } from "ionicons/icons";
-import { useRouter } from "vue-router";
-import Header from "../components/Header.vue";
+import {
+  IonFab,
+  IonFabButton,
+  IonNote,
+  IonButton,
+  IonIcon,
+  IonList,
+  IonCheckbox,
+  IonLabel,
+  IonBadge,
+  IonItem,
+} from '@ionic/vue';
+import { IonPage } from '@ionic/vue';
+import { defineComponent } from 'vue';
+import { add } from 'ionicons/icons';
+import { useRouter } from 'vue-router';
+import Header from '../components/Header.vue';
 
 export default defineComponent({
-  name: "Home",
+  name: 'Home',
   components: {
+    IonFab,
+    IonFabButton,
+    IonNote,
+    IonButton,
+    IonIcon,
+    IonList,
+    IonCheckbox,
+    IonLabel,
+    IonBadge,
+    IonItem,
     IonPage,
     Header,
   },
@@ -74,6 +97,7 @@ export default defineComponent({
 #container a {
   text-decoration: none;
 }
+<<<<<<< HEAD
 
 #ModusselectionBox{
   background-color: white;
@@ -90,3 +114,6 @@ export default defineComponent({
 
 
 </style>
+=======
+</style>
+>>>>>>> 9e6a007d2a6901ff69b42041a35a8b935bb06b18

@@ -1,8 +1,8 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 import router from './router';
-
-import { IonicVue } from '@ionic/vue';
+import firebase from 'firebase';
+import { IonContent, IonicVue, IonPage } from '@ionic/vue';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -21,12 +21,28 @@ import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
 /* Theme variables */
-import './theme/variables.css';
+import './theme/variables.scss';
 
-const app = createApp(App)
-  .use(IonicVue)
-  .use(router);
-  
+const app = createApp(App).use(IonicVue).use(router);
+
 router.isReady().then(() => {
   app.mount('#app');
 });
+
+// global component registration
+app.component('ion-content', IonContent);
+app.component('ion-page', IonPage);
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: process.env.VUE_APP_FB_API_KEY,
+  authDomain: process.env.VUE_APP_FB_AUTH_DOMAIN,
+  projectId: process.env.VUE_APP_FB_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FB_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FB_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FB_APP_ID,
+};
+
+firebase.initializeApp(firebaseConfig);
+export const db = firebase.firestore();
+export const auth = firebase.auth();
