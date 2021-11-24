@@ -70,7 +70,8 @@ import { bagCheck, cart, logOut, personCircle, settings } from 'ionicons/icons';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  components: {
+name: "Header",
+components: {
     IonContent,
     IonHeader,
     IonItem,

@@ -2,10 +2,7 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import Home from '@/views/Home.vue';
 import Onboarding from '@/views/Onboarding.vue';
-import LiefernHome from '@/views/LiefernHome.vue';
-import BestellenHome from '@/views/BestellenHome.vue';
 import Example from '@/views/Example.vue';
-import Home from '@/views/Home.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -31,16 +28,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/onboarding',
     name: 'Onboarding',
     component: () => import('@/views/Onboarding.vue'),
-  },
-  {
-    path: '/bestellen',
-    name: 'Bestellen Übersicht',
-    component: () => import('@/BestellenHome),
-  },
-  {
-    path: '/liefern',
-    name: 'Liefern Übersicht',
-    component: () => import('@/LiefernHome'),
   },
   {
     path: '/example',

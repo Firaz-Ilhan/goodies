@@ -1,43 +1,32 @@
 <template>
-  <ion-page>
+    <ion-page>
     <Header></Header>
 
     <ion-content>
-      <div id="ModusselectionBox">
+      <div id="ModusSelectionBox">
         <br>
           <h4>Herzlich Willkommen bei goodies!</h4><!--set to H1 and change size of h1-->
           <p>Hier helfen Nachbarn Nachbarn.</p>
           
           <p><strong>Triff deine Auswahl:</strong></p>
-          <p>Möchtst du<br><strong>Deinen Nachbarn unterstützen?</strong></p>
-          <router-link to="/liefern">
+          <p>Möchtest du<br><strong>Deinen Nachbarn unterstützen?</strong></p>
+          <router-link to="/example">
             <img class="selectionbuttons" src="../assets/home/liefern.png">
           </router-link>
         <br>
 
           <p>Oder möchtst du<br><strong>Du dir etwas liefern lassen?</strong></p>
-          <router-link to="/liefern">
+          <router-link to="/example">
             <img class="selectionbuttons" src="../assets/home/bestellen.png">
           </router-link>
-      </div>>
-    <Header title="Home" />
+      </div>
       </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
 import {
-  IonFab,
-  IonFabButton,
-  IonNote,
-  IonButton,
-  IonIcon,
-  IonList,
-  IonCheckbox,
-  IonLabel,
-  IonBadge,
-  IonItem,
-} from '@ionic/vue';
+  } from '@ionic/vue';
 import { IonPage } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { add } from 'ionicons/icons';
@@ -47,16 +36,6 @@ import Header from '../components/Header.vue';
 export default defineComponent({
   name: 'Home',
   components: {
-    IonFab,
-    IonFabButton,
-    IonNote,
-    IonButton,
-    IonIcon,
-    IonList,
-    IonCheckbox,
-    IonLabel,
-    IonBadge,
-    IonItem,
     IonPage,
     Header,
   },
@@ -85,21 +64,8 @@ export default defineComponent({
   line-height: 26px;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
 
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
-}
-<<<<<<< HEAD
-
-#ModusselectionBox{
+#ModusSelectionBox{
   background-color: white;
   text-align: center;
   color: rgb(44, 44, 44);
@@ -112,8 +78,4 @@ export default defineComponent({
   max-width: 200px;
 }
 
-
 </style>
-=======
-</style>
->>>>>>> 9e6a007d2a6901ff69b42041a35a8b935bb06b18
