@@ -17,6 +17,7 @@ module.exports = {
     'vue/no-deprecated-slot-attribute': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'vue/no-multiple-template-root': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
   },
   overrides: [
     {
