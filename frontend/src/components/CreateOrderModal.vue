@@ -1,5 +1,5 @@
 <template>
-  <ion-page>
+  <div>
     <ion-header>
       <ion-toolbar>
         <ion-title>{{ title }}</ion-title>
@@ -81,7 +81,7 @@
         </ion-button>
       </form>
     </ion-content>
-  </ion-page>
+  </div>
 </template>
 
 <script lang="ts">
