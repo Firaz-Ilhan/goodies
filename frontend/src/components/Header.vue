@@ -6,9 +6,9 @@
           <ion-title>Menu</ion-title>
         </ion-toolbar>
       </ion-header>
-      <ion-content>
+      <ion-content class="menu-content">
         <ion-list id="menu-list">
-          <router-link to="/profile">
+          <router-link to="/example">
             <ion-item detail="false" button>
               <ion-icon :icon="personCircle" slot="start"></ion-icon>
               <ion-label>Profil</ion-label>
@@ -74,6 +74,7 @@ import { bagCheck, cart, logOut, personCircle, settings } from 'ionicons/icons';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+  name: 'Header',
   components: {
     IonContent,
     IonHeader,
