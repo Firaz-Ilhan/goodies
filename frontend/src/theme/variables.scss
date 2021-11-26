@@ -1,33 +1,5 @@
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Karla:wght@400;500;700&display=swap');
-
-/* Overwriting */
-
-:root {
-  --ion-font-family: 'Karla', sans-serif;
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: 'Rubik', sans-serif;
-    font-weight: 700;
-  }
-}
-
-p {
-  margin-top: 0;
-}
-
-ion-title,
-ion-card-title {
-  font-family: 'Rubik', sans-serif;
-  font-weight: 700;
-}
 
 /** Ionic CSS Variables **/
 :root {
