@@ -11,6 +11,9 @@
           Du kannst eine gespeicherte Einkaufsliste wieder verwenden, oder eine
           neue anlegen:
         </p>
+
+        <h2 v-for="order in orders" :key="order.id">{{ order.name }}</h2>
+
         <ion-fab vertical="bottom" horizontal="end" slot="fixed">
           <ion-fab-button @click="openModal">
             <ion-icon :icon="add"></ion-icon>
@@ -24,10 +27,10 @@
 <script lang="ts">
 import { IonFab, IonFabButton, modalController, IonIcon } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
-import { useRouter } from 'vue-router';
 import Header from '../components/Header.vue';
 import CreateOrderModal from '../components/CreateOrderModal.vue';
 import { add } from 'ionicons/icons';
+import { db } from '../main';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -37,6 +40,13 @@ export default defineComponent({
     IonFabButton,
     IonIcon,
   },
+
+  data() {
+    return {
+      orders: new Array<{ id: string; name: string }>(),
+    };
+  },
+
   methods: {
     async openModal() {
       const modal = await modalController.create({
@@ -48,10 +58,22 @@ export default defineComponent({
       return modal.present();
     },
   },
+
+  // get live orders from firestore
+  async created() {
+    await db.collection('test').onSnapshot((res) => {
+      const changes = res.docChanges();
+      changes.forEach((change: any) => {
+        if (change.type === 'added') {
+          this.orders.push(change.doc.data());
+        }
+        console.log(change.doc.data());
+      });
+    });
+  },
+
   setup() {
     return {
-      router: useRouter(),
-      data: { content: 'New Content' },
       add,
     };
   },
