@@ -12,25 +12,47 @@
           neue anlegen:
         </p>
 
-        <h2 v-for="order in orders" :key="order.id">{{ order.name }}</h2>
+        <h1>Deine Bestellungen</h1>
 
-        <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-          <ion-fab-button @click="openModal">
-            <ion-icon :icon="add"></ion-icon>
-          </ion-fab-button>
-        </ion-fab>
+        <p v-if="!orders.length">Zur Zeit hast du keine aktiven Bestellungen</p>
+        <ion-card v-for="order in orders" :key="order.id">
+          <ion-card-content>
+            <div>{{ order.name }}</div>
+            <div>
+              Artikelanzahl:
+              {{ calculateTotalArticleAmount(order.list) }}
+            </div>
+            <div>Creator: {{ order.createdBy }}</div>
+          </ion-card-content>
+        </ion-card>
       </div>
+
+      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button @click="openModal">
+          <ion-icon :icon="add"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonFab, IonFabButton, modalController, IonIcon } from '@ionic/vue';
+import {
+  IonFab,
+  IonFabButton,
+  modalController,
+  IonIcon,
+  IonCard,
+  IonCardContent,
+} from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import Header from '../components/Header.vue';
 import CreateOrderModal from '../components/CreateOrderModal.vue';
 import { add } from 'ionicons/icons';
+import firebase from 'firebase';
 import { db } from '../main';
+import { IOrder } from '../interfaces/IOrder';
+import { IListEntry } from '../interfaces/IListEntry';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -39,11 +61,13 @@ export default defineComponent({
     IonFab,
     IonFabButton,
     IonIcon,
+    IonCard,
+    IonCardContent,
   },
 
   data() {
     return {
-      orders: new Array<{ id: string; name: string }>(),
+      orders: new Array<IOrder>(),
     };
   },
 
@@ -57,19 +81,32 @@ export default defineComponent({
       });
       return modal.present();
     },
+
+    calculateTotalArticleAmount(list: IOrder['list']) {
+      let sum = 0;
+      list.map((entry: IListEntry) => (sum += entry.amount));
+      return sum;
+    },
   },
 
   // get live orders from firestore
-  async created() {
-    await db.collection('test').onSnapshot((res) => {
-      const changes = res.docChanges();
-      changes.forEach((change: any) => {
-        if (change.type === 'added') {
-          this.orders.push(change.doc.data());
-        }
-        console.log(change.doc.data());
+  // TODO adjust collection id to orders
+  created() {
+    const userId = firebase.auth().currentUser!.uid;
+
+    db.collection('test')
+      .where('createdBy', '==', userId)
+      .onSnapshot((docData: firebase.firestore.DocumentData) => {
+        const changes = docData.docChanges();
+        changes.forEach((change: firebase.firestore.DocumentChange) => {
+          if (change.type === 'added') {
+            this.orders.push({
+              ...(change.doc.data() as IOrder),
+              id: change.doc.id,
+            });
+          }
+        });
       });
-    });
   },
 
   setup() {

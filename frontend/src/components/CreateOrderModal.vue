@@ -107,6 +107,7 @@ import {
 import { addCircleOutline, trashOutline } from 'ionicons/icons';
 import firebase from 'firebase';
 import { defineComponent } from 'vue';
+import { IListEntry } from '@/interfaces/IListEntry';
 
 export default defineComponent({
   name: 'CreateOrderModal',
@@ -132,6 +133,7 @@ export default defineComponent({
             console.log(`Order with id: ${res.id} was created`);
           });
       } else {
+        // Todo create error message similar to AuthForm
         console.log('List must contain at least one entry');
       }
     },
@@ -179,7 +181,7 @@ export default defineComponent({
       name: '',
       article: '',
       amount: 1,
-      list: new Array<{ article: string; amount: number }>(),
+      list: new Array<IListEntry>(),
       addCircleOutline,
       trashOutline,
     };
