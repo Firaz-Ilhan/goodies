@@ -1,6 +1,7 @@
 <template>
   <ion-app>
-    <ion-router-outlet />
+    <Menu />
+    <ion-router-outlet id="main-content" />
   </ion-app>
 </template>
 
@@ -9,12 +10,14 @@ import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import firebase from 'firebase';
 import { defineComponent, onBeforeMount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import Menu from './components/Menu.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
     IonApp,
     IonRouterOutlet,
+    Menu,
   },
   setup() {
     const router = useRouter();
