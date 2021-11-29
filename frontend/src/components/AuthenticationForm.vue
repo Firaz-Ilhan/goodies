@@ -89,6 +89,7 @@ import {
 } from '@ionic/vue';
 import { reactive, toRefs } from 'vue';
 import firebase from 'firebase';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'AuthenticationForm',
@@ -107,6 +108,7 @@ export default {
     IonButton,
   },
   setup() {
+    const router = useRouter();
     const state = reactive({
       email: '',
       password: '',
@@ -117,6 +119,9 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
+        .then(() => {
+          router.push('home');
+        })
         .catch((error) => {
           state.errorMsg = error.message;
         });
@@ -126,6 +131,9 @@ export default {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          router.push('home');
+        })
         .catch((error) => {
           state.errorMsg = error.message;
         });
@@ -140,13 +148,22 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .center {
   display: flex;
   height: 90vh;
   width: 100%;
   align-items: center;
   justify-content: center;
+}
+
+.error-message {
+  display: inline-block;
+  color: var(--ion-color-danger);
+  padding: 4px 16px;
+  margin: 16px;
+  border-radius: 8px;
+  background-color: rgba(#eb445a, 0.1);
 }
 
 p {
