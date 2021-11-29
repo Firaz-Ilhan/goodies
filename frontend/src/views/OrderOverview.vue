@@ -13,8 +13,9 @@
         </p>
 
         <h1>Deine Bestellungen</h1>
-
-        <p v-if="!orders.length">Zur Zeit hast du keine aktiven Bestellungen</p>
+        <p v-if="!orders.length">
+          Zur Zeit hast du keine aktiven Bestellungen.
+        </p>
         <ion-card v-for="order in orders" :key="order.id">
           <ion-card-content>
             <div>{{ order.name }}</div>
@@ -65,12 +66,6 @@ export default defineComponent({
     IonCardContent,
   },
 
-  data() {
-    return {
-      orders: new Array<IOrder>(),
-    };
-  },
-
   methods: {
     async openModal() {
       const modal = await modalController.create({
@@ -87,31 +82,36 @@ export default defineComponent({
       list.map((entry: IListEntry) => (sum += entry.amount));
       return sum;
     },
-  },
 
-  // get live orders from firestore
-  // TODO adjust collection id to orders
-  created() {
-    const userId = firebase.auth().currentUser!.uid;
-
-    db.collection('test')
-      .where('createdBy', '==', userId)
-      .onSnapshot((docData: firebase.firestore.DocumentData) => {
-        const changes = docData.docChanges();
-        changes.forEach((change: firebase.firestore.DocumentChange) => {
-          if (change.type === 'added') {
-            this.orders.push({
-              ...(change.doc.data() as IOrder),
-              id: change.doc.id,
+    populateOrders(orders: Array<IOrder>) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          console.log(orders);
+          db.collection('test')
+            .where('createdBy', '==', user.uid)
+            .onSnapshot((docData: firebase.firestore.DocumentData) => {
+              const changes = docData.docChanges();
+              changes.forEach((change: firebase.firestore.DocumentChange) => {
+                if (change.type === 'added') {
+                  this.orders.push({
+                    ...(change.doc.data() as IOrder),
+                    id: change.doc.id,
+                  });
+                }
+              });
             });
-          }
-        });
+        }
       });
+    },
   },
 
-  setup() {
+  data() {
+    const orders = new Array<IOrder>();
+    this.populateOrders(this.orders);
+
     return {
       add,
+      orders,
     };
   },
 });

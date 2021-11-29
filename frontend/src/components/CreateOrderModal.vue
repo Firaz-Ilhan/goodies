@@ -8,6 +8,7 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
+
     <ion-content>
       <form @submit.prevent="createOrder">
         <ion-item>
@@ -15,26 +16,15 @@
           <ion-input v-model="name" required />
         </ion-item>
 
-        <ion-grid>
-          <ion-row class="grid-header">
-            <ion-col size="10">Artikel</ion-col>
-            <ion-col size="2">Anzahl</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="10">Karotten</ion-col>
-            <ion-col size="2">5 Stk</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col size="10">Joghurt, 500g</ion-col>
-            <ion-col size="2">2 Stk</ion-col>
-          </ion-row>
-        </ion-grid>
-
         <ion-list>
-          <ion-list-header>
+          <ion-item class="list-header">
             <ion-col size="9">Artikel</ion-col>
             <ion-col size="3">Anzahl</ion-col>
-          </ion-list-header>
+          </ion-item>
+
+          <p v-if="list.length <= 0" class="ion-margin-top">
+            Noch keine Artikel hinzugefügt.
+          </p>
 
           <ion-item-sliding v-for="(entry, index) in list" :key="index">
             <ion-item-options side="end">
@@ -47,13 +37,9 @@
               <ion-col size="3">{{ entry.amount }}</ion-col>
             </ion-item>
           </ion-item-sliding>
-          <ion-item>
-            <ion-col size="9">Tomaten</ion-col>
-            <ion-col size="3">500g</ion-col>
-          </ion-item>
         </ion-list>
 
-        <ion-list class="ion-padding-vertical">
+        <ion-list>
           <span class="ion-margin-start">Artikel hinzufügen</span>
           <ion-row class="ion-align-items-end">
             <ion-col size="6">
@@ -76,9 +62,9 @@
           </ion-row>
         </ion-list>
 
-        <ion-button class="ion-margin-top" type="submit">
-          Liste erstellen
-        </ion-button>
+        <div class="wrapper">
+          <ion-button type="submit"> Liste erstellen </ion-button>
+        </div>
       </form>
     </ion-content>
   </ion-page>
@@ -97,8 +83,6 @@ import {
   IonInput,
   IonItem,
   IonList,
-  IonListHeader,
-  IonGrid,
   IonCol,
   IonRow,
   IonIcon,
@@ -107,7 +91,7 @@ import {
 import { addCircleOutline, trashOutline } from 'ionicons/icons';
 import firebase from 'firebase';
 import { defineComponent } from 'vue';
-import { IListEntry } from '@/interfaces/IListEntry';
+import { IListEntry } from '../interfaces/IListEntry';
 
 export default defineComponent({
   name: 'CreateOrderModal',
@@ -170,8 +154,6 @@ export default defineComponent({
     IonInput,
     IonItem,
     IonList,
-    IonListHeader,
-    IonGrid,
     IonCol,
     IonRow,
     IonIcon,
@@ -189,9 +171,22 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.grid-header {
-  color: teal;
+<style scoped lang="scss">
+.list-header {
+  font-family: Rubik;
+  // font-weight: 500;
+  font-size: 16px;
+  ion-col {
+    padding: 0;
+  }
+}
+
+.wrapper {
+  text-align: center;
+}
+
+ion-list {
+  margin: 40px 0;
 }
 
 span {
