@@ -92,6 +92,7 @@ import { addCircleOutline, trashOutline } from 'ionicons/icons';
 import firebase from 'firebase';
 import { defineComponent } from 'vue';
 import { IListEntry } from '../interfaces/IListEntry';
+import { IOrder } from '@/interfaces/IOrder';
 
 export default defineComponent({
   name: 'CreateOrderModal',
@@ -105,16 +106,21 @@ export default defineComponent({
 
     createOrder() {
       if (this.list.length > 0) {
-        const creator = firebase.auth().currentUser;
+        const order: Omit<IOrder, 'id'> = {
+          name: this.name,
+          list: this.list,
+          createdBy: firebase.auth().currentUser!.uid,
+          orderState: 'open',
+        };
+
+        // create document in fb collection
         db.collection('test')
-          .add({
-            name: this.name,
-            list: this.list,
-            createdBy: creator!.uid,
-          })
+          .add(order)
           .then((res) => {
-            if (res.id) this.closeModal();
-            console.log(`Order with id: ${res.id} was created`);
+            if (res.id) {
+              this.closeModal();
+              console.log(`Order with id: ${res.id} was created`);
+            }
           });
       } else {
         // Todo create error message similar to AuthForm
@@ -123,10 +129,14 @@ export default defineComponent({
     },
 
     addEntryToList() {
-      const article = this.article;
-      const amount = this.amount;
-      if (article && amount > 0) {
-        this.list.push({ article, amount });
+      const listEntry: Omit<IListEntry, 'id'> = {
+        article: this.article,
+        amount: this.amount,
+        isChecked: false,
+      };
+
+      if (this.article && this.amount > 0) {
+        this.list.push(listEntry);
         this.article = '';
         this.amount = 1;
       } else {
@@ -174,7 +184,6 @@ export default defineComponent({
 <style scoped lang="scss">
 .list-header {
   font-family: Rubik;
-  // font-weight: 500;
   font-size: 16px;
   ion-col {
     padding: 0;
