@@ -102,7 +102,7 @@ export default defineComponent({
       return alert.present();
     },
   },
-  setup() {
+  data() {
     return {
       personCircle,
       cart,

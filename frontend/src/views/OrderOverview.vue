@@ -19,7 +19,7 @@
         <ion-card
           v-for="order in orders"
           :key="order.id"
-          @click="router.push('/orders/' + order.id)"
+          @click="$router.push('/orders/' + order.id)"
           button
         >
           <ion-card-content>
@@ -59,7 +59,6 @@ import firebase from 'firebase';
 import { db } from '../main';
 import { IOrder } from '../interfaces/IOrder';
 import { IListEntry } from '../interfaces/IListEntry';
-import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -89,10 +88,9 @@ export default defineComponent({
       return sum;
     },
 
-    populateOrders(orders: Array<IOrder>) {
+    populateOrders() {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          console.log(orders);
           db.collection('test')
             .where('createdBy', '==', user.uid)
             .onSnapshot((docData: firebase.firestore.DocumentData) => {
@@ -113,12 +111,11 @@ export default defineComponent({
 
   data() {
     const orders = new Array<IOrder>();
-    this.populateOrders(this.orders);
+    this.populateOrders();
 
     return {
       add,
       orders,
-      router: useRouter(),
     };
   },
 });
