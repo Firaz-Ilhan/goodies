@@ -10,6 +10,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
+      <Map></Map>
       <ion-button @click="scrollToBottom"
         >Scroll to Bottom <ion-icon :icon="heart"></ion-icon
       ></ion-button>
@@ -29,6 +30,7 @@ import {
 } from '@ionic/vue';
 import { heart } from 'ionicons/icons';
 import { defineComponent, ref } from 'vue';
+import Map from '../components/Map.vue'
 
 export default defineComponent({
   name: 'Example',
@@ -40,6 +42,7 @@ export default defineComponent({
     IonPage,
     IonTitle,
     IonToolbar,
+    Map,
   },
   setup() {
     const content = ref();
