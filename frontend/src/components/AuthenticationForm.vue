@@ -26,12 +26,21 @@
           >
             <ion-item>
               <ion-label position="floating">Email</ion-label>
-              <ion-input v-model="email" type="email" required></ion-input>
+              <ion-input
+                v-model="email"
+                type="email"
+                autocomplete="email"
+                autofocus
+                required
+              ></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="floating">Password</ion-label>
               <ion-input
                 v-model="password"
+                :autocomplete="
+                  mode === login ? 'current-password' : 'new-password'
+                "
                 type="password"
                 required
               ></ion-input>
@@ -80,6 +89,7 @@ import {
 } from '@ionic/vue';
 import { reactive, toRefs } from 'vue';
 import firebase from 'firebase';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'AuthenticationForm',
@@ -98,6 +108,7 @@ export default {
     IonButton,
   },
   setup() {
+    const router = useRouter();
     const state = reactive({
       email: '',
       password: '',
@@ -108,6 +119,9 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
+        .then(() => {
+          router.push('home');
+        })
         .catch((error) => {
           state.errorMsg = error.message;
         });
@@ -117,6 +131,9 @@ export default {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          router.push('home');
+        })
         .catch((error) => {
           state.errorMsg = error.message;
         });
@@ -131,7 +148,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .center {
   display: flex;
   height: 90vh;
@@ -139,10 +156,18 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 .error-message {
-  color: #842029;
-  background-color: #f8d7da;
-  border-color: #f5c2c7;
+  display: inline-block;
+  color: var(--ion-color-danger);
+  padding: 4px 16px;
+  margin: 16px;
+  border-radius: 8px;
+  background-color: rgba(#eb445a, 0.1);
+}
+
+p {
+  margin-top: 2rem;
   text-align: center;
 }
 </style>

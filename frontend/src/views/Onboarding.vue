@@ -51,7 +51,7 @@
                 Ist deine Bestellung da, überprüfe den Kassenzettel und bezahle
                 deinen Lieferanten - fertig!
               </p>
-              <ion-button @click="() => router.push('/home')">
+              <ion-button @click="() => $router.push('/home')">
                 Return
               </ion-button>
             </ion-card-content>
@@ -67,7 +67,6 @@ import { IonContent, IonPage, IonicSwiper } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import SwiperCore, { Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { useRouter } from 'vue-router';
 
 import 'swiper/swiper-bundle.min.css';
 import '@ionic/vue/css/ionic-swiper.css';
@@ -81,11 +80,6 @@ export default defineComponent({
     IonPage,
     Swiper,
     SwiperSlide,
-  },
-  setup() {
-    return {
-      router: useRouter(),
-    };
   },
 });
 </script>

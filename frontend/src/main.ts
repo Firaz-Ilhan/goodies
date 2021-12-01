@@ -22,6 +22,7 @@ import '@ionic/vue/css/display.css';
 
 /* Theme variables */
 import './theme/variables.scss';
+import './theme/global.scss';
 
 const app = createApp(App).use(IonicVue).use(router);
 
@@ -46,3 +47,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 export const db = firebase.firestore();
 export const auth = firebase.auth();
+
+// returns a promise of currently authenticated user
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      unsubscribe();
+      resolve(user);
+    }, reject);
+  });
+};

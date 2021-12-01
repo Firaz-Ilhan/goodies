@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <AuthenticationForm :mode="'register'"></AuthenticationForm>
-  </div>
+  <ion-page>
+    <AuthenticationForm :mode="'register'" />
+  </ion-page>
 </template>
 
 <script lang="ts">

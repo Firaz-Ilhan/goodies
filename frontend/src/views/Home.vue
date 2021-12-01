@@ -1,81 +1,55 @@
 <template>
-    <ion-page>
-    <Header></Header>
+  <ion-page>
+    <Header title="Home"></Header>
 
     <ion-content>
-      <div id="ModusSelectionBox">
-        <br>
-          <h4>Herzlich Willkommen bei goodies!</h4><!--set to H1 and change size of h1-->
-          <p>Hier helfen Nachbarn Nachbarn.</p>
-          
-          <p><strong>Triff deine Auswahl:</strong></p>
-          <p>Möchtest du<br><strong>Deinen Nachbarn unterstützen?</strong></p>
-          <router-link to="/example">
-            <img class="selectionbuttons" src="../assets/home/liefern.png">
-          </router-link>
-        <br>
+      <h1>Herzlich Willkommen bei goodies!</h1>
+      <p>Hier helfen Nachbarn Nachbarn.</p>
 
-          <p>Oder möchtst du<br><strong>Du dir etwas liefern lassen?</strong></p>
-          <router-link to="/example">
-            <img class="selectionbuttons" src="../assets/home/bestellen.png">
-          </router-link>
-      </div>
-      </ion-content>
+      <p><strong>Triff deine Auswahl:</strong></p>
+      <p>Möchtest du<br /><strong>Deinen Nachbarn unterstützen?</strong></p>
+
+      <router-link to="/example">
+        <img src="../assets/home/liefern.png" alt="Einkaufen und Liefern" />
+      </router-link>
+      <br />
+
+      <p>Oder möchtest du<br /><strong> dir etwas liefern lassen?</strong></p>
+      <router-link to="/orders">
+        <img src="../assets/home/bestellen.png" alt="Bestellen" />
+      </router-link>
+    </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import {
-  } from '@ionic/vue';
-import { IonPage } from '@ionic/vue';
 import { defineComponent } from 'vue';
-import { add } from 'ionicons/icons';
-import { useRouter } from 'vue-router';
 import Header from '../components/Header.vue';
 
 export default defineComponent({
   name: 'Home',
   components: {
-    IonPage,
     Header,
-  },
-  setup() {
-    return {
-      router: useRouter(),
-      add,
-    };
   },
 });
 </script>
 
-<style scoped>
-#container {
+<style scoped lang="scss">
+ion-content {
   text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-
-#ModusSelectionBox{
-  background-color: white;
-  text-align: center;
-  color: rgb(44, 44, 44);
+img {
+  margin: 20px 0;
+  width: 200px;
+  transition: 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
 }
-
-.selectionbuttons{
-  position: relative;
-  text-align: center;
-  width: 70%;
-  max-width: 200px;
-}
-
 </style>
