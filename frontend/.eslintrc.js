@@ -18,6 +18,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'vue/no-multiple-template-root': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/interface-name-prefix': 'off',
   },
   overrides: [
     {
