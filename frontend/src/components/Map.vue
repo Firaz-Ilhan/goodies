@@ -13,15 +13,15 @@ import { Loader } from '@googlemaps/js-api-loader';
 - Dummie-Set erstellen? (öffentliches Fahrzeug?)
 */
 
-const API_KEY = 'AIzaSyAeTmR_WD4BemHmW2vKV-V6Kc1_TbGs6QA';
-
 export default defineComponent({
   name: 'Map',
 
   setup() {
     // const {coords} = useGeolocation()
     const fixedPosition = { lat: 48.742857061431366, lng: 9.101005423756947 };
-    const loader = new Loader({ apiKey: API_KEY });
+    const loader = new Loader({
+      apiKey: process.env.VUE_APP_GOOGLE_MAPS_API_KEY,
+    });
     const mapDiv = ref(null);
 
     onMounted(async () => {
