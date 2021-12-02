@@ -11,9 +11,11 @@
     </ion-header>
     <ion-content>
       <Map></Map>
-      <ion-button @click="scrollToBottom"
-        >Scroll to Bottom <ion-icon :icon="heart"></ion-icon
-      ></ion-button>
+      <ion-button @click="useGeolocation().startWatch()"
+        >start watch</ion-button
+      >
+      <br />
+      <ion-button @click="useGeolocation().stopWatch()">stop watch</ion-button>
     </ion-content>
   </ion-page>
 </template>
@@ -22,35 +24,32 @@
 import {
   IonBackButton,
   IonButtons,
+  IonButton,
   IonContent,
   IonHeader,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from '@ionic/vue';
-import { heart } from 'ionicons/icons';
-import { defineComponent, ref } from 'vue';
-import Map from '../components/Map.vue'
+import { defineComponent } from 'vue';
+import Map from '../components/Map.vue';
+import { useGeolocation } from '../services/useGeolocation';
 
 export default defineComponent({
   name: 'Example',
   components: {
     IonBackButton,
     IonButtons,
+    IonButton,
     IonContent,
     IonHeader,
-    IonPage,
     IonTitle,
     IonToolbar,
     Map,
   },
   setup() {
-    const content = ref();
-
-    const scrollToBottom = () => {
-      content.value.$el.scrollToBottom(300);
+    return {
+      useGeolocation,
     };
-    return { heart, scrollToBottom };
   },
 });
 </script>
