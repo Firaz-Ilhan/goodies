@@ -9,12 +9,7 @@ import { IonCard } from '@ionic/vue';
 
 import { defineComponent, onMounted, ref } from 'vue';
 import { Loader } from '@googlemaps/js-api-loader';
-import { useGeolocation } from '../services/useGeolocation';
-
-/* ToDo:
-- Längen und Breitengrad: Firebase Datenbank-Abfrage
-- Dummie-Set erstellen? (öffentliches Fahrzeug?)
-*/
+import { useGeolocation } from '../composables/useGeolocation';
 
 export default defineComponent({
   name: 'Map',
@@ -22,7 +17,6 @@ export default defineComponent({
     IonCard,
   },
   setup() {
-    // const fixedPosition = { lat: 48.742857061431366, lng: 9.101005423756947 };
     const loader = new Loader({
       apiKey: process.env.VUE_APP_GOOGLE_MAPS_API_KEY,
     });
