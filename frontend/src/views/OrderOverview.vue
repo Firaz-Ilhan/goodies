@@ -89,23 +89,20 @@ export default defineComponent({
     },
 
     populateOrders() {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          db.collection('test')
-            .where('createdBy', '==', user.uid)
-            .onSnapshot((docData: firebase.firestore.DocumentData) => {
-              const changes = docData.docChanges();
-              changes.forEach((change: firebase.firestore.DocumentChange) => {
-                if (change.type === 'added') {
-                  this.orders.push({
-                    ...(change.doc.data() as IOrder),
-                    id: change.doc.id,
-                  });
-                }
+      const user = firebase.auth().currentUser!;
+      db.collection('test')
+        .where('createdBy', '==', user.uid)
+        .onSnapshot((docData: firebase.firestore.DocumentData) => {
+          const changes = docData.docChanges();
+          changes.forEach((change: firebase.firestore.DocumentChange) => {
+            if (change.type === 'added') {
+              this.orders.push({
+                ...(change.doc.data() as IOrder),
+                id: change.doc.id,
               });
-            });
-        }
-      });
+            }
+          });
+        });
     },
   },
 

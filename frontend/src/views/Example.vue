@@ -32,7 +32,7 @@ import {
 } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import Map from '../components/Map.vue';
-import { useGeolocation } from '../services/useGeolocation';
+import { useGeolocation } from '../composables/useGeolocation';
 
 export default defineComponent({
   name: 'Example',

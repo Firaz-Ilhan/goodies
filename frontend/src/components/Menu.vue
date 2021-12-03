@@ -39,6 +39,7 @@
 </template>
 
 <script lang="ts">
+import { useAuth } from '../composables/useAuth';
 import {
   IonContent,
   IonHeader,
@@ -52,7 +53,6 @@ import {
   alertController,
   menuController,
 } from '@ionic/vue';
-import firebase from 'firebase';
 import { bagCheck, cart, logOut, personCircle, settings } from 'ionicons/icons';
 import { defineComponent } from 'vue';
 
@@ -70,11 +70,13 @@ export default defineComponent({
     IonTitle,
   },
   methods: {
+    // navigate to path and close the menu
     async navigateMenu(path: string) {
       this.$router.push(path);
       menuController.close('app-menu');
     },
 
+    // open alert to confirm logout
     async presentLogoutAlert() {
       const alert = await alertController.create({
         header: 'Möchtest du dich wirklich ausloggen?',
@@ -86,15 +88,8 @@ export default defineComponent({
           {
             text: 'Logout',
             handler: () => {
-              firebase
-                .auth()
-                .signOut()
-                .then(() => {
-                  this.navigateMenu('/login');
-                })
-                .catch((error: Error) => {
-                  console.log(error.message);
-                });
+              useAuth().logout();
+              this.navigateMenu('/login');
             },
           },
         ],

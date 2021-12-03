@@ -20,8 +20,8 @@
           <form
             @submit.prevent="
               mode === 'login'
-                ? login(email, password)
-                : register(email, password)
+                ? useAuth().login(email, password)
+                : useAuth().register(email, password)
             "
           >
             <ion-item>
@@ -39,7 +39,7 @@
               <ion-input
                 v-model="password"
                 :autocomplete="
-                  mode === login ? 'current-password' : 'new-password'
+                  mode === 'login' ? 'current-password' : 'new-password'
                 "
                 type="password"
                 required
@@ -88,8 +88,7 @@ import {
   IonItem,
 } from '@ionic/vue';
 import { reactive, toRefs } from 'vue';
-import firebase from 'firebase';
-import { useRouter } from 'vue-router';
+import { useAuth } from '../composables/useAuth';
 
 export default {
   name: 'AuthenticationForm',
@@ -108,41 +107,15 @@ export default {
     IonButton,
   },
   setup() {
-    const router = useRouter();
     const state = reactive({
       email: '',
       password: '',
       errorMsg: '',
     });
 
-    const login = (email: string, password: string) => {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(() => {
-          router.push('home');
-        })
-        .catch((error) => {
-          state.errorMsg = error.message;
-        });
-    };
-
-    const register = (email: string, password: string) => {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          router.push('home');
-        })
-        .catch((error) => {
-          state.errorMsg = error.message;
-        });
-    };
-
     return {
       ...toRefs(state),
-      register,
-      login,
+      useAuth,
     };
   },
 };
