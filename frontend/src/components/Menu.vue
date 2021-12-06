@@ -7,7 +7,7 @@
     </ion-header>
     <ion-content class="menu-content">
       <ion-list id="menu-list">
-        <ion-item @click="navigateMenu('/example')" detail="false" button>
+        <ion-item @click="navigateMenu('/profile')" detail="false" button>
           <ion-icon :icon="personCircle" slot="start"></ion-icon>
           <ion-label>Profil</ion-label>
         </ion-item>
