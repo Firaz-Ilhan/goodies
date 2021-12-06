@@ -10,12 +10,14 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <Map></Map>
+      <Map :mapPosition="mapPosition"></Map>
       <ion-button @click="useGeolocation().startWatch()"
         >start watch</ion-button
       >
       <br />
       <ion-button @click="useGeolocation().stopWatch()">stop watch</ion-button>
+      <br />
+      <ion-button @click="movePosition">Change Position</ion-button>
     </ion-content>
   </ion-page>
 </template>
@@ -46,9 +48,26 @@ export default defineComponent({
     IonToolbar,
     Map,
   },
-  setup() {
+  async created() {
+    this.mapPosition = await useGeolocation().getCurrentCoordinates();
+  },
+
+  methods: {
+    movePosition() {
+      this.mapPosition = {
+        lat: 47,
+        lng: 47,
+      };
+    },
+  },
+  data() {
+    const mapPosition = {
+      lat: 22,
+      lng: 22,
+    };
     return {
       useGeolocation,
+      mapPosition,
     };
   },
 });

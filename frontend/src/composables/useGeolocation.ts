@@ -1,3 +1,4 @@
+import { loader } from '@/main';
 import { Geolocation, Position } from '@capacitor/geolocation';
 
 let watchId: string | void;
@@ -15,11 +16,10 @@ export function useGeolocation() {
     ).catch((e: Error) => {
       console.log(e.message);
     });
-    console.log('coord', coordinates);
     watchId = coordinates;
   };
 
-  // stop the watch
+  // stop the watch subscription
   const stopWatch = () => {
     if (watchId) {
       Geolocation.clearWatch({ id: watchId });
@@ -27,9 +27,30 @@ export function useGeolocation() {
     }
   };
 
-  const getCurrentPosition = async () => {
-    return await Geolocation.getCurrentPosition();
+  // get object of current geolocation coordinates
+  const getCurrentCoordinates = async () => {
+    const geoposition = await Geolocation.getCurrentPosition();
+    return {
+      lat: Number(geoposition.coords.latitude.toFixed(4)),
+      lng: Number(geoposition.coords.longitude.toFixed(4)),
+    };
   };
 
-  return { startWatch, stopWatch, getCurrentPosition };
+  // translates an address into a coordinates
+  const geoCodeAdress = async (address: string) => {
+    loader.load().then((google) => {
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode(address, (res: any) => {
+        const resPosition = {
+          lat: res[0].geometry.location.lat(),
+          lng: res[0].geometry.location.lng(),
+        };
+        console.log(res[0].formatted_address);
+        console.log(resPosition);
+        return resPosition;
+      });
+    });
+  };
+
+  return { startWatch, stopWatch, getCurrentCoordinates, geoCodeAdress };
 }
