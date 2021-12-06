@@ -1,17 +1,47 @@
 <template>
   <ion-page>
+    <Header title="Meine Bestellungen" :hasBackButton="true" />
     <ion-content>
-      <Header title="Meine Bestellungen" :hasBackButton="true" />
-      <h2>{{ ordersDetails.name }}</h2>
-      <p>Status: {{ ordersDetails.orderState }}</p>
-      <p>Übernommen durch:</p>
-      <ion-list>
-        <ion-item v-for="detail in ordersDetails.list" :key="detail.article">
-          <ion-icon v-if="detail.isChecked" :icon="checkmarkCircle"></ion-icon>
-          <ion-icon v-else :icon="bicycle"></ion-icon>
-          <ion-label>{{ detail.article }} {{ detail.amount }}</ion-label>
-        </ion-item>
-      </ion-list>
+      <div class="wrapper">
+        <h2>{{ ordersDetails.name }}</h2>
+        <div id="status">
+          <p>Status: {{ ordersDetails.orderState }}</p>
+          <p>Übernommen durch:</p>
+        </div>
+        <ion-grid class="ion-text-center">
+          <ion-row class="table-header">
+            <ion-col size="5">
+              <ion-label>Artikel</ion-label>
+            </ion-col>
+
+            <ion-col size="3">
+              <ion-label>Menge</ion-label>
+            </ion-col>
+
+            <ion-col size="3">
+              <ion-label>Status</ion-label>
+            </ion-col>
+          </ion-row>
+
+          <ion-row v-for="detail in ordersDetails.list" :key="detail.article">
+            <ion-col size="5">
+              <ion-label> {{ detail.article }} </ion-label>
+            </ion-col>
+
+            <ion-col size="3">
+              <ion-label> {{ detail.amount }} </ion-label>
+            </ion-col>
+
+            <ion-col size="3">
+              <ion-icon
+                v-if="detail.isChecked"
+                :icon="checkmarkCircle"
+              ></ion-icon>
+              <ion-icon v-else :icon="bicycle"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -20,10 +50,11 @@
 import {
   IonContent,
   IonIcon,
-  IonItem,
   IonLabel,
-  IonList,
   IonPage,
+  IonRow,
+  IonCol,
+  IonGrid,
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import firebase from 'firebase';
@@ -37,10 +68,11 @@ export default defineComponent({
     Header,
     IonPage,
     IonContent,
-    IonList,
-    IonItem,
     IonLabel,
     IonIcon,
+    IonCol,
+    IonRow,
+    IonGrid,
   },
 
   methods: {
@@ -77,4 +109,24 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+#status {
+  display: flex;
+  flex-direction: row;
+}
+
+#status p {
+  padding: 0.25rem;
+}
+
+@media (max-width: 800px) {
+  #status {
+    flex-direction: column;
+  }
+}
+
+.table-header {
+  font-size: 18px;
+  padding-bottom: 8px;
+}
+</style>
