@@ -20,8 +20,12 @@
           <form
             @submit.prevent="
               mode === 'login'
-                ? useAuth().login(email, password)
-                : useAuth().register(email, password)
+                ? useAuth().login(email, password, (message: string) => {
+                    errorMsg = message;
+                  })
+                : useAuth().register(email, password, (message: string) => {
+                    errorMsg = message;
+                  })
             "
           >
             <ion-item>

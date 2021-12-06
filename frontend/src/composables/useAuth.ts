@@ -4,7 +4,11 @@ import firebase from 'firebase';
 export function useAuth() {
   // TODO use the error and display it when calling the function
   // sign in user
-  const login = (email: string, password: string) => {
+  const login = (
+    email: string,
+    password: string,
+    setErrorMessage?: (message: string) => void,
+  ) => {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -12,12 +16,17 @@ export function useAuth() {
         router.push('home');
       })
       .catch((error) => {
-        console.log(error.message);
+        setErrorMessage && setErrorMessage(error.message);
       });
   };
 
   // register new user in firebase
-  const register = (email: string, password: string) => {
+
+  const register = (
+    email: string,
+    password: string,
+    setErrorMessage?: (message: string) => void,
+  ) => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -25,7 +34,7 @@ export function useAuth() {
         router.push('home');
       })
       .catch((error) => {
-        console.log(error.message);
+        setErrorMessage && setErrorMessage(error.message);
       });
   };
 
