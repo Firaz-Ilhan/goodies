@@ -2,7 +2,7 @@
     <ion-page>
         <Header title="Profil" :hasBackButton="true" ></Header>
         <ion-content>
-            <form @submit.prevent="saveProfile">
+            <form @submit.prevent="saveProfile(); setOpen(true)">
                 <div class="wrapper">
                     <ion-card>
                         <ion-card-content>
@@ -52,6 +52,13 @@
                     </ion-card>
                 </div>
                 <ion-button type="submit"> Speichern </ion-button>
+                <ion-toast
+                  :is-open="isOpenRef"
+                  message="Your profile have been saved."
+                  color="success"
+                  :duration="2000"
+                  @didDismiss="setOpen(false)">
+                </ion-toast>
             </form>
         </ion-content>
     </ion-page>
@@ -69,9 +76,10 @@ import {
     IonRadio,
     IonList,
     IonButton,
+    IonToast,
 } from '@ionic/vue';
 import { db } from '../main';
-import { defineComponent, reactive, toRefs } from 'vue';
+import { defineComponent, reactive, toRefs, ref } from 'vue';
 import firebase from 'firebase';
 import {IProfile} from '../interfaces/IProfile';
 import Header from '../components/Header.vue';
@@ -90,6 +98,7 @@ export default defineComponent({
     IonRadio,
     IonList,
     IonButton,
+    IonToast,
   },
   
   setup() {
@@ -110,7 +119,11 @@ export default defineComponent({
         const currentUser =  firebase.auth().currentUser!;
         console.log("Profile",state.profile)
         db.collection('profiles').doc(currentUser.uid).set({...state.profile});
+        
       };
+
+      const isOpenRef = ref(false);
+      const setOpen = (state: boolean) => isOpenRef.value = state;
 
      const getProfileData = () => {
         const currentUser =  firebase.auth().currentUser!;
@@ -132,6 +145,8 @@ export default defineComponent({
     return {
       ...toRefs(state),
       saveProfile,
+      isOpenRef,
+      setOpen
     };
     
 },
