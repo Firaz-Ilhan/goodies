@@ -28,7 +28,10 @@
             <div>Creator: {{ order.createdBy }}</div>
             <div>Timestamp: {{ order.createdAt }}</div>
             <ion-badge color="dark">
-              {{ calculateTotalArticleAmount(order.list) }} Artikel</ion-badge
+              {{
+                useOrder().calculateTotalArticleAmount(order.list)
+              }}
+              Artikel</ion-badge
             >
             <ion-badge class="ion-margin-start" color="success">
               {{ order.orderState }}</ion-badge
@@ -63,7 +66,7 @@ import { add } from 'ionicons/icons';
 import firebase from 'firebase';
 import { db } from '../main';
 import { IOrder } from '../interfaces/IOrder';
-import { IListEntry } from '../interfaces/IListEntry';
+import { useOrder } from '@/composables/useOrder';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -86,14 +89,6 @@ export default defineComponent({
         },
       });
       return modal.present();
-    },
-
-    calculateTotalArticleAmount(list: IOrder['list']) {
-      let sum = 0;
-      list.map((entry: IListEntry) => {
-        sum += Number(entry.amount);
-      });
-      return sum;
     },
 
     populateOrders() {
@@ -125,6 +120,7 @@ export default defineComponent({
     return {
       add,
       orders,
+      useOrder,
     };
   },
 });

@@ -2,7 +2,6 @@ import router from '@/router';
 import firebase from 'firebase';
 
 export function useAuth() {
-  // TODO use the error and display it when calling the function
   // sign in user
   const login = (
     email: string,
@@ -21,7 +20,6 @@ export function useAuth() {
   };
 
   // register new user in firebase
-
   const register = (
     email: string,
     password: string,
