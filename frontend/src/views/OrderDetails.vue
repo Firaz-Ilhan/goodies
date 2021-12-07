@@ -3,9 +3,9 @@
     <Header title="Meine Bestellungen" :hasBackButton="true" />
     <ion-content>
       <div class="wrapper">
-        <h2>{{ ordersDetails.name }}</h2>
+        <h2 class="ion-text-center">{{ ordersDetails.name }}</h2>
         <div id="status">
-          <p>Status: {{ ordersDetails.orderState }}</p>
+          <p>Bestellstatus: {{ ordersDetails.orderState }}</p>
           <p>Übernommen durch:</p>
         </div>
         <ion-grid class="ion-text-center">
@@ -113,6 +113,7 @@ export default defineComponent({
 #status {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 #status p {

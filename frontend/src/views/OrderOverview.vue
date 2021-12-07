@@ -50,6 +50,7 @@ import {
   IonIcon,
   IonCard,
   IonCardContent,
+  IonPage
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import Header from '../components/Header.vue';
@@ -69,6 +70,7 @@ export default defineComponent({
     IonIcon,
     IonCard,
     IonCardContent,
+    IonPage
   },
 
   methods: {
