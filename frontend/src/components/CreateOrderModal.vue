@@ -18,7 +18,7 @@
 
         <ion-list>
           <ion-item class="list-header">
-            <ion-col size="9">Artikel</ion-col>
+            <ion-col size="9">Artikel inkl. Menge</ion-col>
             <ion-col size="3">Anzahl</ion-col>
           </ion-item>
 
@@ -44,13 +44,13 @@
           <ion-row class="ion-align-items-end">
             <ion-col size="6">
               <ion-item>
-                <ion-label position="floating">Artikel</ion-label>
+                <ion-label position="floating">Artikel inkl. Menge</ion-label>
                 <ion-input v-model="article" autofocus></ion-input>
               </ion-item>
             </ion-col>
             <ion-col size="3">
               <ion-item>
-                <ion-label position="floating">Menge</ion-label>
+                <ion-label position="floating">Anzahl</ion-label>
                 <ion-input v-model="amount" required></ion-input>
               </ion-item>
             </ion-col>
