@@ -11,11 +11,11 @@
         <ion-grid class="ion-text-center">
           <ion-row class="table-header">
             <ion-col size="5">
-              <ion-label>Artikel</ion-label>
+              <ion-label>Artikel inkl. Menge</ion-label>
             </ion-col>
 
             <ion-col size="3">
-              <ion-label>Menge</ion-label>
+              <ion-label>Anzahl</ion-label>
             </ion-col>
 
             <ion-col size="3">
@@ -33,11 +33,16 @@
             </ion-col>
 
             <ion-col size="3">
-              <ion-icon
+              <ion-checkbox
                 v-if="detail.isChecked"
-                :icon="checkmarkCircle"
-              ></ion-icon>
-              <ion-icon v-else :icon="bicycle"></ion-icon>
+                checked="true"
+                disabled="true"
+              ></ion-checkbox>
+              <ion-checkbox
+                v-else
+                checked="false"
+                disabled="true"
+              ></ion-checkbox>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -49,16 +54,15 @@
 <script lang="ts">
 import {
   IonContent,
-  IonIcon,
   IonLabel,
   IonPage,
   IonRow,
   IonCol,
   IonGrid,
+  IonCheckbox,
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import firebase from 'firebase';
-import { checkmarkCircle, bicycle } from 'ionicons/icons';
 import Header from '../components/Header.vue';
 import { db } from '../main';
 
@@ -69,10 +73,10 @@ export default defineComponent({
     IonPage,
     IonContent,
     IonLabel,
-    IonIcon,
     IonCol,
     IonRow,
     IonGrid,
+    IonCheckbox,
   },
 
   methods: {
@@ -102,8 +106,6 @@ export default defineComponent({
     this.getOrderDetail();
     return {
       ordersDetails,
-      checkmarkCircle,
-      bicycle,
     };
   },
 });
