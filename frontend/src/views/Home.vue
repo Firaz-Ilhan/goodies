@@ -10,13 +10,13 @@
       <p>Möchtest du<br /><strong>Deinen Nachbarn unterstützen?</strong></p>
 
       <router-link to="/example">
-        <img src="../assets/liefern.png" alt="Einkaufen und Liefern" />
+        <img src="../assets/images/liefern.png" alt="Einkaufen und Liefern" />
       </router-link>
       <br />
 
       <p>Oder möchtest du<br /><strong> dir etwas liefern lassen?</strong></p>
       <router-link to="/orders">
-        <img src="../assets/bestellen.png" alt="Bestellen" />
+        <img src="../assets/images/bestellen.png" alt="Bestellen" />
       </router-link>
     </ion-content>
   </ion-page>

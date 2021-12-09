@@ -10,23 +10,19 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <Map :mapPosition="mapPosition"></Map>
-      <ion-button @click="useGeolocation().startWatch()"
-        >start watch</ion-button
-      >
-      <br />
-      <ion-button @click="useGeolocation().stopWatch()">stop watch</ion-button>
-      <br />
-      <ion-button @click="movePosition">Change Position</ion-button>
+      <Map
+        :markerPosition="markerPosition"
+        :centerPosition="centerPosition"
+      ></Map>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
+import { ILocation } from '@/interfaces/ILocation';
 import {
   IonBackButton,
   IonButtons,
-  IonButton,
   IonContent,
   IonHeader,
   IonTitle,
@@ -41,33 +37,33 @@ export default defineComponent({
   components: {
     IonBackButton,
     IonButtons,
-    IonButton,
     IonContent,
     IonHeader,
     IonTitle,
     IonToolbar,
     Map,
   },
+
   async created() {
-    this.mapPosition = await useGeolocation().getCurrentCoordinates();
+    useGeolocation().getMockedLocation(this.setMapPosition);
   },
 
   methods: {
-    movePosition() {
-      this.mapPosition = {
-        lat: 47,
-        lng: 47,
-      };
+    setMapPosition(position: ILocation) {
+      this.markerPosition = position;
+      // synchronize center and marker position after 10 updates
+      if (this.updateCounter % 10 === 0) {
+        this.centerPosition = this.markerPosition;
+      }
+      this.updateCounter++;
     },
   },
   data() {
-    const mapPosition = {
-      lat: 22,
-      lng: 22,
-    };
     return {
       useGeolocation,
-      mapPosition,
+      markerPosition: { lat: 0, lng: 0 },
+      centerPosition: { lat: 0, lng: 0 },
+      updateCounter: 0,
     };
   },
 });

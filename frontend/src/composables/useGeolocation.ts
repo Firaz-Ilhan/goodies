@@ -1,5 +1,7 @@
 import { loader } from '@/main';
 import { Geolocation, Position } from '@capacitor/geolocation';
+import geodata from '@/assets/mocking/geodata';
+import { ILocation } from '@/interfaces/ILocation';
 
 let watchId: string | void;
 
@@ -10,7 +12,6 @@ export function useGeolocation() {
       {},
       (position: Position | null) => {
         console.log('pos', position);
-        // TODO save to firebase ? too much data ?
         return position;
       },
     ).catch((e: Error) => {
@@ -36,6 +37,23 @@ export function useGeolocation() {
     };
   };
 
+  // simulates a movement by emitting a new position every 5 seconds
+  const getMockedLocation = async (
+    setterFunction: (locationState: ILocation) => void,
+  ) => {
+    // get data points
+    const coordinates = geodata.features[0].geometry.coordinates;
+    const timer = (seconds: number) =>
+      new Promise((res) => setTimeout(res, seconds * 1000));
+
+    for (let i = 0; i < coordinates.length; i += 5) {
+      const [lng, lat] = coordinates[i] as number[];
+      setterFunction({ lat, lng });
+      // wait 5seconds
+      await timer(5);
+    }
+  };
+
   // translates an address into a coordinates
   const geoCodeAdress = async (address: string) => {
     loader.load().then((google) => {
@@ -52,5 +70,11 @@ export function useGeolocation() {
     });
   };
 
-  return { startWatch, stopWatch, getCurrentCoordinates, geoCodeAdress };
+  return {
+    startWatch,
+    stopWatch,
+    getCurrentCoordinates,
+    geoCodeAdress,
+    getMockedLocation,
+  };
 }

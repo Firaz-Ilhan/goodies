@@ -1,15 +1,15 @@
 <template>
-  <p>Position: {{ mapPosition }}</p>
+  <p>Marker Position: {{ markerPosition }}</p>
   <ion-card>
     <GMapMap
-      :center="mapPosition"
+      :center="centerPosition"
       :zoom="10"
       :options="{ disableDefaultUI: true }"
     >
       <GMapMarker
         title="Position deines Lieferanten"
         :animation="2"
-        :position="mapPosition"
+        :position="markerPosition"
       />
     </GMapMap>
   </ion-card>
@@ -24,7 +24,7 @@ export default defineComponent({
   components: {
     IonCard,
   },
-  props: ['mapPosition'],
+  props: ['centerPosition', 'markerPosition'],
 });
 </script>
 
