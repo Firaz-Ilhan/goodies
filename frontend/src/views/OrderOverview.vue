@@ -16,6 +16,7 @@
         <p v-if="!orders.length">
           Zur Zeit hast du keine aktiven Bestellungen.
         </p>
+        <!-- TODO outsource list item component -->
         <ion-card
           v-for="order in orders"
           :key="order.id"
@@ -24,11 +25,17 @@
         >
           <ion-card-content>
             <div>{{ order.name }}</div>
-            <div>
-              Artikelanzahl:
-              {{ calculateTotalArticleAmount(order.list) }}
-            </div>
             <div>Creator: {{ order.createdBy }}</div>
+            <div>Timestamp: {{ order.createdAt }}</div>
+            <ion-badge color="dark">
+              {{
+                useOrder().calculateTotalArticleAmount(order.list)
+              }}
+              Artikel</ion-badge
+            >
+            <ion-badge class="ion-margin-start" color="success">
+              {{ order.orderState }}</ion-badge
+            >
           </ion-card-content>
         </ion-card>
       </div>
@@ -50,6 +57,7 @@ import {
   IonIcon,
   IonCard,
   IonCardContent,
+  IonBadge,
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import Header from '../components/Header.vue';
@@ -58,7 +66,7 @@ import { add } from 'ionicons/icons';
 import firebase from 'firebase';
 import { db } from '../main';
 import { IOrder } from '../interfaces/IOrder';
-import { IListEntry } from '../interfaces/IListEntry';
+import { useOrder } from '@/composables/useOrder';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -69,6 +77,7 @@ export default defineComponent({
     IonIcon,
     IonCard,
     IonCardContent,
+    IonBadge,
   },
 
   methods: {
@@ -82,30 +91,25 @@ export default defineComponent({
       return modal.present();
     },
 
-    calculateTotalArticleAmount(list: IOrder['list']) {
-      let sum = 0;
-      list.map((entry: IListEntry) => (sum += entry.amount));
-      return sum;
-    },
-
     populateOrders() {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          db.collection('test')
-            .where('createdBy', '==', user.uid)
-            .onSnapshot((docData: firebase.firestore.DocumentData) => {
-              const changes = docData.docChanges();
-              changes.forEach((change: firebase.firestore.DocumentChange) => {
-                if (change.type === 'added') {
-                  this.orders.push({
-                    ...(change.doc.data() as IOrder),
-                    id: change.doc.id,
-                  });
-                }
+      const user = firebase.auth().currentUser!;
+      db.collection('orders')
+        .where('createdBy', '==', user.uid)
+        .onSnapshot((docData: firebase.firestore.DocumentData) => {
+          const changes = docData.docChanges();
+          changes.forEach((change: firebase.firestore.DocumentChange) => {
+            if (change.type === 'added') {
+              this.orders.push({
+                ...(change.doc.data() as IOrder),
+                id: change.doc.id,
               });
-            });
-        }
-      });
+              // sort by latest
+              this.orders.sort((a: IOrder, b: IOrder) => {
+                return b.createdAt - a.createdAt;
+              });
+            }
+          });
+        });
     },
   },
 
@@ -116,6 +120,7 @@ export default defineComponent({
     return {
       add,
       orders,
+      useOrder,
     };
   },
 });

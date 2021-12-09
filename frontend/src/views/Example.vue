@@ -10,25 +10,27 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <ion-button @click="scrollToBottom"
-        >Scroll to Bottom <ion-icon :icon="heart"></ion-icon
-      ></ion-button>
+      <Map
+        :markerPosition="markerPosition"
+        :centerPosition="centerPosition"
+      ></Map>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
+import { ILocation } from '@/interfaces/ILocation';
 import {
   IonBackButton,
   IonButtons,
   IonContent,
   IonHeader,
-  IonPage,
   IonTitle,
   IonToolbar,
 } from '@ionic/vue';
-import { heart } from 'ionicons/icons';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
+import Map from '../components/Map.vue';
+import { useGeolocation } from '../composables/useGeolocation';
 
 export default defineComponent({
   name: 'Example',
@@ -37,17 +39,32 @@ export default defineComponent({
     IonButtons,
     IonContent,
     IonHeader,
-    IonPage,
     IonTitle,
     IonToolbar,
+    Map,
   },
-  setup() {
-    const content = ref();
 
-    const scrollToBottom = () => {
-      content.value.$el.scrollToBottom(300);
+  async created() {
+    useGeolocation().getMockedLocation(this.setMapPosition);
+  },
+
+  methods: {
+    setMapPosition(position: ILocation) {
+      this.markerPosition = position;
+      // synchronize center and marker position after 10 updates
+      if (this.updateCounter % 10 === 0) {
+        this.centerPosition = this.markerPosition;
+      }
+      this.updateCounter++;
+    },
+  },
+  data() {
+    return {
+      useGeolocation,
+      markerPosition: { lat: 0, lng: 0 },
+      centerPosition: { lat: 0, lng: 0 },
+      updateCounter: 0,
     };
-    return { heart, scrollToBottom };
   },
 });
 </script>

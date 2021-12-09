@@ -15,7 +15,7 @@
         <swiper-slide>
           <ion-card>
             <ion-card-content>
-              <img src="../assets/orderPic.png" />
+              <img src="../assets/images/orderPic.png" />
               <h1>Kreiere deine Einkaufsliste</h1>
               <p>
                 Mit Goodies kannst du dir Lebensmittel von zuhause aus bestellen
@@ -28,7 +28,7 @@
         </swiper-slide>
         <swiper-slide>
           <ion-card>
-            <img src="../assets/deliveryPic.png" />
+            <img src="../assets/images/deliveryPic.png" />
             <ion-card-title>Tu etwas Gutes</ion-card-title>
             <ion-card-content>
               <p>
