@@ -4,11 +4,12 @@
     <ion-content>
       <div class="wrapper">
         <div class="title-container">
-          <h1 class="ion-text-center">{{ ordersDetails.name }}</h1>
-          <ion-badge color="success"> {{ ordersDetails.orderState }}</ion-badge>
+          <h1>{{ orderDetails.name }}</h1>
+          <ion-badge color="success"> {{ orderDetails.orderState }}</ion-badge>
         </div>
-        <p v-if="ordersDetails.orderState === 'angenommen'">
-          Übernommen durch: {{ ordersDetails.supplier }}
+
+        <p v-if="orderDetails.orderState === 'angenommen'">
+          Übernommen durch: {{ orderDetails.supplier }}
         </p>
 
         <ion-grid class="ion-text-center">
@@ -26,7 +27,7 @@
             </ion-col>
           </ion-row>
 
-          <ion-row v-for="detail in ordersDetails.list" :key="detail.article">
+          <ion-row v-for="detail in orderDetails.list" :key="detail.article">
             <ion-col size="5">
               <ion-label> {{ detail.article }} </ion-label>
             </ion-col>
@@ -50,7 +51,7 @@
           </ion-row>
         </ion-grid>
 
-        <div v-if="ordersDetails.orderState === 'in Lieferung'">
+        <div v-if="orderDetails.orderState === 'in Lieferung'">
           <h2>Derzeitge Position deines Lieferanten</h2>
           <Map
             :markerPosition="markerPosition"
@@ -112,7 +113,7 @@ export default defineComponent({
                   change.type === 'added' &&
                   change.doc.id === this.$route.params.id
                 ) {
-                  this.ordersDetails = {
+                  this.orderDetails = {
                     ...(change.doc.data() as IOrder),
                     id: change.doc.id,
                   };
@@ -133,19 +134,11 @@ export default defineComponent({
   },
 
   data() {
-    const ordersDetails: IOrder = {
-      id: '',
-      name: '',
-      list: [],
-      orderState: 'offen',
-      createdBy: '',
-      createdAt: new Date().getTime(),
-    };
-
+    const orderDetails = {} as IOrder;
     this.getOrderDetail();
 
     return {
-      ordersDetails,
+      orderDetails,
       useGeolocation,
       markerPosition: { lat: 0, lng: 0 },
       centerPosition: { lat: 0, lng: 0 },
@@ -156,20 +149,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-#status {
+.title-container {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-#status p {
-  padding: 0.25rem;
-}
-
-@media (max-width: 800px) {
-  #status {
-    flex-direction: column;
-  }
+  justify-content: space-between;
+  align-items: center;
 }
 
 .table-header {
