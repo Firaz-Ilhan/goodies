@@ -1,5 +1,4 @@
 <template>
-  <p>Marker Position: {{ markerPosition }}</p>
   <ion-card>
     <GMapMap
       :center="centerPosition"
