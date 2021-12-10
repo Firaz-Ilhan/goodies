@@ -11,20 +11,20 @@
 
     <ion-content>
       <form @submit.prevent="createOrder">
+        <h1 class="ion-margin-start">
+          Wie möchtest du deine Bestellung nennen?
+        </h1>
+
         <ion-item>
           <ion-label position="floating">Name</ion-label>
           <ion-input v-model="name" required />
         </ion-item>
 
-        <ion-list>
+        <ion-list v-if="list.length > 0">
           <ion-item class="list-header">
             <ion-col size="9">Artikel inkl. Menge</ion-col>
             <ion-col size="3">Anzahl</ion-col>
           </ion-item>
-
-          <p v-if="list.length <= 0" class="ion-margin-top">
-            Noch keine Artikel hinzugefügt.
-          </p>
 
           <ion-item-sliding v-for="(entry, index) in list" :key="index">
             <ion-item-options side="end">
@@ -63,7 +63,9 @@
         </ion-list>
 
         <div class="wrapper">
-          <ion-button type="submit"> Liste erstellen </ion-button>
+          <ion-button type="submit" :disabled="list.length <= 0">
+            Erstellen
+          </ion-button>
         </div>
       </form>
     </ion-content>
@@ -86,13 +88,16 @@ import {
   IonCol,
   IonRow,
   IonIcon,
+  IonItemOptions,
+  IonItemOption,
+  IonItemSliding,
   modalController,
 } from '@ionic/vue';
 import { addCircleOutline, trashOutline } from 'ionicons/icons';
 import firebase from 'firebase';
 import { defineComponent } from 'vue';
 import { IListEntry } from '../interfaces/IListEntry';
-import { IOrder } from '@/interfaces/IOrder';
+import { IOrder } from '../interfaces/IOrder';
 
 export default defineComponent({
   name: 'CreateOrderModal',
@@ -109,12 +114,13 @@ export default defineComponent({
         const order: Omit<IOrder, 'id'> = {
           name: this.name,
           list: this.list,
+          orderState: 'offen',
           createdBy: firebase.auth().currentUser!.uid,
-          orderState: 'open',
+          createdAt: new Date().getTime(),
         };
 
         // create document in fb collection
-        db.collection('test')
+        db.collection('orders')
           .add(order)
           .then((res) => {
             if (res.id) {
@@ -122,9 +128,6 @@ export default defineComponent({
               console.log(`Order with id: ${res.id} was created`);
             }
           });
-      } else {
-        // Todo create error message similar to AuthForm
-        console.log('List must contain at least one entry');
       }
     },
 
@@ -167,6 +170,9 @@ export default defineComponent({
     IonCol,
     IonRow,
     IonIcon,
+    IonItemOptions,
+    IonItemOption,
+    IonItemSliding,
   },
   data() {
     return {
@@ -182,6 +188,11 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+h1 {
+  margin-top: 30px;
+  margin-bottom: 0;
+  font-size: 24px;
+}
 .list-header {
   font-family: Rubik;
   font-size: 16px;

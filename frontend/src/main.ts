@@ -23,8 +23,17 @@ import '@ionic/vue/css/display.css';
 /* Theme variables */
 import './theme/variables.scss';
 import './theme/global.scss';
+import { Loader } from '@googlemaps/js-api-loader';
+import VueGoogleMaps from '@fawmi/vue-google-maps';
 
-const app = createApp(App).use(IonicVue).use(router);
+const app = createApp(App)
+  .use(IonicVue)
+  .use(router)
+  .use(VueGoogleMaps, {
+    load: {
+      key: process.env.VUE_APP_GOOGLE_MAPS_API_KEY,
+    },
+  });
 
 router.isReady().then(() => {
   app.mount('#app');
@@ -48,12 +57,7 @@ firebase.initializeApp(firebaseConfig);
 export const db = firebase.firestore();
 export const auth = firebase.auth();
 
-// returns a promise of currently authenticated user
-export const getCurrentUser = () => {
-  return new Promise((resolve, reject) => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      unsubscribe();
-      resolve(user);
-    }, reject);
-  });
-};
+// google maps loader
+export const loader = new Loader({
+  apiKey: process.env.VUE_APP_GOOGLE_MAPS_API_KEY,
+});

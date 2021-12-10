@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import Home from '@/views/Home.vue';
-import { getCurrentUser } from '@/main';
+import { useAuth } from '@/composables/useAuth';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -44,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/orders/:id',
     name: 'OrderDetails',
     component: () => import('@/views/OrderDetails.vue'),
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('@/views/Profile.vue'),
     meta: { requiresAuth: true },
   },
 ];
@@ -56,7 +61,7 @@ const router = createRouter({
 // auth guard for navigation
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  if (requiresAuth && !(await getCurrentUser())) {
+  if (requiresAuth && !(await useAuth().getCurrentUser())) {
     next('login');
   } else {
     next();
