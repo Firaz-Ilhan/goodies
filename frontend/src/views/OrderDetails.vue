@@ -3,18 +3,22 @@
     <Header title="Meine Bestellungen" :hasBackButton="true" />
     <ion-content>
       <div class="wrapper">
-        <div class="title-container">
-          <h1>{{ orderDetails.name }}</h1>
-          <ion-badge color="success"> {{ orderDetails.orderState }}</ion-badge>
-        </div>
+        <h1>{{ orderDetails.name }}</h1>
+        <ion-badge v-if="orderDetails.list" color="dark">
+          {{ useOrder().calculateTotalArticleAmount(orderDetails.list) }}
+          Artikel
+        </ion-badge>
+        <ion-badge class="ion-margin-start" color="success">
+          {{ orderDetails.orderState }}</ion-badge
+        >
 
         <p v-if="orderDetails.orderState === 'angenommen'">
           Übernommen durch: {{ orderDetails.supplier }}
         </p>
 
-        <ion-grid class="ion-text-center">
+        <ion-grid>
           <ion-row class="table-header">
-            <ion-col size="5">
+            <ion-col size="7">
               <ion-label>Artikel inkl. Menge</ion-label>
             </ion-col>
 
@@ -22,13 +26,13 @@
               <ion-label>Anzahl</ion-label>
             </ion-col>
 
-            <ion-col size="3">
+            <ion-col size="2">
               <ion-label>Status</ion-label>
             </ion-col>
           </ion-row>
 
           <ion-row v-for="detail in orderDetails.list" :key="detail.article">
-            <ion-col size="5">
+            <ion-col size="7">
               <ion-label> {{ detail.article }} </ion-label>
             </ion-col>
 
@@ -36,7 +40,7 @@
               <ion-label> {{ detail.amount }} </ion-label>
             </ion-col>
 
-            <ion-col size="3">
+            <ion-col size="2">
               <ion-checkbox
                 v-if="detail.isChecked"
                 checked="true"
@@ -52,7 +56,7 @@
         </ion-grid>
 
         <div v-if="orderDetails.orderState === 'in Lieferung'">
-          <h2>Derzeitge Position deines Lieferanten</h2>
+          <h2>Standort deines Lieferanten</h2>
           <Map
             :markerPosition="markerPosition"
             :centerPosition="centerPosition"
@@ -72,6 +76,7 @@ import {
   IonCol,
   IonGrid,
   IonCheckbox,
+  IonBadge,
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import firebase from 'firebase';
@@ -81,6 +86,7 @@ import { db } from '../main';
 import { useGeolocation } from '../composables/useGeolocation';
 import { ILocation } from '../interfaces/ILocation';
 import { IOrder } from '@/interfaces/IOrder';
+import { useOrder } from '@/composables/useOrder';
 
 export default defineComponent({
   name: 'OrderDetails',
@@ -93,6 +99,7 @@ export default defineComponent({
     IonRow,
     IonGrid,
     IonCheckbox,
+    IonBadge,
     Map,
   },
 
@@ -105,24 +112,17 @@ export default defineComponent({
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           db.collection('orders')
-            .where('createdBy', '==', user.uid)
-            .onSnapshot((docData: firebase.firestore.DocumentData) => {
-              const changes = docData.docChanges();
-              changes.forEach((change: firebase.firestore.DocumentChange) => {
-                if (
-                  change.type === 'added' &&
-                  change.doc.id === this.$route.params.id
-                ) {
-                  this.orderDetails = {
-                    ...(change.doc.data() as IOrder),
-                    id: change.doc.id,
-                  };
-                }
-              });
+            .doc(this.$route.params.id as string)
+            .onSnapshot((doc: firebase.firestore.DocumentData) => {
+              this.orderDetails = {
+                ...(doc.data() as IOrder),
+                id: doc.id,
+              };
             });
         }
       });
     },
+
     setMapPosition(position: ILocation) {
       this.markerPosition = position;
       // synchronize center and marker position after 10 updates
@@ -140,8 +140,9 @@ export default defineComponent({
     return {
       orderDetails,
       useGeolocation,
-      markerPosition: { lat: 0, lng: 0 },
-      centerPosition: { lat: 0, lng: 0 },
+      useOrder,
+      markerPosition: {} as ILocation,
+      centerPosition: {} as ILocation,
       updateCounter: 0,
     };
   },
@@ -149,14 +150,12 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.title-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.table-header {
+h2 {
   font-size: 18px;
-  padding-bottom: 8px;
+}
+.table-header {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 </style>
