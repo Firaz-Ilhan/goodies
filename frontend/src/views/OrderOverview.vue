@@ -16,28 +16,7 @@
         <p v-if="!orders.length">
           Zur Zeit hast du keine aktiven Bestellungen.
         </p>
-        <!-- TODO outsource list item component -->
-        <ion-card
-          v-for="order in orders"
-          :key="order.id"
-          @click="$router.push('/orders/' + order.id)"
-          button
-        >
-          <ion-card-content>
-            <div>{{ order.name }}</div>
-            <div>Creator: {{ order.createdBy }}</div>
-            <div>Timestamp: {{ order.createdAt }}</div>
-            <ion-badge color="dark">
-              {{
-                useOrder().calculateTotalArticleAmount(order.list)
-              }}
-              Artikel</ion-badge
-            >
-            <ion-badge class="ion-margin-start" color="success">
-              {{ order.orderState }}</ion-badge
-            >
-          </ion-card-content>
-        </ion-card>
+        <OrderCard v-for="order in orders" :key="order.id" :order="order" />
       </div>
 
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
@@ -50,23 +29,17 @@
 </template>
 
 <script lang="ts">
-import {
-  IonFab,
-  IonFabButton,
-  modalController,
-  IonIcon,
-  IonCard,
-  IonCardContent,
-  IonBadge,
-} from '@ionic/vue';
+import { IonFab, IonFabButton, modalController, IonIcon } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
-import Header from '../components/Header.vue';
-import CreateOrderModal from '../components/CreateOrderModal.vue';
 import { add } from 'ionicons/icons';
 import firebase from 'firebase';
 import { db } from '../main';
-import { IOrder } from '../interfaces/IOrder';
-import { useOrder } from '@/composables/useOrder';
+
+import type { IOrder } from '../interfaces/IOrder';
+import { useOrder } from '../composables/useOrder';
+import Header from '../components/Header.vue';
+import CreateOrderModal from '../components/CreateOrderModal.vue';
+import OrderCard from '../components/OrderCard.vue';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -75,9 +48,7 @@ export default defineComponent({
     IonFab,
     IonFabButton,
     IonIcon,
-    IonCard,
-    IonCardContent,
-    IonBadge,
+    OrderCard,
   },
 
   methods: {
@@ -107,6 +78,19 @@ export default defineComponent({
               this.orders.sort((a: IOrder, b: IOrder) => {
                 return b.createdAt - a.createdAt;
               });
+            } else if (change.type === 'modified') {
+              const index = this.orders.findIndex(
+                (order: IOrder) => order.id === change.doc.id,
+              );
+              this.orders[index] = {
+                ...(change.doc.data() as IOrder),
+                id: change.doc.id,
+              };
+            } else {
+              // remove deleted document from orders
+              this.orders = this.orders.filter(
+                (order: IOrder) => order.id !== change.doc.id,
+              );
             }
           });
         });
