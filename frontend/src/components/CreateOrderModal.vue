@@ -1,75 +1,75 @@
 <template>
-  <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>{{ title }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button @click="closeModal">Schließen</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>{{ title }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button @click="closeModal">Schließen</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
 
-    <ion-content>
-      <form @submit.prevent="createOrder">
-        <h1 class="ion-margin-start">
-          Wie möchtest du deine Bestellung nennen?
-        </h1>
+  <ion-content>
+    <form class="wrapper" @submit.prevent="createOrder">
+      <span>Wie möchtest du deine Bestellung nennen?</span>
 
-        <ion-item>
-          <ion-label position="floating">Name</ion-label>
-          <ion-input v-model="name" required />
+      <ion-item>
+        <ion-label position="floating">Name</ion-label>
+        <ion-input v-model="name" required />
+      </ion-item>
+
+      <!-- TODO outsource -->
+      <ion-list v-if="list.length > 0">
+        <ion-item class="list-header">
+          <ion-col size="9">Artikel</ion-col>
+          <ion-col size="3">Menge</ion-col>
         </ion-item>
 
-        <ion-list v-if="list.length > 0">
-          <ion-item class="list-header">
-            <ion-col size="9">Artikel</ion-col>
-            <ion-col size="3">Menge</ion-col>
+        <ion-item-sliding v-for="(entry, index) in list" :key="index">
+          <ion-item-options side="end">
+            <ion-item-option @click="removeFromList(index)" color="danger">
+              <ion-icon :icon="trashOutline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+          <ion-item>
+            <ion-col size="9">{{ entry.article }}</ion-col>
+            <ion-col size="3">{{ entry.amount }}</ion-col>
           </ion-item>
+        </ion-item-sliding>
+      </ion-list>
 
-          <ion-item-sliding v-for="(entry, index) in list" :key="index">
-            <ion-item-options side="end">
-              <ion-item-option @click="removeFromList(index)" color="danger">
-                <ion-icon :icon="trashOutline"></ion-icon>
-              </ion-item-option>
-            </ion-item-options>
+      <ion-list>
+        <span>Artikel hinzufügen</span>
+        <ion-row class="ion-align-items-end">
+          <ion-col size="6">
             <ion-item>
-              <ion-col size="9">{{ entry.article }}</ion-col>
-              <ion-col size="3">{{ entry.amount }}</ion-col>
+              <ion-label position="floating">Artikel</ion-label>
+              <ion-input v-model="article" autofocus></ion-input>
             </ion-item>
-          </ion-item-sliding>
-        </ion-list>
+          </ion-col>
+          <ion-col size="3">
+            <ion-item>
+              <ion-label position="floating">Menge</ion-label>
+              <ion-input v-model="amount" required></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="1">
+            <ion-button
+              @click="addEntryToList"
+              fill="clear"
+              shape="round"
+              :disabled="article.length <= 0"
+            >
+              <ion-icon slot="icon-only" :icon="addCircleOutline"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-list>
 
-        <ion-list>
-          <span class="ion-margin-start">Artikel hinzufügen</span>
-          <ion-row class="ion-align-items-end">
-            <ion-col size="6">
-              <ion-item>
-                <ion-label position="floating">Artikel</ion-label>
-                <ion-input v-model="article" autofocus></ion-input>
-              </ion-item>
-            </ion-col>
-            <ion-col size="3">
-              <ion-item>
-                <ion-label position="floating">Menge</ion-label>
-                <ion-input v-model="amount" required></ion-input>
-              </ion-item>
-            </ion-col>
-            <ion-col size="1">
-              <ion-button @click="addEntryToList" fill="clear" shape="round">
-                <ion-icon slot="icon-only" :icon="addCircleOutline"></ion-icon>
-              </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-list>
-
-        <div class="wrapper">
-          <ion-button type="submit" :disabled="list.length <= 0">
-            Erstellen
-          </ion-button>
-        </div>
-      </form>
-    </ion-content>
-  </ion-page>
+      <ion-button class="btn-center" type="submit" :disabled="list.length <= 0">
+        Erstellen
+      </ion-button>
+    </form>
+  </ion-content>
 </template>
 
 <script lang="ts">
@@ -201,8 +201,8 @@ h1 {
   }
 }
 
-.wrapper {
-  text-align: center;
+form {
+  margin-top: 30px;
 }
 
 ion-list {
