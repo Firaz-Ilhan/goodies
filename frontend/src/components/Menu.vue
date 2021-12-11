@@ -7,13 +7,14 @@
     </ion-header>
     <ion-content class="menu-content">
       <ion-list id="menu-list">
+        <div>
         <ion-item
           @click="navigateMenu('/home')"
           detail="false"
           menu-close
           button
         >
-          <ion-icon :icon="home" ></ion-icon>
+          <ion-icon :icon="home" slot="start"></ion-icon>
           <ion-label>Home</ion-label>
         </ion-item>    
         <ion-item
@@ -22,30 +23,25 @@
           menu-close
           button
         >
-          <ion-icon :icon="bagCheck" ></ion-icon>
+          <ion-icon :icon="bagCheck" slot="start"></ion-icon>
           <ion-label>Bestellen</ion-label>
         </ion-item>
 
         <ion-item>
-          <ion-icon :icon="cart" ></ion-icon>
+          <ion-icon :icon="cart" slot="start"></ion-icon>
           <ion-label>Einkaufen &#38; Liefern</ion-label>
         </ion-item>
-        <ion-item @click="navigateMenu('/onboarding')" detail="false" button>
-          <ion-icon :icon="rocket" ></ion-icon>
-          <ion-label>Onoarding</ion-label>
-        </ion-item>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        </div>
+        <div class="buttons_bottom">
         <ion-item @click="navigateMenu('/profile')" detail="false" button>
-          <ion-icon :icon="personCircle" ></ion-icon>
+          <ion-icon :icon="personCircle" slot="start"></ion-icon>
           <ion-label>Profil</ion-label>
         </ion-item>
         <ion-item button detail="false" @click="presentLogoutAlert">
-          <ion-icon :icon="logOut" ></ion-icon>
+          <ion-icon :icon="logOut" slot="start"></ion-icon>
           <ion-label>Abmelden</ion-label>
         </ion-item>
+        </div>
       </ion-list>
     </ion-content>
   </ion-menu>
@@ -131,6 +127,9 @@ a {
 }
 
 .router-link-active * {
-  color: #3880ff;
+  color: hsl(218, 100%, 61%);
+}
+.buttons_bottom{
+  margin-top: 150%;
 }
 </style>
