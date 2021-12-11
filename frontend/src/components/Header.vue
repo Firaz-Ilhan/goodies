@@ -1,6 +1,6 @@
 <template>
   <ion-header class="ion-margin-bottom">
-    <img :src="menueBgImg()" class="menue-bg-img">
+    <img :src="require(menueBgImg())" class="menue-bg-img">
     <ion-toolbar>
       <ion-buttons slot="start" v-if="hasBackButton">
         <ion-back-button default-href="/home"></ion-back-button>
@@ -45,11 +45,11 @@ export default defineComponent({
       switch(currentRoute){ 
         case "/home":
           case "/": 
-          case "/register":
-            case "/login": case"/onboarding": return "require('../assets/images/menue_background_home.svg')";
-        case "/bestellen": return "require('../assets/images/menue_background_order.svg')"; 
-        case "/liefern": return "require('../assets/images/menue_background_deliver.svg')"; 
-        default: return "require('../assets/images/menue_background_deliver.svg')"; 
+          case "/register": //for test reasons different ways for the imgpath..:
+            case "/login": case"/onboarding": return "require('../assets/images/menue_background_deliver.svg')";
+        case "/bestellen": return "assets/images/menue_background_order.svg"; 
+        case "/liefern": return "'../assets/images/menue_background_deliver.svg'"; 
+        default: return "@/assets/images/menue_background_deliver.svg"; 
       } 
     }
      return { menueBgImg }
