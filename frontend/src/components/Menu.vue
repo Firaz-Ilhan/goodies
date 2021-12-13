@@ -69,8 +69,7 @@ import {
   menuController,
 } from '@ionic/vue';
 import { home, bagCheck, cart, logOut, personCircle } from 'ionicons/icons';
-import { defineComponent, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'Menu',
