@@ -5,42 +5,48 @@
         <ion-title>Goodies | Menü</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="menu-content">
-      <ion-list id="menu-list">
+    <ion-content>
+      <ion-list class="menu-list">
         <div>
-        <ion-item
-          @click="navigateMenu('/home')"
-          detail="false"
-          menu-close
-          button
-        >
-          <ion-icon :icon="home" slot="start"></ion-icon>
-          <ion-label>Home</ion-label>
-        </ion-item>    
-        <ion-item
-          @click="navigateMenu('/orders')"
-          detail="false"
-          menu-close
-          button
-        >
-          <ion-icon :icon="bagCheck" slot="start"></ion-icon>
-          <ion-label>Bestellen</ion-label>
-        </ion-item>
+          <ion-item
+            :class="$route.path === '/home' && 'active-link'"
+            @click="navigateMenu('/home')"
+            detail="false"
+            button
+          >
+            <ion-icon :icon="home" slot="start"></ion-icon>
+            <ion-label>Home</ion-label>
+          </ion-item>
 
-        <ion-item>
-          <ion-icon :icon="cart" slot="start"></ion-icon>
-          <ion-label>Einkaufen &#38; Liefern</ion-label>
-        </ion-item>
+          <ion-item
+            :class="$route.path === '/orders' && 'active-link'"
+            @click="navigateMenu('/orders')"
+            detail="false"
+            button
+          >
+            <ion-icon :icon="bagCheck" slot="start"></ion-icon>
+            <ion-label>Bestellen</ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon :icon="cart" slot="start"></ion-icon>
+            <ion-label>Einkaufen &#38; Liefern</ion-label>
+          </ion-item>
         </div>
-        <div class="buttons_bottom">
-        <ion-item @click="navigateMenu('/profile')" detail="false" button>
-          <ion-icon :icon="personCircle" slot="start"></ion-icon>
-          <ion-label>Profil</ion-label>
-        </ion-item>
-        <ion-item button detail="false" @click="presentLogoutAlert">
-          <ion-icon :icon="logOut" slot="start"></ion-icon>
-          <ion-label>Abmelden</ion-label>
-        </ion-item>
+        <div class="ion-margin-bottom">
+          <ion-item
+            :class="$route.path === '/profile' && 'active-link'"
+            @click="navigateMenu('/profile')"
+            detail="false"
+            button
+          >
+            <ion-icon :icon="personCircle" slot="start"></ion-icon>
+            <ion-label>Profil</ion-label>
+          </ion-item>
+          <ion-item button detail="false" @click="presentLogoutAlert">
+            <ion-icon :icon="logOut" slot="start"></ion-icon>
+            <ion-label>Abmelden</ion-label>
+          </ion-item>
         </div>
       </ion-list>
     </ion-content>
@@ -62,8 +68,9 @@ import {
   alertController,
   menuController,
 } from '@ionic/vue';
-import { home, bagCheck, cart, logOut, personCircle, rocket } from 'ionicons/icons';
-import { defineComponent } from 'vue';
+import { home, bagCheck, cart, logOut, personCircle } from 'ionicons/icons';
+import { defineComponent, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   name: 'Menu',
@@ -106,13 +113,12 @@ export default defineComponent({
       return alert.present();
     },
   },
-  data() {
+  setup() {
     return {
       home,
       personCircle,
       cart,
       bagCheck,
-      rocket,
       logOut,
     };
   },
@@ -122,14 +128,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-a {
-  text-decoration: none;
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  height: 100%;
 }
-
-.router-link-active * {
+.active-link * {
   color: hsl(218, 100%, 61%);
-}
-.buttons_bottom{
-  margin-top: 150%;
 }
 </style>
