@@ -3,13 +3,15 @@
     <Header title="Profil" :hasBackButton="true"></Header>
     <ion-content>
       <form
-        @submit.prevent="useProfile().saveProfile(profile, () => setOpen(true))"
+        @submit.prevent="
+          useProfile().saveProfile(profile, () => setToastActive(true))
+        "
         @input="isTouched = true"
       >
-        <div class="wrapper">
+        <div class="">
           <ion-card>
             <ion-card-content>
-              <div>PERSÖNLICHE ANGABEN</div>
+              <h1 class="caption">Persönliche Angaben</h1>
               <ion-item>
                 <ion-label position="floating">Vorname</ion-label>
                 <ion-input
@@ -68,7 +70,7 @@
           </ion-card>
           <ion-card>
             <ion-card-content>
-              <div>ZAHLUNGSART</div>
+              <h1 class="caption">Zahlungsart</h1>
               <ion-list>
                 <ion-radio-group
                   name="payment"
@@ -88,16 +90,20 @@
             </ion-card-content>
           </ion-card>
         </div>
-        <ion-button class="btn-center" type="submit" :disabled="!isTouched">
+        <ion-button
+          class="btn-center ion-margin-bottom"
+          type="submit"
+          :disabled="!isTouched"
+        >
           Speichern
         </ion-button>
         <ion-toast
-          :is-open="isOpenRef"
+          :is-open="toastActive"
           message="Änderungen gespeichert."
           color="success"
           position="top"
           :duration="2000"
-          @didDismiss="setOpen(false)"
+          @didDismiss="setToastActive(false)"
         >
         </ion-toast>
       </form>
@@ -156,8 +162,8 @@ export default defineComponent({
     });
 
     // show toast state
-    const isOpenRef = ref(false);
-    const setOpen = (state: boolean) => (isOpenRef.value = state);
+    const toastActive = ref(false);
+    const setToastActive = (state: boolean) => (toastActive.value = state);
     const setProfile = (profileData: IProfile) => {
       state.profile = { ...profileData };
     };
@@ -167,8 +173,8 @@ export default defineComponent({
     return {
       ...toRefs(state),
       useProfile,
-      isOpenRef,
-      setOpen,
+      toastActive,
+      setToastActive,
     };
   },
 });

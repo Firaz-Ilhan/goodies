@@ -55,9 +55,6 @@ export default defineComponent({
     async openModal() {
       const modal = await modalController.create({
         component: CreateOrderModal,
-        componentProps: {
-          title: 'Liste anlegen',
-        },
       });
       return modal.present();
     },
