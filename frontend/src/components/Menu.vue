@@ -28,7 +28,9 @@
             <ion-label>Bestellen</ion-label>
           </ion-item>
 
-          <ion-item>
+          <ion-item
+            :class="$route.path === '/deliver' && 'active-link'"
+            @click="navigateMenu('/deliver')">
             <ion-icon :icon="cart" slot="start"></ion-icon>
             <ion-label>Einkaufen &#38; Liefern</ion-label>
           </ion-item>

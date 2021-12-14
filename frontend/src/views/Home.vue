@@ -9,7 +9,7 @@
       <p><strong>Triff deine Auswahl:</strong></p>
       <p>Möchtest du<br /><strong>Deinen Nachbarn unterstützen?</strong></p>
 
-      <router-link to="/example">
+      <router-link to="/deliver">
         <img src="../assets/images/liefern.png" alt="Einkaufen und Liefern" />
       </router-link>
       <br />
