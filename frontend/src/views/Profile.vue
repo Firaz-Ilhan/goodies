@@ -2,11 +2,16 @@
   <ion-page>
     <Header title="Profil" :hasBackButton="true"></Header>
     <ion-content>
-      <form @submit.prevent="saveProfile()" @input="isTouched = true">
-        <div class="wrapper">
+      <form
+        @submit.prevent="
+          useProfile().saveProfile(profile, () => setToastActive(true))
+        "
+        @input="isTouched = true"
+      >
+        <div class="">
           <ion-card>
             <ion-card-content>
-              <div>PERSÖNLICHE ANGABEN</div>
+              <h1 class="caption">Persönliche Angaben</h1>
               <ion-item>
                 <ion-label position="floating">Vorname</ion-label>
                 <ion-input
@@ -65,7 +70,7 @@
           </ion-card>
           <ion-card>
             <ion-card-content>
-              <div>ZAHLUNGSART</div>
+              <h1 class="caption">Zahlungsart</h1>
               <ion-list>
                 <ion-radio-group
                   name="payment"
@@ -85,16 +90,20 @@
             </ion-card-content>
           </ion-card>
         </div>
-        <ion-button class="btn-center" type="submit" :disabled="!isTouched">
+        <ion-button
+          class="btn-center ion-margin-bottom"
+          type="submit"
+          :disabled="!isTouched"
+        >
           Speichern
         </ion-button>
         <ion-toast
-          :is-open="isOpenRef"
+          :is-open="toastActive"
           message="Änderungen gespeichert."
           color="success"
           position="top"
           :duration="2000"
-          @didDismiss="setOpen(false)"
+          @didDismiss="setToastActive(false)"
         >
         </ion-toast>
       </form>
@@ -116,11 +125,10 @@ import {
   IonButton,
   IonToast,
 } from '@ionic/vue';
-import { db } from '../main';
 import { defineComponent, reactive, toRefs, ref } from 'vue';
-import firebase from 'firebase';
 import { IProfile } from '../interfaces/IProfile';
 import Header from '../components/Header.vue';
+import { useProfile } from '@/composables/useProfile';
 
 export default defineComponent({
   name: 'Profile',
@@ -154,43 +162,19 @@ export default defineComponent({
     });
 
     // show toast state
-    const isOpenRef = ref(false);
-    const setOpen = (state: boolean) => (isOpenRef.value = state);
-
-    // save/update profile
-    const saveProfile = () => {
-      const currentUser = firebase.auth().currentUser!;
-      db.collection('profiles')
-        .doc(currentUser.uid)
-        .set({ ...state.profile })
-        .then(() => {
-          setOpen(true);
-        });
+    const toastActive = ref(false);
+    const setToastActive = (state: boolean) => (toastActive.value = state);
+    const setProfile = (profileData: IProfile) => {
+      state.profile = { ...profileData };
     };
 
-    // try to fetch profile data of current user
-    const getProfileData = () => {
-      const currentUser = firebase.auth().currentUser!;
-      db.collection('profiles')
-        .doc(currentUser.uid)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            state.profile = doc.data() as IProfile;
-          }
-        })
-        .catch((error) => {
-          console.log('Error getting document:', error);
-        });
-    };
-
-    getProfileData();
+    useProfile().getProfileData(setProfile);
 
     return {
       ...toRefs(state),
-      saveProfile,
-      isOpenRef,
-      setOpen,
+      useProfile,
+      toastActive,
+      setToastActive,
     };
   },
 });

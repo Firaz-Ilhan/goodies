@@ -16,6 +16,7 @@
         <p v-if="!orders.length">
           Zur Zeit hast du keine aktiven Bestellungen.
         </p>
+        <<<<<<< HEAD
         <!-- TODO outsource list item component -->
         <ion-card
           v-for="order in orders"
@@ -36,6 +37,9 @@
             >
           </ion-card-content>
         </ion-card>
+        =======
+        <OrderCard v-for="order in orders" :key="order.id" :order="order" />
+        >>>>>>> feature/order-cards
       </div>
 
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
@@ -48,24 +52,17 @@
 </template>
 
 <script lang="ts">
-import {
-  IonFab,
-  IonFabButton,
-  modalController,
-  IonIcon,
-  IonCard,
-  IonCardContent,
-  IonPage,
-  IonBadge,
-} from '@ionic/vue';
+import { IonFab, IonFabButton, modalController, IonIcon } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
-import Header from '../components/Header.vue';
-import CreateOrderModal from '../components/CreateOrderModal.vue';
 import { add } from 'ionicons/icons';
 import firebase from 'firebase';
 import { db } from '../main';
-import { IOrder } from '../interfaces/IOrder';
+
+import type { IOrder } from '../interfaces/IOrder';
 import { useOrder } from '../composables/useOrder';
+import Header from '../components/Header.vue';
+import CreateOrderModal from '../components/CreateOrderModal.vue';
+import OrderCard from '../components/OrderCard.vue';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -74,19 +71,13 @@ export default defineComponent({
     IonFab,
     IonFabButton,
     IonIcon,
-    IonCard,
-    IonCardContent,
-    IonPage,
-    IonBadge,
+    OrderCard,
   },
 
   methods: {
     async openModal() {
       const modal = await modalController.create({
         component: CreateOrderModal,
-        componentProps: {
-          title: 'Liste anlegen',
-        },
       });
       return modal.present();
     },
@@ -107,6 +98,19 @@ export default defineComponent({
               this.orders.sort((a: IOrder, b: IOrder) => {
                 return b.createdAt - a.createdAt;
               });
+            } else if (change.type === 'modified') {
+              const index = this.orders.findIndex(
+                (order: IOrder) => order.id === change.doc.id,
+              );
+              this.orders[index] = {
+                ...(change.doc.data() as IOrder),
+                id: change.doc.id,
+              };
+            } else {
+              // remove deleted document from orders
+              this.orders = this.orders.filter(
+                (order: IOrder) => order.id !== change.doc.id,
+              );
             }
           });
         });

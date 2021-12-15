@@ -11,5 +11,17 @@ export function useOrder() {
     return sum;
   };
 
-  return { calculateTotalArticleAmount };
+  // returns matching color for each order state
+  const getOrderStateColor = (orderState: IOrder['orderState']) => {
+    switch (orderState) {
+      case 'offen':
+        return 'success';
+      case 'abgeschlossen':
+        return 'danger';
+      default:
+        return 'primary';
+    }
+  };
+
+  return { calculateTotalArticleAmount, getOrderStateColor };
 }
