@@ -22,8 +22,8 @@
 
         <ion-list v-if="list.length > 0">
           <ion-item class="list-header">
-            <ion-col size="9">Artikel</ion-col>
-            <ion-col size="3">Menge</ion-col>
+            <ion-col size="9">Artikel inkl. Menge</ion-col>
+            <ion-col size="3">Anzahl</ion-col>
           </ion-item>
 
           <ion-item-sliding v-for="(entry, index) in list" :key="index">
@@ -44,13 +44,13 @@
           <ion-row class="ion-align-items-end">
             <ion-col size="6">
               <ion-item>
-                <ion-label position="floating">Artikel</ion-label>
+                <ion-label position="floating">Artikel inkl. Menge</ion-label>
                 <ion-input v-model="article" autofocus></ion-input>
               </ion-item>
             </ion-col>
             <ion-col size="3">
               <ion-item>
-                <ion-label position="floating">Menge</ion-label>
+                <ion-label position="floating">Anzahl</ion-label>
                 <ion-input v-model="amount" required></ion-input>
               </ion-item>
             </ion-col>
@@ -97,7 +97,7 @@ import { addCircleOutline, trashOutline } from 'ionicons/icons';
 import firebase from 'firebase';
 import { defineComponent } from 'vue';
 import { IListEntry } from '../interfaces/IListEntry';
-import { IOrder } from '@/interfaces/IOrder';
+import { IOrder } from '../interfaces/IOrder';
 
 export default defineComponent({
   name: 'CreateOrderModal',

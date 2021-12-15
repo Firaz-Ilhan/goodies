@@ -18,6 +18,11 @@
       <router-link to="/orders">
         <img src="../assets/images/bestellen.png" alt="Bestellen" />
       </router-link>
+
+      <p>
+        Oder zurück zum
+        <router-link to="/onboarding"> Onboarding </router-link>
+      </p>
     </ion-content>
   </ion-page>
 </template>
