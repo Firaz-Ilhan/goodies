@@ -62,6 +62,13 @@
             :centerPosition="centerPosition"
           ></Map>
         </div>
+        <ion-button
+          class="btn-center"
+          @click="setOrderState('abgeschlossen')"
+          v-if="orderDetails.orderState === 'in Lieferung'"
+        >
+          Waren erhalten</ion-button
+        >
       </div>
     </ion-content>
   </ion-page>
@@ -77,6 +84,7 @@ import {
   IonGrid,
   IonCheckbox,
   IonBadge,
+  IonButton,
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import firebase from 'firebase';
@@ -85,8 +93,8 @@ import Map from '../components/Map.vue';
 import { db } from '../main';
 import { useGeolocation } from '../composables/useGeolocation';
 import { ILocation } from '../interfaces/ILocation';
-import { IOrder } from '@/interfaces/IOrder';
-import { useOrder } from '@/composables/useOrder';
+import { IOrder } from '../interfaces/IOrder';
+import { useOrder } from '../composables/useOrder';
 
 export default defineComponent({
   name: 'OrderDetails',
@@ -101,6 +109,7 @@ export default defineComponent({
     IonCheckbox,
     IonBadge,
     Map,
+    IonButton,
   },
 
   async created() {
@@ -120,6 +129,14 @@ export default defineComponent({
               };
             });
         }
+      });
+    },
+
+    setOrderState(state: string) {
+      firebase.auth().onAuthStateChanged((user) => {
+        db.collection('orders')
+          .doc(this.$route.params.id as string)
+          .set({ orderState: state });
       });
     },
 
