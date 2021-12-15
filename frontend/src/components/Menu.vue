@@ -1,7 +1,7 @@
 <template>
-  <ion-menu menu-id="app-menu" side="end" content-id="main-content">
+  <ion-menu menu-id="app-menu" side="end" content-id="main-content" id="menu">
     <ion-header>
-      <ion-toolbar translucent>
+      <ion-toolbar translucent id="ion-toolbar-menu" >
         <ion-title>Goodies | Menü</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -132,4 +132,5 @@ a {
 .buttons_bottom{
   margin-top: 150%;
 }
+
 </style>
