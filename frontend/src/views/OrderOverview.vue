@@ -16,30 +16,7 @@
         <p v-if="!orders.length">
           Zur Zeit hast du keine aktiven Bestellungen.
         </p>
-        <<<<<<< HEAD
-        <!-- TODO outsource list item component -->
-        <ion-card
-          v-for="order in orders"
-          :key="order.id"
-          @click="$router.push('/orders/' + order.id)"
-          button
-        >
-          <ion-card-content>
-            <div>{{ order.name }}</div>
-            <div>Creator: {{ order.createdBy }}</div>
-            <div>Timestamp: {{ order.createdAt }}</div>
-            <ion-badge color="dark">
-              {{ useOrder().calculateTotalArticleAmount(order.list) }}
-              Artikel</ion-badge
-            >
-            <ion-badge class="ion-margin-start" color="success">
-              {{ order.orderState }}</ion-badge
-            >
-          </ion-card-content>
-        </ion-card>
-        =======
         <OrderCard v-for="order in orders" :key="order.id" :order="order" />
-        >>>>>>> feature/order-cards
       </div>
 
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">

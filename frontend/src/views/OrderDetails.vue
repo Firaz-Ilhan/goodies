@@ -134,9 +134,11 @@ export default defineComponent({
 
     setOrderState(state: string) {
       firebase.auth().onAuthStateChanged((user) => {
-        db.collection('orders')
-          .doc(this.$route.params.id as string)
-          .set({ orderState: state });
+        if (user) {
+          db.collection('orders')
+            .doc(this.$route.params.id as string)
+            .set({ orderState: state });
+        }
       });
     },
 
