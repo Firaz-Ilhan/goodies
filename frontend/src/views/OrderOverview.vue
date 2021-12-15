@@ -28,9 +28,7 @@
             <div>Creator: {{ order.createdBy }}</div>
             <div>Timestamp: {{ order.createdAt }}</div>
             <ion-badge color="dark">
-              {{
-                useOrder().calculateTotalArticleAmount(order.list)
-              }}
+              {{ useOrder().calculateTotalArticleAmount(order.list) }}
               Artikel</ion-badge
             >
             <ion-badge class="ion-margin-start" color="success">
@@ -57,6 +55,7 @@ import {
   IonIcon,
   IonCard,
   IonCardContent,
+  IonPage,
   IonBadge,
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
@@ -66,7 +65,7 @@ import { add } from 'ionicons/icons';
 import firebase from 'firebase';
 import { db } from '../main';
 import { IOrder } from '../interfaces/IOrder';
-import { useOrder } from '@/composables/useOrder';
+import { useOrder } from '../composables/useOrder';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -77,6 +76,7 @@ export default defineComponent({
     IonIcon,
     IonCard,
     IonCardContent,
+    IonPage,
     IonBadge,
   },
 

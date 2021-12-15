@@ -1,9 +1,8 @@
 <template>
-  <p>Marker Position: {{ markerPosition }}</p>
   <ion-card>
     <GMapMap
       :center="centerPosition"
-      :zoom="10"
+      :zoom="11"
       :options="{ disableDefaultUI: true }"
     >
       <GMapMarker
