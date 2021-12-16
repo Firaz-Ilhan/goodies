@@ -188,6 +188,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   margin: 30px 0 0;
+  cursor: pointer;
 }
 
 .open {

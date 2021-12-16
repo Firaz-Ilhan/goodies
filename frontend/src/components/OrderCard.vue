@@ -1,5 +1,5 @@
 <template>
-  <ion-card @click="$router.push('/orders/' + order.id)">
+  <ion-card @click="$router.push('/orders/' + order.id)" button>
     <ion-card-content>
       <h2>{{ order.name }}</h2>
       <div class="date">
