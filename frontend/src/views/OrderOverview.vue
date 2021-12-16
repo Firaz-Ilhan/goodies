@@ -108,7 +108,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.order-container {
-  margin: 30px;
+.wrapper {
+  margin: 30px 0;
 }
 </style>

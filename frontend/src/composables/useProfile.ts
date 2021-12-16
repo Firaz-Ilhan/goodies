@@ -11,6 +11,7 @@ export function useProfile() {
     const currentUser = firebase.auth().currentUser!;
     db.collection('profiles')
       .doc(currentUser.uid)
+      // maybe check if it exist and use update instead
       .set({ ...profileData })
       .then(() => {
         onSuccessToast();

@@ -4,19 +4,30 @@
     <ion-content>
       <div class="wrapper">
         <h1>{{ orderDetails.name }}</h1>
+        <p v-if="orderDetails.orderState !== 'offen'">
+          Übernommen durch: {{ orderDetails.supplier }}
+        </p>
+
         <ion-badge v-if="orderDetails.list" color="dark">
           {{ useOrder().calculateTotalArticleAmount(orderDetails.list) }}
           Artikel
         </ion-badge>
-        <ion-badge class="ion-margin-start" color="success">
+        <ion-badge
+          class="ion-margin-start"
+          :color="useOrder().getOrderStateColor(orderDetails.orderState)"
+        >
           {{ orderDetails.orderState }}</ion-badge
         >
 
-        <p v-if="orderDetails.orderState === 'angenommen'">
-          Übernommen durch: {{ orderDetails.supplier }}
-        </p>
-
-        <ion-grid>
+        <!-- TODO outsource component -->
+        <h2 class="list-heading" @click="toggleList" ref="listHeading">
+          Einkaufsliste
+          <ion-icon
+            class="ion-margin-start"
+            :icon="chevronUpOutline"
+          ></ion-icon>
+        </h2>
+        <ion-grid v-if="listOpen">
           <ion-row class="table-header">
             <ion-col size="7">
               <ion-label>Artikel inkl. Menge</ion-label>
@@ -64,11 +75,11 @@
         </div>
         <ion-button
           class="btn-center"
-          @click="setOrderState('abgeschlossen')"
+          @click="useOrder().setOrderState($route.params.id as string ,'abgeschlossen')"
           v-if="orderDetails.orderState === 'in Lieferung'"
         >
-          Waren erhalten</ion-button
-        >
+          Waren erhalten
+        </ion-button>
       </div>
     </ion-content>
   </ion-page>
@@ -85,6 +96,7 @@ import {
   IonCheckbox,
   IonBadge,
   IonButton,
+  IonIcon,
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import firebase from 'firebase';
@@ -95,6 +107,7 @@ import { useGeolocation } from '../composables/useGeolocation';
 import { ILocation } from '../interfaces/ILocation';
 import { IOrder } from '../interfaces/IOrder';
 import { useOrder } from '../composables/useOrder';
+import { chevronUpOutline } from 'ionicons/icons';
 
 export default defineComponent({
   name: 'OrderDetails',
@@ -110,6 +123,7 @@ export default defineComponent({
     IonBadge,
     Map,
     IonButton,
+    IonIcon,
   },
 
   async created() {
@@ -132,16 +146,6 @@ export default defineComponent({
       });
     },
 
-    setOrderState(state: string) {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          db.collection('orders')
-            .doc(this.$route.params.id as string)
-            .set({ orderState: state });
-        }
-      });
-    },
-
     setMapPosition(position: ILocation) {
       this.markerPosition = position;
       // synchronize center and marker position after 10 updates
@@ -149,6 +153,11 @@ export default defineComponent({
         this.centerPosition = this.markerPosition;
       }
       this.updateCounter++;
+    },
+
+    toggleList() {
+      this.listOpen = !this.listOpen;
+      (this.$refs.listHeading as HTMLElement).classList.toggle('open');
     },
   },
 
@@ -163,18 +172,42 @@ export default defineComponent({
       markerPosition: {} as ILocation,
       centerPosition: {} as ILocation,
       updateCounter: 0,
+      chevronUpOutline,
+      listOpen: true,
     };
   },
 });
 </script>
 
 <style scoped lang="scss">
-h2 {
-  font-size: 18px;
+.btn-center {
+  margin: 30px auto;
 }
+
+.list-heading {
+  display: flex;
+  align-items: center;
+  margin: 30px 0 0;
+}
+
+.open {
+  ion-icon {
+    transform: rotate(180deg);
+  }
+}
+
+ion-icon {
+  transition: transform 0.3s ease;
+}
+
 .table-header {
   margin-top: 16px;
   margin-bottom: 8px;
   font-size: 14px;
+}
+
+p {
+  margin: 16px 0;
+  text-align: start;
 }
 </style>
