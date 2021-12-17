@@ -1,31 +1,59 @@
 <template>
   <ion-page>
-    <Header title="Lieferansicht" :hasBackButton="true"/>
+    <Header title="Lieferansicht" :hasBackButton="true">
+      <ion-segment>
+        <ion-segment-button
+          @click="
+            isOpen = true;
+            isAccepted = false;
+            isCompleted = false;
+          "
+          value="offen"
+          >Offen</ion-segment-button
+        >
+        <ion-segment-button
+          @click="
+            isOpen = false;
+            isAccepted = true;
+            isCompleted = false;
+          "
+          value="angenommen"
+          >Angenommen</ion-segment-button
+        >
+        <ion-segment-button
+          @click="
+            isOpen = false;
+            isAccepted = false;
+            isCompleted = true;
+          "
+          value="erledigt"
+          >Erledgit</ion-segment-button
+        >
+      </ion-segment>
+    </Header>
     <ion-content>
       <div class="wrapper">
-        <ion-toolbar>
-          <ion-segment value="all">
-            <ion-segment-button value="offen">Offen</ion-segment-button>
-            <ion-segment-button value="angenommen">Angenommen</ion-segment-button>
-            <ion-segment-button value="erledigt">Erledgit</ion-segment-button>
-          </ion-segment>
-        </ion-toolbar>
         <h1>Listen</h1>
-          <ion-card 
-            v-for="order in orders"
-            :key="order.id">
+        <div v-if="isOpen == true">
+          <ion-card v-for="order in orders" :key="order.id">
             <ion-card-content>
               <div>{{ order.name }}</div>
-              <div> 
+              <div>
                 <ion-badge color="dark">
-                {{
-                  useOrder().calculateTotalArticleAmount(order.list)
-                }}
-                Artikel</ion-badge>
-                </div>
+                  {{ useOrder().calculateTotalArticleAmount(order.list) }}
+                  Artikel</ion-badge
+                >
+              </div>
               <div>Timestamp: {{ order.createdAt }}</div>
             </ion-card-content>
           </ion-card>
+        </div>
+        <div v-if="isAccepted == true">
+          <p>"nur angenommene"</p>
+        </div>
+        <div v-if="isCompleted == true">
+          <p>"nur erledigte"</p>
+        </div>
       </div>
     </ion-content>
   </ion-page>
@@ -33,7 +61,6 @@
 
 <script lang="ts">
 import {
-  IonToolbar,
   IonSegment,
   IonSegmentButton,
   IonBadge,
@@ -47,23 +74,35 @@ import { db } from '../main';
 import { IOrder } from '../interfaces/IOrder';
 import { useOrder } from '@/composables/useOrder';
 
-
 export default defineComponent({
   name: 'DeliverOverview',
+  props: {
+    open: {
+      default: false,
+      type: Boolean,
+    },
+    accepted: {
+      default: false,
+      type: Boolean,
+    },
+    completed: {
+      default: false,
+      type: Boolean,
+    },
+  },
+
   components: {
     Header,
-    IonToolbar,
     IonSegment,
     IonSegmentButton,
     IonBadge,
     IonCard,
     IonCardContent,
-    
   },
   methods: {
     getAllOrders() {
-      db.collection('orders')
-        .onSnapshot((docData: firebase.firestore.DocumentData) => {
+      db.collection('orders').onSnapshot(
+        (docData: firebase.firestore.DocumentData) => {
           const changes = docData.docChanges();
           changes.forEach((change: firebase.firestore.DocumentChange) => {
             if (change.type === 'added') {
@@ -77,7 +116,8 @@ export default defineComponent({
               });
             }
           });
-        });
+        },
+      );
     },
   },
 
@@ -87,14 +127,13 @@ export default defineComponent({
 
     return {
       orders,
-      useOrder
+      useOrder,
+      isOpen: this.open,
+      isAccepted: this.accepted,
+      isCompleted: this.isCompleted,
     };
   },
 });
-
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

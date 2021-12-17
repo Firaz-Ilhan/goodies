@@ -9,6 +9,7 @@
         <ion-menu-button menu="app-menu"></ion-menu-button>
       </ion-buttons>
     </ion-toolbar>
+    <slot />
   </ion-header>
 </template>
 
