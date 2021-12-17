@@ -44,15 +44,43 @@
                   Artikel</ion-badge
                 >
               </div>
-              <div>Timestamp: {{ order.createdAt }}</div>
+              <div>
+                <ion-badge color="dark"> 4 km entfernt</ion-badge>
+              </div>
             </ion-card-content>
           </ion-card>
         </div>
         <div v-if="isAccepted == true">
-          <p>"nur angenommene"</p>
+          <ion-card v-for="order in orders" :key="order.id">
+            <ion-card-content v-if="order.orderState == 'angenommen'">
+              <div>{{ order.name }}</div>
+              <div>
+                <ion-badge color="dark">
+                  {{ useOrder().calculateTotalArticleAmount(order.list) }}
+                  Artikel</ion-badge
+                >
+              </div>
+              <div>
+                <ion-badge color="dark"> 4 km entfernt</ion-badge>
+              </div>
+            </ion-card-content>
+          </ion-card>
         </div>
         <div v-if="isCompleted == true">
-          <p>"nur erledigte"</p>
+          <ion-card v-for="order in orders" :key="order.id">
+            <ion-card-content v-if="order.orderState == 'abgeschlossen'">
+              <div>{{ order.name }}</div>
+              <div>
+                <ion-badge color="dark">
+                  {{ useOrder().calculateTotalArticleAmount(order.list) }}
+                  Artikel</ion-badge
+                >
+              </div>
+              <div>
+                <ion-badge color="dark"> 4 km entfernt</ion-badge>
+              </div>
+            </ion-card-content>
+          </ion-card>
         </div>
       </div>
     </ion-content>
@@ -101,8 +129,10 @@ export default defineComponent({
   },
   methods: {
     getAllOrders() {
-      db.collection('orders').onSnapshot(
-        (docData: firebase.firestore.DocumentData) => {
+      const user = firebase.auth().currentUser!;
+      db.collection('orders')
+        .where('createdBy', '!=', user.uid)
+        .onSnapshot((docData: firebase.firestore.DocumentData) => {
           const changes = docData.docChanges();
           changes.forEach((change: firebase.firestore.DocumentChange) => {
             if (change.type === 'added') {
@@ -116,8 +146,7 @@ export default defineComponent({
               });
             }
           });
-        },
-      );
+        });
     },
   },
 
