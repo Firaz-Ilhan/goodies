@@ -18,6 +18,10 @@
             <ion-col size="3">
               <ion-label>Anzahl</ion-label>
             </ion-col>
+
+            <ion-col size="2" v-if="deliverDetails.orderState == 'angenommen'">
+              <ion-label>Status</ion-label>
+            </ion-col>
           </ion-row>
 
           <ion-row v-for="detail in deliverDetails.list" :key="detail.article">
@@ -27,6 +31,14 @@
 
             <ion-col size="3">
               <ion-label> {{ detail.amount }} </ion-label>
+            </ion-col>
+
+            <ion-col size="2" v-if="deliverDetails.orderState == 'angenommen'">
+              <ion-checkbox
+                v-if="detail.isChecked"
+                checked="true"
+              ></ion-checkbox>
+              <ion-checkbox v-else checked="false"></ion-checkbox>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -38,8 +50,19 @@
             :centerPosition="centerPosition"
           ></Map>
         </div>
-        <ion-button class="btn-center" @click="setOrderState('angenommen')">
-          Annehmen</ion-button
+        <ion-button
+          v-if="deliverDetails.orderState == 'offen'"
+          class="btn-center"
+          @click="updateOrderState('angenommen')"
+        >
+          ANNEHMEN</ion-button
+        >
+        <ion-button
+          v-if="deliverDetails.orderState == 'angenommen'"
+          class="btn-center"
+          @click="updateOrderState('in Lieferung')"
+        >
+          HAB ALLES BIN LOS</ion-button
         >
       </div>
     </ion-content>
@@ -56,6 +79,7 @@ import {
   IonGrid,
   IonBadge,
   IonButton,
+  IonCheckbox,
 } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import firebase from 'firebase';
@@ -80,13 +104,14 @@ export default defineComponent({
     IonBadge,
     Map,
     IonButton,
+    IonCheckbox,
   },
   async created() {
     useGeolocation().getMockedLocation(this.setMapPosition);
   },
 
   methods: {
-    getOrderDetail() {
+    getOrderInDetail() {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           db.collection('orders')
@@ -101,11 +126,17 @@ export default defineComponent({
       });
     },
 
-    setOrderState(state: string) {
+    updateOrderState(state: string) {
       firebase.auth().onAuthStateChanged((user) => {
-        db.collection('orders')
+        firebase
+          .firestore()
+          .collection('orders')
           .doc(this.$route.params.id as string)
-          .set({ orderState: state });
+          //TODO .set({ orderState: state, deliverer: user.uid });
+          .update({ orderState: state })
+          .catch((error) => {
+            console.log('DeliverDetails: Bestellung annehmen:', error);
+          });
       });
     },
 
@@ -121,7 +152,7 @@ export default defineComponent({
 
   data() {
     const deliverDetails = {} as IOrder;
-    this.getOrderDetail();
+    this.getOrderInDetail();
 
     return {
       deliverDetails,

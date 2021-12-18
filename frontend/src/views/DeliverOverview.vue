@@ -40,7 +40,7 @@
             :key="order.id"
             @click="$router.push('/deliver/' + order.id)"
           >
-            <ion-card-content>
+            <ion-card-content v-if="order.orderState == 'offen'">
               <div>{{ order.name }}</div>
               <div>
                 <ion-badge color="dark">
@@ -152,10 +152,12 @@ export default defineComponent({
                 ...(change.doc.data() as IOrder),
                 id: change.doc.id,
               });
+
               // sort by latest
               this.orders.sort((a: IOrder, b: IOrder) => {
                 return b.createdAt - a.createdAt;
               });
+              console.log(this.orders);
             }
           });
         });
