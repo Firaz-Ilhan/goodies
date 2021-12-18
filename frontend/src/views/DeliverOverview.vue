@@ -35,7 +35,11 @@
       <div class="wrapper">
         <h1>Listen</h1>
         <div v-if="isOpen == true">
-          <ion-card v-for="order in orders" :key="order.id">
+          <ion-card
+            v-for="order in orders"
+            :key="order.id"
+            @click="$router.push('/deliver/' + order.id)"
+          >
             <ion-card-content>
               <div>{{ order.name }}</div>
               <div>
@@ -51,7 +55,11 @@
           </ion-card>
         </div>
         <div v-if="isAccepted == true">
-          <ion-card v-for="order in orders" :key="order.id">
+          <ion-card
+            v-for="order in orders"
+            :key="order.id"
+            @click="$router.push('/deliver/' + order.id)"
+          >
             <ion-card-content v-if="order.orderState == 'angenommen'">
               <div>{{ order.name }}</div>
               <div>
@@ -67,7 +75,11 @@
           </ion-card>
         </div>
         <div v-if="isCompleted == true">
-          <ion-card v-for="order in orders" :key="order.id">
+          <ion-card
+            v-for="order in orders"
+            :key="order.id"
+            @click="$router.push('/deliver/' + order.id)"
+          >
             <ion-card-content v-if="order.orderState == 'abgeschlossen'">
               <div>{{ order.name }}</div>
               <div>
@@ -106,7 +118,7 @@ export default defineComponent({
   name: 'DeliverOverview',
   props: {
     open: {
-      default: false,
+      default: true,
       type: Boolean,
     },
     accepted: {
