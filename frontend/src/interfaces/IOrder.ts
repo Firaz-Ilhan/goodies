@@ -7,5 +7,5 @@ export interface IOrder {
   orderState: 'offen' | 'angenommen' | 'in Lieferung' | 'abgeschlossen';
   createdBy: string;
   createdAt: number;
-  supplier?: string;
+  supplier: string | null;
 }

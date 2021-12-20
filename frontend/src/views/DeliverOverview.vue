@@ -1,98 +1,78 @@
 <template>
   <ion-page>
     <Header title="Lieferansicht" :hasBackButton="true">
-      <ion-segment>
-        <ion-segment-button
-          @click="
-            isOpen = true;
-            isAccepted = false;
-            isCompleted = false;
-          "
-          value="offen"
-          >Offen</ion-segment-button
-        >
-        <ion-segment-button
-          @click="
-            isOpen = false;
-            isAccepted = true;
-            isCompleted = false;
-          "
-          value="angenommen"
-          >Angenommen</ion-segment-button
-        >
-        <ion-segment-button
-          @click="
-            isOpen = false;
-            isAccepted = false;
-            isCompleted = true;
-          "
-          value="erledigt"
-          >Erledgit</ion-segment-button
-        >
+      <ion-segment
+        @ionChange="handleSegmentChange($event)"
+        :value="activeSegment"
+      >
+        <ion-segment-button value="offen">Offen</ion-segment-button>
+        <ion-segment-button value="angenommen">Angenommen</ion-segment-button>
+        <ion-segment-button value="abgeschlossen">Erledigt</ion-segment-button>
       </ion-segment>
     </Header>
     <ion-content>
       <div class="wrapper">
         <h1>Listen</h1>
-        <div v-if="isOpen == true">
-          <ion-card
-            v-for="order in orders"
+
+        <div v-if="activeSegment === 'offen'">
+          <OrderCard
+            v-for="order in orders.filter(
+              (order) => order.orderState === 'offen',
+            )"
             :key="order.id"
+            :order="order"
             @click="$router.push('/deliver/' + order.id)"
+          />
+          <p
+            v-if="
+              orders.filter((order) => order.orderState === 'offen').length <= 0
+            "
           >
-            <ion-card-content v-if="order.orderState == 'offen'">
-              <div>{{ order.name }}</div>
-              <div>
-                <ion-badge color="dark">
-                  {{ useOrder().calculateTotalArticleAmount(order.list) }}
-                  Artikel</ion-badge
-                >
-              </div>
-              <div>
-                <ion-badge color="dark"> 4 km entfernt</ion-badge>
-              </div>
-            </ion-card-content>
-          </ion-card>
+            Aktuell keine offenen Bestellungen.
+          </p>
         </div>
-        <div v-if="isAccepted == true">
-          <ion-card
-            v-for="order in orders"
+
+        <div v-if="activeSegment === 'angenommen'">
+          <OrderCard
+            v-for="order in orders.filter(
+              (order) =>
+                (order.orderState === 'angenommen' ||
+                  order.orderState === 'in Lieferung') &&
+                order.supplier === user.uid,
+            )"
             :key="order.id"
+            :order="order"
             @click="$router.push('/deliver/' + order.id)"
+          />
+          <p
+            v-if="
+              orders.filter((order) => order.orderState === 'angenommen')
+                .length <= 0
+            "
           >
-            <ion-card-content v-if="order.orderState == 'angenommen'">
-              <div>{{ order.name }}</div>
-              <div>
-                <ion-badge color="dark">
-                  {{ useOrder().calculateTotalArticleAmount(order.list) }}
-                  Artikel</ion-badge
-                >
-              </div>
-              <div>
-                <ion-badge color="dark"> 4 km entfernt</ion-badge>
-              </div>
-            </ion-card-content>
-          </ion-card>
+            Aktuell keine angenommenen Bestellungen.
+          </p>
         </div>
-        <div v-if="isCompleted == true">
-          <ion-card
-            v-for="order in orders"
+
+        <div v-if="activeSegment === 'abgeschlossen'">
+          <OrderCard
+            v-for="order in orders.filter(
+              (order) =>
+                order.orderState === 'abgeschlossen' &&
+                order.supplier === user.uid,
+            )"
             :key="order.id"
+            :order="order"
             @click="$router.push('/deliver/' + order.id)"
+          />
+          <p
+            v-if="
+              orders.filter((order) => order.orderState === 'abgeschlossen')
+                .length <= 0
+            "
           >
-            <ion-card-content v-if="order.orderState == 'abgeschlossen'">
-              <div>{{ order.name }}</div>
-              <div>
-                <ion-badge color="dark">
-                  {{ useOrder().calculateTotalArticleAmount(order.list) }}
-                  Artikel</ion-badge
-                >
-              </div>
-              <div>
-                <ion-badge color="dark"> 4 km entfernt</ion-badge>
-              </div>
-            </ion-card-content>
-          </ion-card>
+            Aktuell keine erledigten Bestellungen.
+          </p>
         </div>
       </div>
     </ion-content>
@@ -100,44 +80,26 @@
 </template>
 
 <script lang="ts">
-import {
-  IonSegment,
-  IonSegmentButton,
-  IonBadge,
-  IonCard,
-  IonCardContent,
-} from '@ionic/vue';
+import { IonSegment, IonSegmentButton } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import Header from '../components/Header.vue';
+import OrderCard from '../components/OrderCard.vue';
 import firebase from 'firebase';
 import { db } from '../main';
 import { IOrder } from '../interfaces/IOrder';
-import { useOrder } from '@/composables/useOrder';
+import { useOrder } from '../composables/useOrder';
+import { useAuth } from '../composables/useAuth';
+import { onMounted } from 'vue';
+import { useGeolocation } from '../composables/useGeolocation';
 
 export default defineComponent({
   name: 'DeliverOverview',
-  props: {
-    open: {
-      default: true,
-      type: Boolean,
-    },
-    accepted: {
-      default: false,
-      type: Boolean,
-    },
-    completed: {
-      default: false,
-      type: Boolean,
-    },
-  },
 
   components: {
     Header,
+    OrderCard,
     IonSegment,
     IonSegmentButton,
-    IonBadge,
-    IonCard,
-    IonCardContent,
   },
   methods: {
     getAllOrders() {
@@ -157,24 +119,48 @@ export default defineComponent({
               this.orders.sort((a: IOrder, b: IOrder) => {
                 return b.createdAt - a.createdAt;
               });
-              console.log(this.orders);
+            } else if (change.type === 'modified') {
+              const index = this.orders.findIndex(
+                (order: IOrder) => order.id === change.doc.id,
+              );
+              this.orders[index] = {
+                ...(change.doc.data() as IOrder),
+                id: change.doc.id,
+              };
+            } else {
+              // remove deleted document from orders
+              this.orders = this.orders.filter(
+                (order: IOrder) => order.id !== change.doc.id,
+              );
             }
           });
         });
     },
+    handleSegmentChange(event: CustomEvent) {
+      this.activeSegment = event.detail.value;
+      console.log(event.detail.value);
+    },
+  },
+  async onMounted() {
+    const user = await useAuth().getCurrentUser();
+    console.log('userMounted', user);
+    return { user };
   },
 
   data() {
     const orders = new Array<IOrder>();
+    const activeSegment = 'offen';
     this.getAllOrders();
 
     return {
+      user: null as firebase.User | null,
       orders,
       useOrder,
-      isOpen: this.open,
-      isAccepted: this.accepted,
-      isCompleted: this.isCompleted,
+      activeSegment,
     };
+  },
+  async created() {
+    this.user = await firebase.auth().currentUser!;
   },
 });
 </script>

@@ -16,7 +16,12 @@
         <p v-if="!orders.length">
           Zur Zeit hast du keine aktiven Bestellungen.
         </p>
-        <OrderCard v-for="order in orders" :key="order.id" :order="order" />
+        <OrderCard
+          v-for="order in orders"
+          :key="order.id"
+          :order="order"
+          @click="$router.push('/orders/' + order.id)"
+        />
       </div>
 
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">

@@ -1,7 +1,7 @@
 <template>
   <ion-menu menu-id="app-menu" side="end" content-id="main-content" id="menu">
     <ion-header>
-      <ion-toolbar translucent id="ion-toolbar-menu" >
+      <ion-toolbar translucent id="ion-toolbar-menu">
         <ion-title>Goodies | Menü</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -30,7 +30,9 @@
 
           <ion-item
             :class="$route.path === '/deliver' && 'active-link'"
-            @click="navigateMenu('/deliver')">
+            @click="navigateMenu('/deliver')"
+            button
+          >
             <ion-icon :icon="cart" slot="start"></ion-icon>
             <ion-label>Einkaufen &#38; Liefern</ion-label>
           </ion-item>

@@ -132,8 +132,7 @@ export default defineComponent({
           .firestore()
           .collection('orders')
           .doc(this.$route.params.id as string)
-          //TODO .set({ orderState: state, deliverer: user.uid });
-          .update({ orderState: state })
+          .update({ orderState: state, supplier: user!.uid })
           .catch((error) => {
             console.log('DeliverDetails: Bestellung annehmen:', error);
           });
