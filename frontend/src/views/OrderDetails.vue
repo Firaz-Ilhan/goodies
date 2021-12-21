@@ -76,6 +76,7 @@
         <ion-button
           class="btn-center"
           @click="useOrder().setOrderState($route.params.id as string ,'abgeschlossen')"
+          routerLink="/deliveryconfirmation"
           v-if="orderDetails.orderState === 'in Lieferung'"
         >
           Waren erhalten
