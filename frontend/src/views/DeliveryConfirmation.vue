@@ -2,7 +2,8 @@
   <ion-page>
     <Header title="Lieferungsbestätigung" :hasBackButton="true" />
     <ion-content>
-      <div class="ion-margin-top ion-text-start">
+      <img class="deliveryImage" src="../assets/images/delivery.webp" alt="" />
+      <div class="on-margin-top confirmation">
         <p>
           Prima, <br />
           du hast deine erste Lieferung erhalten.
@@ -10,11 +11,11 @@
 
         <p>
           Wir hoffen, dass alles wie erwartet war und wünschen dir viel Spaß mit
-          den Artikeln
+          den Artikeln.
         </p>
         <p>~Goodies</p>
       </div>
-      <div class="abc">
+      <div class="btn">
         <ion-button routerLink="/orders">Zur Übersicht</ion-button>
       </div>
     </ion-content>
@@ -38,4 +39,15 @@ export default defineComponent({
 </script>
 
 <style>
+.deliveryImage {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50vw;
+  min-width: 320px;
+}
+
+.btn {
+  text-align: center;
+}
 </style>
