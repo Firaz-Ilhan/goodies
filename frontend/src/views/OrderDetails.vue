@@ -5,7 +5,11 @@
       <div class="wrapper">
         <h1>{{ orderDetails.name }}</h1>
         <p v-if="orderDetails.orderState !== 'offen'">
-          Übernommen durch: {{ orderDetails.supplier }}
+          Angenommen von <strong>{{ getSupplierName }}</strong>
+        </p>
+        <p>
+          Mobilnummer:
+          <a :href="'tel:' + supplier.telephone">{{ supplier.telephone }}</a>
         </p>
 
         <ion-badge v-if="orderDetails.list" color="dark">
@@ -52,16 +56,7 @@
             </ion-col>
 
             <ion-col size="2">
-              <ion-checkbox
-                v-if="detail.isChecked"
-                checked="true"
-                disabled="true"
-              ></ion-checkbox>
-              <ion-checkbox
-                v-else
-                checked="false"
-                disabled="true"
-              ></ion-checkbox>
+              <ion-checkbox :checked="detail.isChecked" disabled></ion-checkbox>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -103,10 +98,12 @@ import firebase from 'firebase';
 import Header from '../components/Header.vue';
 import Map from '../components/Map.vue';
 import { db } from '../main';
-import { useGeolocation } from '../composables/useGeolocation';
-import { ILocation } from '../interfaces/ILocation';
-import { IOrder } from '../interfaces/IOrder';
 import { useOrder } from '../composables/useOrder';
+import { useProfile } from '../composables/useProfile';
+import { useGeolocation } from '../composables/useGeolocation';
+import type { ILocation } from '../interfaces/ILocation';
+import type { IOrder } from '../interfaces/IOrder';
+import type { IProfile } from '../interfaces/IProfile';
 import { chevronUpOutline } from 'ionicons/icons';
 
 export default defineComponent({
@@ -126,10 +123,6 @@ export default defineComponent({
     IonIcon,
   },
 
-  async created() {
-    useGeolocation().getMockedLocation(this.setMapPosition);
-  },
-
   methods: {
     getOrderDetail() {
       firebase.auth().onAuthStateChanged((user) => {
@@ -141,11 +134,17 @@ export default defineComponent({
                 ...(doc.data() as IOrder),
                 id: doc.id,
               };
+              // resolve supplier profile id to profile data
+              useProfile().resolveProfileId(
+                this.orderDetails.supplier as string,
+                (profileData: IProfile) => (this.supplier = profileData),
+              );
             });
         }
       });
     },
 
+    // setter for map marker and center
     setMapPosition(position: ILocation) {
       this.markerPosition = position;
       // synchronize center and marker position after 10 updates
@@ -155,6 +154,7 @@ export default defineComponent({
       this.updateCounter++;
     },
 
+    // toggles list dropdown
     toggleList() {
       this.listOpen = !this.listOpen;
       (this.$refs.listHeading as HTMLElement).classList.toggle('open');
@@ -163,9 +163,9 @@ export default defineComponent({
 
   data() {
     const orderDetails = {} as IOrder;
-    this.getOrderDetail();
 
     return {
+      supplier: {} as IProfile,
       orderDetails,
       useGeolocation,
       useOrder,
@@ -175,6 +175,18 @@ export default defineComponent({
       chevronUpOutline,
       listOpen: true,
     };
+  },
+
+  created() {
+    useGeolocation().getMockedLocation(this.setMapPosition);
+    this.getOrderDetail();
+  },
+
+  computed: {
+    getSupplierName(): string {
+      const { firstname, lastname } = this.supplier;
+      return firstname + ' ' + lastname;
+    },
   },
 });
 </script>

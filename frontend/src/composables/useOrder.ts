@@ -25,7 +25,7 @@ export function useOrder() {
     }
   };
 
-  // updates the
+  // updates the order state of a certain order
   const setOrderState = (docId: string, state: IOrder['orderState']) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -34,5 +34,48 @@ export function useOrder() {
     });
   };
 
-  return { calculateTotalArticleAmount, getOrderStateColor, setOrderState };
+  // fetches all orders of a user and update a reactive array
+  // optionally set isPersonal to false to get all orders that were not created by yourself (delivery-mode)
+  const populateOrders = (orders: IOrder[], isPersonal = true) => {
+    const user = firebase.auth().currentUser!;
+    const operator = isPersonal ? '==' : '!=';
+
+    db.collection('orders')
+      .where('createdBy', operator, user.uid)
+      .onSnapshot((docData: firebase.firestore.DocumentData) => {
+        const changes = docData.docChanges();
+        changes.forEach((change: firebase.firestore.DocumentChange) => {
+          if (change.type === 'added') {
+            orders.push({
+              ...(change.doc.data() as IOrder),
+              id: change.doc.id,
+            });
+            // sort by latest
+            orders.sort((a: IOrder, b: IOrder) => {
+              return b.createdAt - a.createdAt;
+            });
+          } else if (change.type === 'modified') {
+            const index = orders.findIndex(
+              (order: IOrder) => order.id === change.doc.id,
+            );
+            orders[index] = {
+              ...(change.doc.data() as IOrder),
+              id: change.doc.id,
+            };
+          } else {
+            // remove deleted document from orders
+            orders = orders.filter(
+              (order: IOrder) => order.id !== change.doc.id,
+            );
+          }
+        });
+      });
+  };
+
+  return {
+    calculateTotalArticleAmount,
+    getOrderStateColor,
+    setOrderState,
+    populateOrders,
+  };
 }

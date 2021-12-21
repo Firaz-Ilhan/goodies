@@ -13,15 +13,15 @@
         </p>
 
         <h1>Deine Bestellungen</h1>
-        <p v-if="!orders.length">
-          Zur Zeit hast du keine aktiven Bestellungen.
-        </p>
         <OrderCard
           v-for="order in orders"
           :key="order.id"
           :order="order"
           @click="$router.push('/orders/' + order.id)"
         />
+        <p v-if="!orders.length">
+          Zur Zeit hast du keine aktiven Bestellungen.
+        </p>
       </div>
 
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
@@ -35,10 +35,9 @@
 
 <script lang="ts">
 import { IonFab, IonFabButton, modalController, IonIcon } from '@ionic/vue';
+import { reactive, toRefs } from 'vue';
 import { defineComponent } from '@vue/runtime-core';
 import { add } from 'ionicons/icons';
-import firebase from 'firebase';
-import { db } from '../main';
 
 import type { IOrder } from '../interfaces/IOrder';
 import { useOrder } from '../composables/useOrder';
@@ -63,50 +62,17 @@ export default defineComponent({
       });
       return modal.present();
     },
-
-    populateOrders() {
-      const user = firebase.auth().currentUser!;
-      db.collection('orders')
-        .where('createdBy', '==', user.uid)
-        .onSnapshot((docData: firebase.firestore.DocumentData) => {
-          const changes = docData.docChanges();
-          changes.forEach((change: firebase.firestore.DocumentChange) => {
-            if (change.type === 'added') {
-              this.orders.push({
-                ...(change.doc.data() as IOrder),
-                id: change.doc.id,
-              });
-              // sort by latest
-              this.orders.sort((a: IOrder, b: IOrder) => {
-                return b.createdAt - a.createdAt;
-              });
-            } else if (change.type === 'modified') {
-              const index = this.orders.findIndex(
-                (order: IOrder) => order.id === change.doc.id,
-              );
-              this.orders[index] = {
-                ...(change.doc.data() as IOrder),
-                id: change.doc.id,
-              };
-            } else {
-              // remove deleted document from orders
-              this.orders = this.orders.filter(
-                (order: IOrder) => order.id !== change.doc.id,
-              );
-            }
-          });
-        });
-    },
   },
 
-  data() {
-    const orders = new Array<IOrder>();
-    this.populateOrders();
+  setup() {
+    const state = reactive({
+      orders: new Array<IOrder>(),
+    });
+    useOrder().populateOrders(state.orders);
 
     return {
+      ...toRefs(state),
       add,
-      orders,
-      useOrder,
     };
   },
 });
