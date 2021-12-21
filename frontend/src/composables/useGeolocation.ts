@@ -54,18 +54,16 @@ export function useGeolocation() {
     }
   };
 
-  // translates an address into a coordinates
-  const geoCodeAdress = async (address: string) => {
+  // translates an address into a coordinates and sets it
+  const geoCodeAdress = (address: string, geocoordinates?: ILocation) => {
     loader.load().then((google) => {
       const geocoder = new google.maps.Geocoder();
-      geocoder.geocode(address, (res: any) => {
+      geocoder.geocode({ address }, (res: any) => {
         const resPosition = {
           lat: res[0].geometry.location.lat(),
           lng: res[0].geometry.location.lng(),
         };
-        console.log(res[0].formatted_address);
-        console.log(resPosition);
-        return resPosition;
+        geocoordinates = resPosition;
       });
     });
   };

@@ -31,6 +31,7 @@
           <ion-item
             :class="$route.path === '/deliver' && 'active-link'"
             @click="navigateMenu('/deliver')"
+            detail="false"
             button
           >
             <ion-icon :icon="cart" slot="start"></ion-icon>

@@ -2,13 +2,8 @@
   <ion-page>
     <Header title="Profil" :hasBackButton="true"></Header>
     <ion-content>
-      <form
-        @submit.prevent="
-          useProfile().saveProfile(profile, () => setToastActive(true))
-        "
-        @input="isTouched = true"
-      >
-        <div class="">
+      <form @submit.prevent="handleSave" @input="isTouched = true">
+        <div>
           <ion-card>
             <ion-card-content>
               <h1 class="caption">Persönliche Angaben</h1>
@@ -75,6 +70,7 @@
                 <ion-radio-group
                   name="payment"
                   v-model="profile.payment"
+                  value="barzahlung"
                   @click="isTouched = true"
                 >
                   <ion-item>
@@ -91,7 +87,7 @@
           </ion-card>
         </div>
         <ion-button
-          class="btn-center ion-margin-bottom"
+          class="btn-center ion-margin-vertical"
           type="submit"
           :disabled="!isTouched"
         >
@@ -100,7 +96,7 @@
         <ion-toast
           :is-open="toastActive"
           message="Änderungen gespeichert."
-          color="success"
+          color="medium"
           position="top"
           :duration="2000"
           @didDismiss="setToastActive(false)"
@@ -126,9 +122,11 @@ import {
   IonToast,
 } from '@ionic/vue';
 import { defineComponent, reactive, toRefs, ref } from 'vue';
-import { IProfile } from '../interfaces/IProfile';
+import firebase from 'firebase';
+import type { IProfile } from '../interfaces/IProfile';
 import Header from '../components/Header.vue';
-import { useProfile } from '@/composables/useProfile';
+import { useProfile } from '../composables/useProfile';
+import { useGeolocation } from '../composables/useGeolocation';
 
 export default defineComponent({
   name: 'Profile',
@@ -149,32 +147,40 @@ export default defineComponent({
 
   setup() {
     const state = reactive({
-      profile: {
-        firstname: '',
-        lastname: '',
-        street: '',
-        city: '',
-        postalcode: '',
-        telephone: '',
-        payment: 'barzahlung',
-      } as IProfile,
+      profile: {} as IProfile,
       isTouched: false,
     });
 
     // show toast state
     const toastActive = ref(false);
-    const setToastActive = (state: boolean) => (toastActive.value = state);
+    const setToastActive = (state: boolean) => {
+      toastActive.value = state;
+    };
+
+    // get profile data
+    const user = firebase.auth().currentUser!;
     const setProfile = (profileData: IProfile) => {
       state.profile = { ...profileData };
     };
+    useProfile().resolveProfileId(user.uid, setProfile);
 
-    useProfile().getProfileData(setProfile);
+    // handle saving / updating profile data
+    const handleSave = () => {
+      const { street, city, postalcode } = state.profile;
+      const formatedAddress = `${street}, ${city}, ${postalcode}`;
+      state.isTouched = false;
+
+      // sets translated address as geocordinates
+      useGeolocation().geoCodeAdress(formatedAddress, state.profile.geocoords);
+      // save profile data to firebase and show toast
+      useProfile().saveProfile(state.profile, () => setToastActive(true));
+    };
 
     return {
       ...toRefs(state),
-      useProfile,
       toastActive,
       setToastActive,
+      handleSave,
     };
   },
 });
