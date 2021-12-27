@@ -10,4 +10,5 @@ export interface IProfile {
   payment: 'barzahlung' | 'paypal';
   geocoords: ILocation;
   currentPosition?: ILocation;
+  lastPosition?: ILocation;
 }

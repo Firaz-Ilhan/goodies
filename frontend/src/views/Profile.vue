@@ -123,7 +123,9 @@ import {
 } from '@ionic/vue';
 import { defineComponent, reactive, toRefs, ref } from 'vue';
 import firebase from 'firebase';
+
 import type { IProfile } from '../interfaces/IProfile';
+import type { ILocation } from '../interfaces/ILocation';
 import Header from '../components/Header.vue';
 import { useProfile } from '../composables/useProfile';
 import { useGeolocation } from '../composables/useGeolocation';
@@ -157,7 +159,7 @@ export default defineComponent({
       toastActive.value = state;
     };
 
-    // get profile data
+    // fetch profile data and update state
     const user = firebase.auth().currentUser!;
     const setProfile = (profileData: IProfile) => {
       state.profile = { ...profileData };
@@ -167,13 +169,20 @@ export default defineComponent({
     // handle saving / updating profile data
     const handleSave = () => {
       const { street, city, postalcode } = state.profile;
-      const formatedAddress = `${street}, ${city}, ${postalcode}`;
+      const formattedAddress = `${street}, ${city}, ${postalcode}`;
       state.isTouched = false;
 
       // sets translated address as geocordinates
-      useGeolocation().geoCodeAdress(formatedAddress, state.profile.geocoords);
-      // save profile data to firebase and show toast
-      useProfile().saveProfile(state.profile, () => setToastActive(true));
+      useGeolocation()
+        .geoCodeAdress(formattedAddress)
+        .then((geocoordinates) => {
+          state.profile.geocoords = geocoordinates as ILocation;
+
+          // save profile data to firebase and show toast
+          useProfile().saveProfile(state.profile, () => {
+            setToastActive(true);
+          });
+        });
     };
 
     return {

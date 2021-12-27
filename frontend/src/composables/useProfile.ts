@@ -1,17 +1,19 @@
-import { IProfile } from '@/interfaces/IProfile';
+import { IProfile } from '../interfaces/IProfile';
 import { db } from '@/main';
 import firebase from 'firebase';
 
 export function useProfile() {
+  const currentUser = firebase.auth().currentUser!;
+  const profileCollection = db.collection('/profiles');
+
   // save/update profile
-  const saveProfile = async (profileData: IProfile, onSuccess: () => void) => {
-    const currentUser = firebase.auth().currentUser!;
-    db.collection('profiles')
+  const saveProfile = async (profileData: IProfile, onSuccess?: () => void) => {
+    console.log(profileData);
+    profileCollection
       .doc(currentUser.uid)
       .set({ ...profileData }, { merge: true })
       .then(() => {
-        console.log(profileData);
-        onSuccess();
+        onSuccess && onSuccess();
       });
   };
 
@@ -19,8 +21,9 @@ export function useProfile() {
   const resolveProfileId = (
     profileId: string,
     onSuccess: (profileData: IProfile) => void,
+    onError?: (error: Error) => void,
   ) => {
-    db.collection('profiles')
+    profileCollection
       .doc(profileId)
       .get()
       .then((doc) => {
@@ -29,9 +32,24 @@ export function useProfile() {
         }
       })
       .catch((error) => {
-        console.log('Error getting document:', error);
+        onError && onError(error);
       });
   };
+
+  // //
+  // const updateCurrentLocation = (
+  //   position: ILocation,
+  //   onSuccess: () => void,
+  // ) => {
+  //   const currentUser = firebase.auth().currentUser!;
+  //   db.collection('profiles')
+  //     .doc(currentUser.uid)
+  //     .set({ currentPosition: position }, { merge: true })
+  //     .then(() => {
+  //       console.log(position);
+  //       onSuccess();
+  //     });
+  // };
 
   return { saveProfile, resolveProfileId };
 }
