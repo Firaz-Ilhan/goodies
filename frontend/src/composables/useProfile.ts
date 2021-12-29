@@ -36,20 +36,5 @@ export function useProfile() {
       });
   };
 
-  // //
-  // const updateCurrentLocation = (
-  //   position: ILocation,
-  //   onSuccess: () => void,
-  // ) => {
-  //   const currentUser = firebase.auth().currentUser!;
-  //   db.collection('profiles')
-  //     .doc(currentUser.uid)
-  //     .set({ currentPosition: position }, { merge: true })
-  //     .then(() => {
-  //       console.log(position);
-  //       onSuccess();
-  //     });
-  // };
-
   return { saveProfile, resolveProfileId };
 }
