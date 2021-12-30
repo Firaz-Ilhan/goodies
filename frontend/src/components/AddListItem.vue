@@ -11,7 +11,7 @@
       <ion-col size="3">
         <ion-item>
           <ion-label position="floating">Anzahl</ion-label>
-          <ion-input v-model="amount" required></ion-input>
+          <ion-input type="number" v-model="amount" required></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size="1">
