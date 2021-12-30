@@ -34,11 +34,7 @@
             </ion-col>
 
             <ion-col size="2" v-if="deliverDetails.orderState == 'angenommen'">
-              <ion-checkbox
-                v-if="detail.isChecked"
-                checked="true"
-              ></ion-checkbox>
-              <ion-checkbox v-else checked="false"></ion-checkbox>
+              <ion-checkbox> </ion-checkbox>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -53,14 +49,14 @@
         <ion-button
           v-if="deliverDetails.orderState == 'offen'"
           class="btn-center"
-          @click="updateOrderState('angenommen')"
+          @click="useOrder().setOrderState($route.params.id as string ,'angenommen'); useOrder().setSupplier($route.params.id as string)"
         >
           ANNEHMEN</ion-button
         >
         <ion-button
           v-if="deliverDetails.orderState == 'angenommen'"
           class="btn-center"
-          @click="updateOrderState('in Lieferung')"
+          @click="useOrder().setOrderState($route.params.id as string ,'in Lieferung')"
         >
           HAB ALLES BIN LOS</ion-button
         >
@@ -121,23 +117,20 @@ export default defineComponent({
                 ...(doc.data() as IOrder),
                 id: doc.id,
               };
+              console.log(this.deliverDetails);
             });
         }
       });
     },
 
-    updateOrderState(state: string) {
-      firebase.auth().onAuthStateChanged((user) => {
-        firebase
-          .firestore()
-          .collection('orders')
-          .doc(this.$route.params.id as string)
-          .update({ orderState: state, supplier: user!.uid })
-          .catch((error) => {
-            console.log('DeliverDetails: Bestellung annehmen:', error);
-          });
-      });
-    },
+    /*deleteorder() {
+      db.collection('orders')
+        .doc('Mm1wSrlGN7DdKTqMlUKD')
+        .delete()
+        .then(() => {
+          console.log('Document successfully deleted!');
+        });
+    },*/
 
     setMapPosition(position: ILocation) {
       this.markerPosition = position;
@@ -152,6 +145,7 @@ export default defineComponent({
   data() {
     const deliverDetails = {} as IOrder;
     this.getOrderInDetail();
+    //this.deleteorder();
 
     return {
       deliverDetails,

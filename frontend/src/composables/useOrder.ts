@@ -34,6 +34,16 @@ export function useOrder() {
     });
   };
 
+  // updates the supplier of a certain order
+  const setSupplier = (docId: string) => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        db.collection('orders').doc(docId).update({ supplier: user.uid });
+        console.log('supplier updated to:', user.uid);
+      }
+    });
+  };
+
   // fetches all orders of a user and update a reactive array
   // optionally set isPersonal to false to get all orders that were not created by yourself (delivery-mode)
   const populateOrders = (orders: IOrder[], isPersonal = true) => {
@@ -76,6 +86,8 @@ export function useOrder() {
     calculateTotalArticleAmount,
     getOrderStateColor,
     setOrderState,
+    setSupplier,
     populateOrders,
+    setIsChecked,
   };
 }
