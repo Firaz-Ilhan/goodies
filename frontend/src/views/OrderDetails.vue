@@ -58,7 +58,6 @@ import { useGeolocation } from '../composables/useGeolocation';
 import type { ILocation } from '../interfaces/ILocation';
 import type { IOrder } from '../interfaces/IOrder';
 import type { IProfile } from '../interfaces/IProfile';
-import { chevronUpOutline } from 'ionicons/icons';
 
 export default defineComponent({
   name: 'OrderDetails',
@@ -94,7 +93,6 @@ export default defineComponent({
       updateCounter: 0,
       useGeolocation,
       useOrder,
-      chevronUpOutline,
     };
   },
 

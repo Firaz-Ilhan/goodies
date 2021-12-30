@@ -1,32 +1,34 @@
 <template>
-  <h2 class="list-heading" @click="toggleList" ref="listHeading">
-    Einkaufsliste
-    <ion-icon class="ion-margin-start" :icon="chevronUpOutline"></ion-icon>
-  </h2>
-  <ion-list v-if="listOpen">
-    <ion-row class="list-header">
-      <ion-col size="7"> Artikel inkl. Menge </ion-col>
-      <ion-col size="3"> Anzahl </ion-col>
-      <ion-col size="2"> Status </ion-col>
-    </ion-row>
+  <div>
+    <h2 class="list-heading" @click="toggleList" ref="listHeading">
+      Einkaufsliste
+      <ion-icon class="ion-margin-start" :icon="chevronUpOutline"></ion-icon>
+    </h2>
+    <ion-list v-if="listOpen">
+      <ion-row class="list-header">
+        <ion-col size="7"> Artikel inkl. Menge </ion-col>
+        <ion-col size="3"> Anzahl </ion-col>
+        <ion-col size="2"> Status </ion-col>
+      </ion-row>
 
-    <ion-row
-      v-for="(detail, index) in list"
-      :key="index"
-      @click="isCheckable && checkItem(index)"
-      button
-    >
-      <ion-col size="7"> {{ detail.article }} </ion-col>
-      <ion-col size="3">
-        {{ detail.amount }}
-      </ion-col>
-      <ion-col size="2">
-        <ion-checkbox
-          :checked="detail.isChecked"
-          :disabled="!isCheckable"
-        ></ion-checkbox>
-      </ion-col> </ion-row
-  ></ion-list>
+      <ion-row
+        v-for="(detail, index) in list"
+        :key="index"
+        @click="isCheckable && checkItem(index)"
+        button
+      >
+        <ion-col size="7"> {{ detail.article }} </ion-col>
+        <ion-col size="3">
+          {{ detail.amount }}
+        </ion-col>
+        <ion-col size="2">
+          <ion-checkbox
+            :checked="detail.isChecked"
+            :disabled="!isCheckable"
+          ></ion-checkbox>
+        </ion-col> </ion-row
+    ></ion-list>
+  </div>
 </template>
 
 <script lang="ts">
@@ -56,21 +58,6 @@ export default defineComponent({
       db.collection('orders')
         .doc(this.$route.params.id as string)
         .update({ list: updatedList });
-
-      // .update({ [`list.${id}.isChecked`]: !isChecked });
-
-      // // Atomically add a new region to the "regions" array field.
-      // itemRef.update({
-      //   list: firebase.firestore.FieldValue.arrayUnion({
-      //     ...item,
-      //     isChecked: !isChecked,
-      //   }),
-      // });
-
-      // // Atomically remove a region from the "regions" array field.
-      // itemRef.update({
-      //   list: firebase.firestore.FieldValue.arrayRemove(item),
-      // });
     },
   },
   components: {
