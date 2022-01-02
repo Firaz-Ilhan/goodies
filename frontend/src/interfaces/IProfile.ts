@@ -9,6 +9,5 @@ export interface IProfile {
   telephone: string;
   payment: 'barzahlung' | 'paypal';
   geocoords: ILocation;
-  currentPosition?: ILocation;
   lastPosition?: ILocation;
 }
