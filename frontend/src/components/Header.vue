@@ -37,38 +37,16 @@ export default defineComponent({
     IonBackButton,
   },
   setup() {
-    //Created life cycle hook, wird automatisch beim Aufruf ausgeführt*/
     const route = useRoute();
-    const menuBgImg = ref('menu_background_order.svg');
+    const menuBgImg = ref('menu_background_home.svg');
 
-    switch (route.path) {
-      case '/home':
-      case '/':
-      case '/register': //for test reasons different ways for the imgpath..:
-      case '/login':
-      case '/onboarding':
-      case '/profile':
-        menuBgImg.value = 'menu_background_home.svg';
-        break;
-      case '/orders':
-        menuBgImg.value = 'menu_background_order.svg';
-        break;
-      case '/example':
-        menuBgImg.value = 'menu_background_deliver.svg';
-        break;
-      default:
-        menuBgImg.value = 'menu_background_home.svg';
-        break;
+    if (route.path.includes('orders')) {
+      menuBgImg.value = 'menu_background_order.svg';
+    } else if (route.path.includes('deliver')) {
+      menuBgImg.value = 'menu_background_deliver.svg';
     }
-    return { menuBgImg };
 
-    /*Cleanere Alternative von Chris:  ToDo: verewnden, wenn alle Routen klar sind -> decken die Fälle alle Routen ab?
-        if (route.path.includes('orders)){
-          menuBgImg.value='menue_background_order.svg';
-        } else if (route.path.includes('deliver')) {
-          menuBgImg.value = 'menue_background_deliver.svg';
-        }      
-      */
+    return { menuBgImg };
   },
   props: { title: String, hasBackButton: Boolean },
 });
