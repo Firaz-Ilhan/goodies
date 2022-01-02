@@ -17,11 +17,14 @@
           v-for="order in orders"
           :key="order.id"
           :order="order"
+          :showDistance="order.orderState === 'in Lieferung'"
           @click="$router.push('/orders/' + order.id)"
         />
-        <p v-if="!orders.length">
-          Zur Zeit hast du keine aktiven Bestellungen.
-        </p>
+
+        <EmptyState
+          v-if="!orders.length"
+          message="Derzeit hast du keine aktiven Bestellungen."
+        ></EmptyState>
       </div>
 
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
@@ -44,6 +47,7 @@ import { useOrder } from '../composables/useOrder';
 import Header from '../components/Header.vue';
 import CreateOrderModal from '../components/CreateOrderModal.vue';
 import OrderCard from '../components/OrderCard.vue';
+import EmptyState from '../components/EmptyState.vue';
 
 export default defineComponent({
   name: 'OrderOverview',
@@ -53,6 +57,7 @@ export default defineComponent({
     IonFabButton,
     IonIcon,
     OrderCard,
+    EmptyState,
   },
 
   methods: {

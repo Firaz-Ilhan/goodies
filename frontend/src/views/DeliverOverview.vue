@@ -19,11 +19,13 @@
             v-for="order in openOrders"
             :key="order.id"
             :order="order"
+            :showDistance="true"
             @click="$router.push('/deliver/' + order.id)"
           />
-          <p v-if="openOrders.length <= 0">
-            Aktuell keine offenen Bestellungen.
-          </p>
+          <EmptyState
+            v-if="openOrders.length <= 0"
+            message="Aktuell keine offenen Bestellungen."
+          ></EmptyState>
         </div>
 
         <div v-if="activeSegment === 'angenommen'">
@@ -31,11 +33,13 @@
             v-for="order in acceptedOrders"
             :key="order.id"
             :order="order"
+            :showDistance="true"
             @click="$router.push('/deliver/' + order.id)"
           />
-          <p v-if="acceptedOrders.length <= 0">
-            Aktuell keine angenommenen Bestellungen.
-          </p>
+          <EmptyState
+            v-if="acceptedOrders.length <= 0"
+            message="Aktuell keine angenommenen Bestellungen."
+          ></EmptyState>
         </div>
 
         <div v-if="activeSegment === 'abgeschlossen'">
@@ -43,11 +47,13 @@
             v-for="order in completedOrders"
             :key="order.id"
             :order="order"
+            :showDistance="true"
             @click="$router.push('/deliver/' + order.id)"
           />
-          <p v-if="completedOrders.length <= 0">
-            Aktuell keine erledigten Bestellungen.
-          </p>
+          <EmptyState
+            v-if="completedOrders.length <= 0"
+            message="Aktuell keine erledigten Bestellungen."
+          ></EmptyState>
         </div>
       </div>
     </ion-content>
@@ -62,6 +68,7 @@ import Header from '../components/Header.vue';
 import OrderCard from '../components/OrderCard.vue';
 import { useOrder } from '../composables/useOrder';
 import type { IOrder } from '../interfaces/IOrder';
+import EmptyState from '@/components/EmptyState.vue';
 
 export default defineComponent({
   name: 'DeliverOverview',
@@ -70,6 +77,7 @@ export default defineComponent({
     OrderCard,
     IonSegment,
     IonSegmentButton,
+    EmptyState,
   },
 
   data() {
