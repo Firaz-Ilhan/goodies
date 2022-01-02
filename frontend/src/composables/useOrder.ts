@@ -3,6 +3,8 @@ import { IOrder } from '@/interfaces/IOrder';
 import { IProfile } from '@/interfaces/IProfile';
 import { db } from '@/main';
 import firebase from 'firebase';
+import * as geofire from 'geofire-common';
+
 import { useProfile } from './useProfile';
 
 export function useOrder() {
@@ -61,7 +63,6 @@ export function useOrder() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         db.collection('orders').doc(docId).update({ supplier: user.uid });
-        console.log('supplier updated to:', user.uid);
       }
     });
   };
@@ -103,11 +104,57 @@ export function useOrder() {
       });
   };
 
+  // get the distance between creator and suppliers geocoordinates
+  const getOrderDistance = (order: IOrder): Promise<number> => {
+    return new Promise((resolve) => {
+      const creatorId = order.createdBy;
+      // get supplier or potential supplier for open orders
+      const supplierId = order.supplier || user.uid;
+
+      db.collection('profiles')
+        .where(firebase.firestore.FieldPath.documentId(), 'in', [
+          supplierId,
+          creatorId,
+        ])
+        .get()
+        .then((res) => {
+          const to: number[] = [];
+          const from: number[] = [];
+
+          // expect two docs
+          res.docs.length === 2 &&
+            res.docs.map((doc) => {
+              // creator location
+              if (doc.id === creatorId) {
+                const { lat, lng } = (doc.data() as IProfile).geocoords;
+                from.push(lat, lng);
+              }
+
+              // supplier location
+              if (doc.id === supplierId) {
+                const { lat, lng } = (doc.data() as IProfile).geocoords;
+                to.push(lat, lng);
+              }
+            });
+
+          // expect array to contain latitude and longitude
+          if ((to.length, from.length === 2)) {
+            const distanceInKm = geofire.distanceBetween(to, from);
+            resolve(distanceInKm);
+          }
+        });
+    });
+  };
+
+  const formatDistance = (distance: number) => {
+    return (distance < 1 ? distance.toFixed(1) : distance.toFixed()) + 'km';
+  };
+
   // fetch and set details of a certain order and it's supplier or creator
   const getOrderDetails = (
     orderId: string,
     setOrderDetails: (orderDetails: IOrder) => void,
-    setProfileDetails: (profileDetails: IProfile) => void,
+    setProfileDetails?: (profileDetails: IProfile) => void,
   ) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -119,16 +166,19 @@ export function useOrder() {
               id: doc.id,
             });
 
-            // check if user is the supplier or creator
-            let idToResolve: string;
-            if (user.uid === doc.data().supplier) {
-              idToResolve = doc.data().createdBy;
-            } else {
-              idToResolve = doc.data().supplier;
-            }
+            if (setProfileDetails) {
+              // check if user is the supplier or creator
+              let idToResolve: string;
+              if (user.uid === doc.data().supplier) {
+                idToResolve = doc.data().createdBy;
+              } else {
+                idToResolve = doc.data().supplier;
+              }
 
-            idToResolve &&
-              useProfile().resolveProfileId(idToResolve, setProfileDetails);
+              if (idToResolve) {
+                useProfile().resolveProfileId(idToResolve, setProfileDetails);
+              }
+            }
           });
       }
     });
@@ -141,6 +191,8 @@ export function useOrder() {
     setOrderState,
     setSupplier,
     populateOrders,
+    getOrderDistance,
+    formatDistance,
     getOrderDetails,
   };
 }

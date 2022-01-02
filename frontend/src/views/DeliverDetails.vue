@@ -4,75 +4,70 @@
     <ion-content>
       <div class="wrapper">
         <h1>{{ deliverDetails.name }}</h1>
-        <div v-if="deliverDetails.orderState !== 'offen' && creator.street">
-          <p>
-            Erstellt von <strong>{{ getCreatorName }}</strong>
-          </p>
-          <p>
-            Adresse:
-            <br />
-            {{
-              creator.street + ', ' + creator.city + ' ' + creator.postalcode
-            }}
-          </p>
-          <p>
-            Mobilnummer:
-            <a :href="'tel:' + creator.telephone">{{ creator.telephone }}</a>
-          </p>
-        </div>
+        <OrderBadges :order="deliverDetails" :distance="distance"></OrderBadges>
 
-        <ion-badge v-if="deliverDetails.list" color="dark">
-          {{ useOrder().calculateTotalArticleAmount(deliverDetails.list) }}
-          Artikel
-        </ion-badge>
-        <ion-badge
-          class="ion-margin-start"
-          :color="useOrder().getOrderStateColor(deliverDetails.orderState)"
-        >
-          {{ deliverDetails.orderState }}</ion-badge
-        >
+        <OrderDetailsProfileInfo
+          v-if="deliverDetails.orderState !== 'offen' && creator.firstname"
+          class="ion-margin-top"
+          :profile="creator"
+          profileRole="creator"
+        ></OrderDetailsProfileInfo>
 
         <ShoppingListDetails
           :list="deliverDetails.list"
           :isCheckable="
-            deliverDetails.orderState === 'abgeschlossen' ? false : true
+            deliverDetails.orderState !== 'abgeschlossen' &&
+            deliverDetails.orderState !== 'offen'
           "
         ></ShoppingListDetails>
 
-        <div v-if="creator.geocoords">
+        <div v-if="creator.geocoords" class="ion-margin-bottom">
           <h2>Standort</h2>
+          <p>
+            Ungefähr
+            <strong>{{ useOrder().formatDistance(distance) }}</strong>
+            von deinem Wohnort entfernt.
+          </p>
           <a
             :href="`https://www.google.com/maps/place/${creator.street},+${creator.city}+${creator.postalcode}/@${creator.geocoords.lat},${creator.geocoords.lng}`"
             target="_blank"
             rel="noopener noreferrer"
+            button
           >
             <ion-icon :icon="locationOutline"></ion-icon>
             In Google Maps öffnen</a
           >
+
           <Map
             :markerPosition="getCreatorLocation"
             :centerPosition="getCreatorLocation"
           ></Map>
         </div>
 
-        <h2>Rewards</h2>
-        <p v-if="deliverDetails.list">
-          Anzahl der Artikel*Distanz = <strong> {{ getRewardsValue }}</strong>
-        </p>
+        <div v-if="deliverDetails.list && distance > 0">
+          <h2>Rewards</h2>
+          <p>
+            Die Rewards ergeben sich aus der Anzahl zu liefernder Artikel und
+            der Distanz zwischen deinem Wohnort und dem Empfänger.
+          </p>
+          <p class="reward">
+            Du erhältst: <span>{{ getRewardsValue }} €</span>
+          </p>
+        </div>
 
         <ion-button
           v-if="deliverDetails.orderState == 'offen'"
           class="btn-center"
           @click="useOrder().setOrderState($route.params.id as string ,'angenommen'); useOrder().setSupplier($route.params.id as string)"
         >
-          ANNEHMEN</ion-button
+          Annehmen</ion-button
         >
         <ion-button
           v-if="deliverDetails.orderState == 'angenommen'"
           class="btn-center"
           @click="useOrder().setOrderState($route.params.id as string ,'in Lieferung')"
         >
-          HAB ALLES BIN LOS</ion-button
+          Hab alles bin los</ion-button
         >
       </div>
     </ion-content>
@@ -80,83 +75,60 @@
 </template>
 
 <script lang="ts">
-import { IonContent, IonPage, IonBadge, IonButton, IonIcon } from '@ionic/vue';
+import { IonContent, IonButton, IonIcon } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
-import firebase from 'firebase';
 import Header from '../components/Header.vue';
+import OrderBadges from '../components/OrderBadges.vue';
 import Map from '../components/Map.vue';
 import ShoppingListDetails from '../components/ShoppingListDetails.vue';
-import { db } from '../main';
-import { useGeolocation } from '../composables/useGeolocation';
-import { ILocation } from '../interfaces/ILocation';
-import { IOrder } from '../interfaces/IOrder';
+import type { ILocation } from '../interfaces/ILocation';
+import type { IOrder } from '../interfaces/IOrder';
+import type { IProfile } from '../interfaces/IProfile';
 import { useOrder } from '../composables/useOrder';
-import { IProfile } from '../interfaces/IProfile';
 import { locationOutline } from 'ionicons/icons';
+import OrderDetailsProfileInfo from '@/components/OrderDetailsProfileInfo.vue';
 
 export default defineComponent({
   name: 'DeliverDetails',
   components: {
     Header,
-    IonPage,
     IonContent,
-    IonBadge,
     Map,
     IonButton,
     ShoppingListDetails,
     IonIcon,
-  },
-  methods: {
-    getOrderInDetail() {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          db.collection('orders')
-            .doc(this.$route.params.id as string)
-            .onSnapshot((doc: firebase.firestore.DocumentData) => {
-              this.deliverDetails = {
-                ...(doc.data() as IOrder),
-                id: doc.id,
-              };
-              console.log(this.deliverDetails);
-            });
-        }
-      });
-    },
-
-    setMapPosition(position: ILocation) {
-      this.markerPosition = position;
-      // synchronize center and marker position after 10 updates
-      if (this.updateCounter % 10 === 0) {
-        this.centerPosition = this.markerPosition;
-      }
-      this.updateCounter++;
-    },
+    OrderBadges,
+    OrderDetailsProfileInfo,
   },
 
   data() {
     const deliverDetails = {} as IOrder;
-    this.getOrderInDetail();
 
     return {
       deliverDetails,
       creator: {} as IProfile,
+      supplier: {} as IProfile,
+      distance: 0,
       markerPosition: {} as ILocation,
       centerPosition: {} as ILocation,
       updateCounter: 0,
-      useGeolocation,
       useOrder,
       locationOutline,
     };
   },
 
   created() {
-    // get mocked location data
-    useGeolocation().getMockedLocation(this.setMapPosition);
-
     // fetch and populate order details and supplier data
     useOrder().getOrderDetails(
       this.$route.params.id as string,
-      (deliverDetails: IOrder) => (this.deliverDetails = deliverDetails),
+      (deliverDetails: IOrder) => {
+        useOrder()
+          .getOrderDistance(deliverDetails)
+          .then((distanceInKm) => {
+            this.distance = distanceInKm;
+          });
+        this.deliverDetails = deliverDetails;
+      },
       (profileDetails: IProfile) => (this.creator = profileDetails),
     );
   },
@@ -170,12 +142,13 @@ export default defineComponent({
       const { lat, lng } = this.creator.geocoords;
       return { lat, lng };
     },
-    getRewardsValue(): number {
+    getRewardsValue(): string {
       const articleAmount = useOrder().calculateTotalArticleAmount(
         this.deliverDetails.list,
       );
-      const ditanceInKm = 1;
-      return (articleAmount * ditanceInKm) / 10;
+      const ditanceInKm = this.distance;
+
+      return ((articleAmount * ditanceInKm) / 10 + 2).toFixed(2);
     },
   },
 });
@@ -183,12 +156,34 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .btn-center {
-  margin: 30px auto;
+  margin: 40px auto;
+}
+
+h1 {
+  margin-bottom: 12px;
+}
+
+h2 {
+  margin-top: 30px;
 }
 
 p {
-  margin: 16px 0;
   text-align: start;
+}
+
+.reward {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #c8c8c8;
+  padding: 16px;
+
+  span {
+    font-size: 24px;
+    margin-left: 50px;
+    color: var(--ion-color-primary);
+    font-weight: 700;
+  }
 }
 
 a {
@@ -196,6 +191,7 @@ a {
   align-content: center;
   margin-bottom: 30px;
   ion-icon {
+    margin-top: 2px;
     margin-right: 8px;
   }
 }

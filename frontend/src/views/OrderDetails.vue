@@ -4,35 +4,33 @@
     <ion-content>
       <div class="wrapper">
         <h1>{{ orderDetails.name }}</h1>
-        <div v-if="orderDetails.orderState !== 'offen'">
-          <p>
-            Angenommen von <strong>{{ getSupplierName }}</strong>
-          </p>
-          <p>
-            Mobilnummer:
-            <a :href="'tel:' + supplier.telephone">{{ supplier.telephone }}</a>
-          </p>
-        </div>
 
-        <ion-badge v-if="orderDetails.list" color="dark">
-          {{ useOrder().calculateTotalArticleAmount(orderDetails.list) }}
-          Artikel
-        </ion-badge>
-        <ion-badge
-          class="ion-margin-start"
-          :color="useOrder().getOrderStateColor(orderDetails.orderState)"
-        >
-          {{ orderDetails.orderState }}</ion-badge
-        >
+        <OrderDetailsProfileInfo
+          v-if="orderDetails.orderState !== 'offen' && supplier.firstname"
+          class="ion-margin-top"
+          :profile="supplier"
+          profileRole="supplier"
+        ></OrderDetailsProfileInfo>
+
+        <OrderBadges :order="orderDetails"></OrderBadges>
 
         <ShoppingListDetails :list="orderDetails.list"></ShoppingListDetails>
 
         <div v-if="orderDetails.orderState === 'in Lieferung'">
-          <h2>Standort deines Lieferanten</h2>
+          <h2>Standort deines Lieferanten{{ isDevEnv && '*' }}</h2>
           <Map
+            v-if="isDevEnv"
             :markerPosition="markerPosition"
             :centerPosition="centerPosition"
           ></Map>
+          <Map
+            v-else-if="getSupplierCoordinates"
+            :markerPosition="getSupplierCoordinates"
+            :centerPosition="getSupplierCoordinates"
+          ></Map>
+          <p style="font-size: 12px">
+            {{ isDevEnv && '*Simulierte Daten für Development' }}
+          </p>
         </div>
 
         <ion-button
@@ -48,26 +46,30 @@
 </template>
 
 <script lang="ts">
-import { IonContent, IonBadge, IonButton } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
+import { IonContent, IonButton } from '@ionic/vue';
 import Header from '../components/Header.vue';
-import Map from '../components/Map.vue';
+import OrderBadges from '../components/OrderBadges.vue';
 import ShoppingListDetails from '../components/ShoppingListDetails.vue';
+import OrderDetailsProfileInfo from '@/components/OrderDetailsProfileInfo.vue';
+import Map from '../components/Map.vue';
 import { useOrder } from '../composables/useOrder';
 import { useGeolocation } from '../composables/useGeolocation';
 import type { ILocation } from '../interfaces/ILocation';
 import type { IOrder } from '../interfaces/IOrder';
 import type { IProfile } from '../interfaces/IProfile';
+import { useProfile } from '@/composables/useProfile';
 
 export default defineComponent({
   name: 'OrderDetails',
   components: {
-    Header,
     IonContent,
-    IonBadge,
-    Map,
     IonButton,
+    Header,
+    OrderBadges,
+    OrderDetailsProfileInfo,
     ShoppingListDetails,
+    Map,
   },
 
   methods: {
@@ -83,10 +85,9 @@ export default defineComponent({
   },
 
   data() {
-    const orderDetails = {} as IOrder;
-
     return {
-      orderDetails,
+      isDevEnv: process.env.BASE_URL === '/',
+      orderDetails: {} as IOrder,
       supplier: {} as IProfile,
       markerPosition: {} as ILocation,
       centerPosition: {} as ILocation,
@@ -97,13 +98,26 @@ export default defineComponent({
   },
 
   created() {
-    // get mocked location data
-    useGeolocation().getMockedLocation(this.setMapPosition);
-
     // fetch and populate order details and supplier data
     useOrder().getOrderDetails(
       this.$route.params.id as string,
-      (orderDetails: IOrder) => (this.orderDetails = orderDetails),
+      (orderDetails: IOrder) => {
+        this.orderDetails = orderDetails;
+
+        if (orderDetails.orderState === 'in Lieferung') {
+          // in dev get static mocked supplier location
+          if (this.isDevEnv) {
+            // get mocked location data
+            useGeolocation().getMockedLocation(this.setMapPosition);
+          } else {
+            // in prod set watcher for live last position
+            useProfile().watchProfileChanges(
+              orderDetails.supplier as string,
+              (profileData: IProfile) => (this.supplier = profileData),
+            );
+          }
+        }
+      },
       (profileDetails: IProfile) => (this.supplier = profileDetails),
     );
   },
@@ -113,11 +127,21 @@ export default defineComponent({
       const { firstname, lastname } = this.supplier;
       return firstname + ' ' + lastname;
     },
+    getSupplierCoordinates(): ILocation | null {
+      if (this.supplier.lastPosition) {
+        const { lat, lng } = this.supplier.lastPosition;
+        return { lat, lng };
+      }
+      return null;
+    },
   },
 });
 </script>
 
 <style scoped lang="scss">
+h1 {
+  margin-bottom: 12px;
+}
 .btn-center {
   margin: 30px auto;
 }
