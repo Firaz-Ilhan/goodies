@@ -4,75 +4,35 @@
     <ion-content>
       <div class="wrapper">
         <h1>{{ orderDetails.name }}</h1>
-        <p v-if="orderDetails.orderState !== 'offen'">
-          Übernommen durch: {{ orderDetails.supplier }}
-        </p>
 
-        <ion-badge v-if="orderDetails.list" color="dark">
-          {{ useOrder().calculateTotalArticleAmount(orderDetails.list) }}
-          Artikel
-        </ion-badge>
-        <ion-badge
-          class="ion-margin-start"
-          :color="useOrder().getOrderStateColor(orderDetails.orderState)"
-        >
-          {{ orderDetails.orderState }}</ion-badge
-        >
+        <OrderDetailsProfileInfo
+          v-if="orderDetails.orderState !== 'offen' && supplier.firstname"
+          class="ion-margin-top"
+          :profile="supplier"
+          profileRole="supplier"
+        ></OrderDetailsProfileInfo>
 
-        <!-- TODO outsource component -->
-        <h2 class="list-heading" @click="toggleList" ref="listHeading">
-          Einkaufsliste
-          <ion-icon
-            class="ion-margin-start"
-            :icon="chevronUpOutline"
-          ></ion-icon>
-        </h2>
-        <ion-grid v-if="listOpen">
-          <ion-row class="table-header">
-            <ion-col size="7">
-              <ion-label>Artikel inkl. Menge</ion-label>
-            </ion-col>
+        <OrderBadges :order="orderDetails"></OrderBadges>
 
-            <ion-col size="3">
-              <ion-label>Anzahl</ion-label>
-            </ion-col>
-
-            <ion-col size="2">
-              <ion-label>Status</ion-label>
-            </ion-col>
-          </ion-row>
-
-          <ion-row v-for="detail in orderDetails.list" :key="detail.article">
-            <ion-col size="7">
-              <ion-label> {{ detail.article }} </ion-label>
-            </ion-col>
-
-            <ion-col size="3">
-              <ion-label> {{ detail.amount }} </ion-label>
-            </ion-col>
-
-            <ion-col size="2">
-              <ion-checkbox
-                v-if="detail.isChecked"
-                checked="true"
-                disabled="true"
-              ></ion-checkbox>
-              <ion-checkbox
-                v-else
-                checked="false"
-                disabled="true"
-              ></ion-checkbox>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
+        <ShoppingListDetails :list="orderDetails.list"></ShoppingListDetails>
 
         <div v-if="orderDetails.orderState === 'in Lieferung'">
-          <h2>Standort deines Lieferanten</h2>
+          <h2>Standort deines Lieferanten{{ isDevEnv && '*' }}</h2>
           <Map
+            v-if="isDevEnv"
             :markerPosition="markerPosition"
             :centerPosition="centerPosition"
           ></Map>
+          <Map
+            v-else-if="getSupplierCoordinates"
+            :markerPosition="getSupplierCoordinates"
+            :centerPosition="getSupplierCoordinates"
+          ></Map>
+          <p style="font-size: 12px">
+            {{ isDevEnv && '*Simulierte Daten für Development' }}
+          </p>
         </div>
+
         <ion-button
           class="btn-center"
           @click="useOrder().setOrderState($route.params.id as string ,'abgeschlossen')"
@@ -86,66 +46,34 @@
 </template>
 
 <script lang="ts">
-import {
-  IonContent,
-  IonLabel,
-  IonPage,
-  IonRow,
-  IonCol,
-  IonGrid,
-  IonCheckbox,
-  IonBadge,
-  IonButton,
-  IonIcon,
-} from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
-import firebase from 'firebase';
+import { IonContent, IonButton } from '@ionic/vue';
 import Header from '../components/Header.vue';
+import OrderBadges from '../components/OrderBadges.vue';
+import ShoppingListDetails from '../components/ShoppingListDetails.vue';
+import OrderDetailsProfileInfo from '@/components/OrderDetailsProfileInfo.vue';
 import Map from '../components/Map.vue';
-import { db } from '../main';
-import { useGeolocation } from '../composables/useGeolocation';
-import { ILocation } from '../interfaces/ILocation';
-import { IOrder } from '../interfaces/IOrder';
 import { useOrder } from '../composables/useOrder';
-import { chevronUpOutline } from 'ionicons/icons';
+import { useGeolocation } from '../composables/useGeolocation';
+import type { ILocation } from '../interfaces/ILocation';
+import type { IOrder } from '../interfaces/IOrder';
+import type { IProfile } from '../interfaces/IProfile';
+import { useProfile } from '@/composables/useProfile';
 
 export default defineComponent({
   name: 'OrderDetails',
   components: {
-    Header,
-    IonPage,
     IonContent,
-    IonLabel,
-    IonCol,
-    IonRow,
-    IonGrid,
-    IonCheckbox,
-    IonBadge,
-    Map,
     IonButton,
-    IonIcon,
-  },
-
-  async created() {
-    useGeolocation().getMockedLocation(this.setMapPosition);
+    Header,
+    OrderBadges,
+    OrderDetailsProfileInfo,
+    ShoppingListDetails,
+    Map,
   },
 
   methods: {
-    getOrderDetail() {
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          db.collection('orders')
-            .doc(this.$route.params.id as string)
-            .onSnapshot((doc: firebase.firestore.DocumentData) => {
-              this.orderDetails = {
-                ...(doc.data() as IOrder),
-                id: doc.id,
-              };
-            });
-        }
-      });
-    },
-
+    // setter for map marker and center
     setMapPosition(position: ILocation) {
       this.markerPosition = position;
       // synchronize center and marker position after 10 updates
@@ -154,57 +82,68 @@ export default defineComponent({
       }
       this.updateCounter++;
     },
-
-    toggleList() {
-      this.listOpen = !this.listOpen;
-      (this.$refs.listHeading as HTMLElement).classList.toggle('open');
-    },
   },
 
   data() {
-    const orderDetails = {} as IOrder;
-    this.getOrderDetail();
-
     return {
-      orderDetails,
-      useGeolocation,
-      useOrder,
+      isDevEnv: process.env.BASE_URL === '/',
+      orderDetails: {} as IOrder,
+      supplier: {} as IProfile,
       markerPosition: {} as ILocation,
       centerPosition: {} as ILocation,
       updateCounter: 0,
-      chevronUpOutline,
-      listOpen: true,
+      useGeolocation,
+      useOrder,
     };
+  },
+
+  created() {
+    // fetch and populate order details and supplier data
+    useOrder().getOrderDetails(
+      this.$route.params.id as string,
+      (orderDetails: IOrder) => {
+        this.orderDetails = orderDetails;
+
+        if (orderDetails.orderState === 'in Lieferung') {
+          // in dev get static mocked supplier location
+          if (this.isDevEnv) {
+            // get mocked location data
+            useGeolocation().getMockedLocation(this.setMapPosition);
+          } else {
+            // in prod set watcher for live last position
+            useProfile().watchProfileChanges(
+              orderDetails.supplier as string,
+              (profileData: IProfile) => (this.supplier = profileData),
+            );
+          }
+        }
+      },
+      (profileDetails: IProfile) => (this.supplier = profileDetails),
+    );
+  },
+
+  computed: {
+    getSupplierName(): string {
+      const { firstname, lastname } = this.supplier;
+      return firstname + ' ' + lastname;
+    },
+    getSupplierCoordinates(): ILocation | null {
+      if (this.supplier.lastPosition) {
+        const { lat, lng } = this.supplier.lastPosition;
+        return { lat, lng };
+      }
+      return null;
+    },
   },
 });
 </script>
 
 <style scoped lang="scss">
+h1 {
+  margin-bottom: 12px;
+}
 .btn-center {
   margin: 30px auto;
-}
-
-.list-heading {
-  display: flex;
-  align-items: center;
-  margin: 30px 0 0;
-  cursor: pointer;
-}
-
-.open {
-  ion-icon {
-    transform: rotate(180deg);
-  }
-}
-
-ion-icon {
-  transition: transform 0.3s ease;
-}
-
-.table-header {
-  margin-top: 16px;
-  margin-bottom: 8px;
-  font-size: 14px;
 }
 
 p {

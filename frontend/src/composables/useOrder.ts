@@ -1,9 +1,37 @@
 import { IListEntry } from '@/interfaces/IListEntry';
 import { IOrder } from '@/interfaces/IOrder';
+import { IProfile } from '@/interfaces/IProfile';
 import { db } from '@/main';
 import firebase from 'firebase';
+import * as geofire from 'geofire-common';
+
+import { useProfile } from './useProfile';
 
 export function useOrder() {
+  const user = firebase.auth().currentUser!;
+  const ordersCollection = db.collection('orders');
+
+  // create a new order
+  const createOrder = (
+    name: string,
+    list: IListEntry[],
+    onSuccess?: () => void,
+  ) => {
+    const order: Omit<IOrder, 'id'> = {
+      name: name,
+      list: list,
+      orderState: 'offen',
+      createdBy: firebase.auth().currentUser!.uid,
+      createdAt: new Date().getTime(),
+      supplier: null,
+    };
+
+    // create document in fb collection
+    ordersCollection.add(order).then(() => {
+      onSuccess && onSuccess();
+    });
+  };
+
   // calculates total amount of all items in an order list
   const calculateTotalArticleAmount = (list: IOrder['list']) => {
     let sum = 0;
@@ -25,14 +53,146 @@ export function useOrder() {
     }
   };
 
-  // updates the
+  // updates the order state of a certain order
   const setOrderState = (docId: string, state: IOrder['orderState']) => {
+    ordersCollection.doc(docId).update({ orderState: state });
+  };
+
+  // updates the supplier of a certain order
+  const setSupplier = (docId: string) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        db.collection('orders').doc(docId).update({ orderState: state });
+        db.collection('orders').doc(docId).update({ supplier: user.uid });
       }
     });
   };
 
-  return { calculateTotalArticleAmount, getOrderStateColor, setOrderState };
+  // fetches all orders of a user and update a reactive array
+  // optionally set isPersonal to false to get all orders that were not created by yourself (delivery-mode)
+  const populateOrders = (orders: IOrder[], isPersonal = true) => {
+    const operator = isPersonal ? '==' : '!=';
+
+    ordersCollection
+      .where('createdBy', operator, user.uid)
+      .onSnapshot((docData: firebase.firestore.DocumentData) => {
+        const changes = docData.docChanges();
+        changes.forEach((change: firebase.firestore.DocumentChange) => {
+          // get index of changed order
+          const index = orders.findIndex(
+            (order: IOrder) => order.id === change.doc.id,
+          );
+
+          if (change.type === 'added') {
+            orders.push({
+              ...(change.doc.data() as IOrder),
+              id: change.doc.id,
+            });
+            // sort by latest
+            orders.sort((a: IOrder, b: IOrder) => {
+              return b.createdAt - a.createdAt;
+            });
+          } else if (change.type === 'modified') {
+            orders[index] = {
+              ...(change.doc.data() as IOrder),
+              id: change.doc.id,
+            };
+          } else {
+            // remove deleted document from orders
+            orders.splice(index, 1);
+          }
+        });
+      });
+  };
+
+  // get the distance between creator and suppliers geocoordinates
+  const getOrderDistance = (order: IOrder): Promise<number> => {
+    return new Promise((resolve) => {
+      const creatorId = order.createdBy;
+      // get supplier or potential supplier for open orders
+      const supplierId = order.supplier || user.uid;
+
+      db.collection('profiles')
+        .where(firebase.firestore.FieldPath.documentId(), 'in', [
+          supplierId,
+          creatorId,
+        ])
+        .get()
+        .then((res) => {
+          const to: number[] = [];
+          const from: number[] = [];
+
+          // expect two docs
+          res.docs.length === 2 &&
+            res.docs.map((doc) => {
+              // creator location
+              if (doc.id === creatorId) {
+                const { lat, lng } = (doc.data() as IProfile).geocoords;
+                from.push(lat, lng);
+              }
+
+              // supplier location
+              if (doc.id === supplierId) {
+                const { lat, lng } = (doc.data() as IProfile).geocoords;
+                to.push(lat, lng);
+              }
+            });
+
+          // expect array to contain latitude and longitude
+          if ((to.length, from.length === 2)) {
+            const distanceInKm = geofire.distanceBetween(to, from);
+            resolve(distanceInKm);
+          }
+        });
+    });
+  };
+
+  const formatDistance = (distance: number) => {
+    return (distance < 1 ? distance.toFixed(1) : distance.toFixed()) + 'km';
+  };
+
+  // fetch and set details of a certain order and it's supplier or creator
+  const getOrderDetails = (
+    orderId: string,
+    setOrderDetails: (orderDetails: IOrder) => void,
+    setProfileDetails?: (profileDetails: IProfile) => void,
+  ) => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        ordersCollection
+          .doc(orderId)
+          .onSnapshot((doc: firebase.firestore.DocumentData) => {
+            setOrderDetails({
+              ...(doc.data() as IOrder),
+              id: doc.id,
+            });
+
+            if (setProfileDetails) {
+              // check if user is the supplier or creator
+              let idToResolve: string;
+              if (user.uid === doc.data().supplier) {
+                idToResolve = doc.data().createdBy;
+              } else {
+                idToResolve = doc.data().supplier;
+              }
+
+              if (idToResolve) {
+                useProfile().resolveProfileId(idToResolve, setProfileDetails);
+              }
+            }
+          });
+      }
+    });
+  };
+
+  return {
+    createOrder,
+    calculateTotalArticleAmount,
+    getOrderStateColor,
+    setOrderState,
+    setSupplier,
+    populateOrders,
+    getOrderDistance,
+    formatDistance,
+    getOrderDetails,
+  };
 }

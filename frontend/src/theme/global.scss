@@ -55,6 +55,15 @@ ion-card-title {
   margin-right: auto;
 }
 
+.error-message {
+  display: inline-block;
+  color: var(--ion-color-danger);
+  padding: 4px 16px;
+  margin: 16px;
+  border-radius: 8px;
+  background-color: rgba(#eb445a, 0.1);
+}
+
 .wrapper {
   padding: 0 20px;
 }

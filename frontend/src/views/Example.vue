@@ -31,6 +31,7 @@ import {
 import { defineComponent } from 'vue';
 import Map from '../components/Map.vue';
 import { useGeolocation } from '../composables/useGeolocation';
+import * as geofire from 'geofire-common';
 
 export default defineComponent({
   name: 'Example',
@@ -59,6 +60,9 @@ export default defineComponent({
     },
   },
   data() {
+    const distanceInKm = geofire.distanceBetween([48.1, 10.2], [46.2, 9.1]);
+    console.log(distanceInKm);
+
     return {
       useGeolocation,
       markerPosition: { lat: 0, lng: 0 },

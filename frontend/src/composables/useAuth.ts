@@ -1,5 +1,7 @@
+import { IProfile } from '@/interfaces/IProfile';
 import router from '@/router';
 import firebase from 'firebase';
+import { useProfile } from './useProfile';
 
 export function useAuth() {
   // sign in user
@@ -23,27 +25,30 @@ export function useAuth() {
   const register = (
     email: string,
     password: string,
-    setErrorMessage?: (message: string) => void,
+    profileData: IProfile,
+    onError?: (message: string) => void,
   ) => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        router.push('home');
+      .then((res) => {
+        // when account is created save the profile data with its coordinates
+        useProfile().saveProfileWithGeocoding(
+          profileData,
+          () => {
+            router.push('home');
+          },
+          res.user!.uid,
+        );
       })
       .catch((error) => {
-        setErrorMessage && setErrorMessage(error.message);
+        onError && onError(error.message);
       });
   };
 
   // sign out user
   const logout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .catch((error: Error) => {
-        console.log(error.message);
-      });
+    firebase.auth().signOut();
   };
 
   // returns a promise of currently authenticated user

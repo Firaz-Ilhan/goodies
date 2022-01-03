@@ -1,39 +1,77 @@
-import { IProfile } from '@/interfaces/IProfile';
+import { IProfile } from '../interfaces/IProfile';
 import { db } from '@/main';
 import firebase from 'firebase';
+import { useGeolocation } from './useGeolocation';
+import type { ILocation } from '../interfaces/ILocation';
 
 export function useProfile() {
+  const currentUser = firebase.auth().currentUser!;
+  const profileCollection = db.collection('/profiles');
+
   // save/update profile
-  const saveProfile = (
+  const saveProfile = async (
     profileData: IProfile,
-    onSuccessToast: () => boolean,
+    onSuccess?: () => void,
+    profileId?: string,
   ) => {
-    const currentUser = firebase.auth().currentUser!;
-    db.collection('profiles')
-      .doc(currentUser.uid)
-      // maybe check if it exist and use update instead
-      .set({ ...profileData })
+    profileCollection
+      .doc(profileId || currentUser.uid)
+      .set({ ...profileData }, { merge: true })
       .then(() => {
-        onSuccessToast();
+        onSuccess && onSuccess();
+      });
+  };
+
+  // geocode address first and save profile with geocoordinates
+  const saveProfileWithGeocoding = (
+    profileData: IProfile,
+    onSuccess?: () => void,
+    profileId?: string,
+  ) => {
+    const { street, city, postalcode } = profileData;
+    const formattedAddress = `${street}, ${city}, ${postalcode}`;
+
+    useGeolocation()
+      .geoCodeAdress(formattedAddress)
+      .then((geocoordinates) => {
+        profileData.geocoords = geocoordinates as ILocation;
+
+        saveProfile(profileData, onSuccess, profileId);
       });
   };
 
   // try to fetch profile data of current user
-  const getProfileData = (setterFunction: (profileData: IProfile) => void) => {
-    const currentUser = firebase.auth().currentUser!;
-
-    db.collection('profiles')
-      .doc(currentUser.uid)
+  const resolveProfileId = (
+    profileId: string,
+    onSuccess: (profileData: IProfile) => void,
+    onError?: (error: Error) => void,
+  ) => {
+    profileCollection
+      .doc(profileId)
       .get()
       .then((doc) => {
         if (doc.exists) {
-          setterFunction(doc.data() as IProfile);
+          onSuccess(doc.data() as IProfile);
         }
       })
       .catch((error) => {
-        console.log('Error getting document:', error);
+        onError && onError(error);
       });
   };
 
-  return { saveProfile, getProfileData };
+  const watchProfileChanges = (
+    profileId: string,
+    setterFunction: (profileData: IProfile) => void,
+  ) => {
+    profileCollection.doc(profileId).onSnapshot((doc) => {
+      setterFunction(doc.data() as IProfile);
+    });
+  };
+
+  return {
+    saveProfile,
+    saveProfileWithGeocoding,
+    resolveProfileId,
+    watchProfileChanges,
+  };
 }

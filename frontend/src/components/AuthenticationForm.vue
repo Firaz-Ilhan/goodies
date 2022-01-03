@@ -2,39 +2,40 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{
-          mode === 'login' ? 'Anmelden' : 'Registrierung'
-        }}</ion-title>
+        <ion-title>
+          {{ isLogin ? 'Anmelden' : 'Registrierung' }}
+        </ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>
-            {{ mode === 'login' ? 'Login' : 'Registrierung' }}</ion-card-title
-          >
-        </ion-card-header>
+      <form
+        @submit.prevent="
+          isLogin
+            ? useAuth().login(email, password, (message: string) => {
+                errorMsg = message;
+              })
+            : handleSignUp()
+        "
+      >
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              {{ isLogin ? 'Login' : 'Registrierung' }}
+            </ion-card-title>
+          </ion-card-header>
 
-        <ion-card-content>
-          <form
-            @submit.prevent="
-              mode === 'login'
-                ? useAuth().login(email, password, (message: string) => {
-                    errorMsg = message;
-                  })
-                : useAuth().register(email, password, (message: string) => {
-                    errorMsg = message;
-                  })
-            "
-          >
+          <ion-card-content>
+            <p v-if="!isLogin" style="text-align: start; margin-top: 0">
+              Damit unsere App wie erwartet funktioniert brauchen wir zuerst ein
+              paar persönliche Angaben von dir.
+            </p>
             <ion-item>
               <ion-label position="floating">Email</ion-label>
               <ion-input
                 v-model="email"
                 type="email"
                 autocomplete="email"
-                autofocus
                 required
               ></ion-input>
             </ion-item>
@@ -42,30 +43,41 @@
               <ion-label position="floating">Password</ion-label>
               <ion-input
                 v-model="password"
-                :autocomplete="
-                  mode === 'login' ? 'current-password' : 'new-password'
-                "
+                :autocomplete="isLogin ? 'current-password' : 'new-password'"
                 type="password"
                 required
               ></ion-input>
             </ion-item>
+
             <ion-button
-              expand="block"
-              color="primary"
-              class="ion-margin-top"
+              v-if="isLogin"
+              class="ion-margin-top btn-center"
               type="submit"
+              :disabled="email.length === 0 || password.length === 0"
             >
-              {{ mode === 'login' ? 'Login' : 'Registrieren' }}
+              {{ isLogin ? 'Login' : 'Registrieren' }}
             </ion-button>
-          </form>
-        </ion-card-content>
+          </ion-card-content>
 
-        <ion-card-content v-if="errorMsg" class="error-message">
-          {{ errorMsg }}
-        </ion-card-content>
-      </ion-card>
+          <ion-card-content v-if="errorMsg" class="error-message">
+            {{ errorMsg }}
+          </ion-card-content>
+        </ion-card>
 
-      <p v-if="mode === 'login'">
+        <div v-if="!isLogin">
+          <ProfileForm :profile="profileData"></ProfileForm>
+
+          <ion-button
+            class="ion-margin-top btn-center"
+            type="submit"
+            :disabled="email.length === 0 || password.length === 0"
+          >
+            {{ isLogin ? 'Login' : 'Registrieren' }}
+          </ion-button>
+        </div>
+      </form>
+
+      <p v-if="isLogin">
         Keinen Account?
         <router-link to="/register">Hier registrieren.</router-link>
       </p>
@@ -78,6 +90,7 @@
 </template>
 
 <script lang="ts">
+import { IProfile } from '@/interfaces/IProfile';
 import {
   IonHeader,
   IonToolbar,
@@ -91,12 +104,13 @@ import {
   IonLabel,
   IonItem,
 } from '@ionic/vue';
-import { reactive, toRefs } from 'vue';
+import { defineComponent, reactive, toRefs } from 'vue';
 import { useAuth } from '../composables/useAuth';
+import ProfileForm from '../components/ProfileForm.vue';
 
-export default {
+export default defineComponent({
   name: 'AuthenticationForm',
-  props: ['mode'],
+  props: { mode: { type: String } },
   components: {
     IonHeader,
     IonToolbar,
@@ -109,42 +123,43 @@ export default {
     IonItem,
     IonLabel,
     IonButton,
+    ProfileForm,
   },
-  setup() {
+  setup(props) {
     const state = reactive({
       email: '',
       password: '',
       errorMsg: '',
+      profileData: {} as IProfile,
     });
+
+    const handleSignUp = () => {
+      useAuth().register(
+        state.email,
+        state.password,
+        state.profileData,
+        (message: string) => {
+          state.errorMsg = message;
+        },
+      );
+    };
 
     return {
       ...toRefs(state),
+      isLogin: props.mode === 'login',
+      handleSignUp,
       useAuth,
     };
   },
-};
+});
 </script>
 
 <style scoped lang="scss">
-.center {
-  display: flex;
-  height: 90vh;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-.error-message {
-  display: inline-block;
-  color: var(--ion-color-danger);
-  padding: 4px 16px;
-  margin: 16px;
-  border-radius: 8px;
-  background-color: rgba(#eb445a, 0.1);
+ion-card-title {
+  font-size: 24px;
 }
 
 p {
   margin-top: 2rem;
-  text-align: center;
 }
 </style>

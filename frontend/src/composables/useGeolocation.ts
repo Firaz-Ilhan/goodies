@@ -1,30 +1,46 @@
 import { loader } from '@/main';
 import { Geolocation, Position } from '@capacitor/geolocation';
 import geodata from '@/assets/mocking/geodata';
-import { ILocation } from '@/interfaces/ILocation';
+import * as geofire from 'geofire-common';
+import { useProfile } from './useProfile';
+import type { ILocation } from '@/interfaces/ILocation';
+import type { IProfile } from '@/interfaces/IProfile';
 
-let watchId: string | void;
+let watchId: string | null = null;
 
 export function useGeolocation() {
   // start watching geolocation changes of a user
   const startWatch = async () => {
-    const coordinates = await Geolocation.watchPosition(
-      {},
-      (position: Position | null) => {
-        console.log('pos', position);
-        return position;
-      },
-    ).catch((e: Error) => {
-      console.log(e.message);
-    });
-    watchId = coordinates;
+    // reassure that only one watch at a time is running
+    if (!watchId) {
+      const watcher = await Geolocation.watchPosition(
+        {},
+        (position: Position | null) => {
+          console.log('pos', position);
+          console.log('watchId', watchId);
+          if (position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const geohash = geofire.geohashForLocation([lat, lng]);
+
+            const lastPosition: ILocation = { lat, lng, geohash };
+            useProfile().saveProfile({ ...({} as IProfile), lastPosition });
+            if (watcher) watchId = watcher;
+          }
+        },
+      ).catch((e: Error) => {
+        console.log(e.message);
+      });
+    }
   };
 
+  // use if user got no more orders in the in Lieferung state
   // stop the watch subscription
   const stopWatch = () => {
     if (watchId) {
       Geolocation.clearWatch({ id: watchId });
       console.log(`Watch with id ${watchId} is cleared`);
+      watchId = null;
     }
   };
 
@@ -54,18 +70,23 @@ export function useGeolocation() {
     }
   };
 
-  // translates an address into a coordinates
-  const geoCodeAdress = async (address: string) => {
-    loader.load().then((google) => {
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode(address, (res: any) => {
-        const resPosition = {
-          lat: res[0].geometry.location.lat(),
-          lng: res[0].geometry.location.lng(),
-        };
-        console.log(res[0].formatted_address);
-        console.log(resPosition);
-        return resPosition;
+  // translates an address into a coordinates with a firestore geohash
+  const geoCodeAdress = (address: string) => {
+    return new Promise((resolve) => {
+      loader.load().then((google) => {
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ address }, (res: any) => {
+          const resPosition = {
+            lat: res[0].geometry.location.lat(),
+            lng: res[0].geometry.location.lng(),
+          };
+          const geohash = geofire.geohashForLocation([
+            resPosition.lat,
+            resPosition.lng,
+          ]);
+
+          resolve({ ...resPosition, geohash });
+        });
       });
     });
   };

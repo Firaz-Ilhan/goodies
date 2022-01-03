@@ -41,6 +41,18 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/deliver',
+    name: 'DeliverOverview',
+    component: () => import('@/views/DeliverOverview.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/deliver/:id',
+    name: 'DeliverDetails',
+    component: () => import('@/views/DeliverDetails.vue'),
+  },
+
+  {
     path: '/orders/:id',
     name: 'OrderDetails',
     component: () => import('@/views/OrderDetails.vue'),
