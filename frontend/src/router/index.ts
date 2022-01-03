@@ -63,6 +63,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/Profile.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/deliveryconfirmation',
+    name: 'DeliveryConfirmation',
+    component: () => import('@/views/DeliveryConfirmation.vue'),
+  },
 ];
 
 const router = createRouter({
