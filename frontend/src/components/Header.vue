@@ -1,7 +1,11 @@
 <template>
   <ion-header>
     <ion-toolbar>
-      <img :src="require('@/assets/images/' + menuBgImg)" class="menu-bg-img" />
+      <img
+        :src="require('@/assets/images/' + menuBgImg)"
+        alt=""
+        class="menu-bg-img"
+      />
       <ion-buttons slot="start" v-if="hasBackButton">
         <ion-back-button default-href="/home"></ion-back-button>
       </ion-buttons>

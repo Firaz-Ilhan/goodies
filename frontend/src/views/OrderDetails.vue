@@ -12,7 +12,7 @@
           profileRole="supplier"
         ></OrderDetailsProfileInfo>
 
-        <OrderBadges :order="orderDetails"></OrderBadges>
+        <OrderBadges :order="orderDetails" :distance="distance"></OrderBadges>
 
         <ShoppingListDetails :list="orderDetails.list"></ShoppingListDetails>
 
@@ -34,10 +34,12 @@
         </div>
 
         <ion-button
-          class="btn-center"
-          @click="useOrder().setOrderState($route.params.id as string ,'abgeschlossen')"
-          routerLink="/deliveryconfirmation"
           v-if="orderDetails.orderState === 'in Lieferung'"
+          class="btn-center"
+          @click="
+            useOrder().setOrderState(orderId, 'abgeschlossen');
+            $router.push(`/orders/${orderId}/confirmation`);
+          "
         >
           Waren erhalten
         </ion-button>
@@ -88,8 +90,10 @@ export default defineComponent({
   data() {
     return {
       isDevEnv: process.env.BASE_URL === '/',
+      orderId: this.$route.params.id as string,
       orderDetails: {} as IOrder,
       supplier: {} as IProfile,
+      distance: 0,
       markerPosition: {} as ILocation,
       centerPosition: {} as ILocation,
       updateCounter: 0,
@@ -101,9 +105,18 @@ export default defineComponent({
   created() {
     // fetch and populate order details and supplier data
     useOrder().getOrderDetails(
-      this.$route.params.id as string,
+      this.orderId,
       (orderDetails: IOrder) => {
         this.orderDetails = orderDetails;
+
+        // get distance between creator and supplier
+        if (['angenommen', 'in Lieferung'].includes(orderDetails.orderState)) {
+          useOrder()
+            .getOrderDistance(orderDetails)
+            .then((distanceInKm) => {
+              this.distance = distanceInKm;
+            });
+        }
 
         if (orderDetails.orderState === 'in Lieferung') {
           // in dev get static mocked supplier location
