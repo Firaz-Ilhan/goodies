@@ -2,8 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Ionic App</title>
-
+    <title>Goodies</title>
+    <meta
+      name="description"
+      content="Einkäufe nach Hause liefern und bestellen."
+    />
     <base href="/" />
 
     <meta name="color-scheme" content="light dark" />
@@ -14,17 +17,24 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
 
-    <link rel="shortcut icon" type="image/png" href="<%= BASE_URL %>assets/icon/favicon.png" />
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="<%= BASE_URL %>img/icons/favicon.png"
+    />
 
     <!-- add to homescreen for ios -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Ionic App" />
+    <meta name="apple-mobile-web-app-title" content="Goodies" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <script
+      async
+      src="https://unpkg.com/pwacompat"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
     <div id="app"></div>
   </body>
-
 </html>
-
