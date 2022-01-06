@@ -25,6 +25,7 @@ import '@ionic/vue/css/display.css';
 
 /* Theme variables */
 import './theme/variables.scss';
+import './theme/fonts.scss';
 import './theme/global.scss';
 import { Loader } from '@googlemaps/js-api-loader';
 import VueGoogleMaps from '@fawmi/vue-google-maps';
