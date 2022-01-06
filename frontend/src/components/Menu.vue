@@ -136,10 +136,9 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-bottom: 1rem;
   height: 100%;
 }
 .active-link * {
-  color: hsl(218, 100%, 61%);
+  color: var(--ion-color-primary);
 }
 </style>

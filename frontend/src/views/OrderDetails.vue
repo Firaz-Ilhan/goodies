@@ -17,7 +17,7 @@
         <ShoppingListDetails :list="orderDetails.list"></ShoppingListDetails>
 
         <div v-if="orderDetails.orderState === 'in Lieferung'">
-          <h2>Standort deines Lieferanten{{ isDevEnv && '*' }}</h2>
+          <h2>Standort deines Lieferanten{{ isDevEnv ? '*' : '' }}</h2>
           <Map
             v-if="isDevEnv"
             :markerPosition="markerPosition"
@@ -29,7 +29,7 @@
             :centerPosition="getSupplierCoordinates"
           ></Map>
           <p style="font-size: 12px">
-            {{ isDevEnv && '*Simulierte Daten für Development' }}
+            {{ isDevEnv ? '*Simulierte Daten für Development' : '' }}
           </p>
         </div>
 
@@ -56,10 +56,10 @@ import OrderDetailsProfileInfo from '@/components/OrderDetailsProfileInfo.vue';
 import Map from '../components/Map.vue';
 import { useOrder } from '../composables/useOrder';
 import { useGeolocation } from '../composables/useGeolocation';
+import { useProfile } from '../composables/useProfile';
 import type { ILocation } from '../interfaces/ILocation';
 import type { IOrder } from '../interfaces/IOrder';
 import type { IProfile } from '../interfaces/IProfile';
-import { useProfile } from '@/composables/useProfile';
 
 export default defineComponent({
   name: 'OrderDetails',
@@ -87,7 +87,9 @@ export default defineComponent({
 
   data() {
     return {
-      isDevEnv: process.env.BASE_URL === '/',
+      isDevEnv: ['localhost', '127.0.0.1', ''].includes(
+        window.location.hostname,
+      ),
       orderDetails: {} as IOrder,
       supplier: {} as IProfile,
       markerPosition: {} as ILocation,

@@ -3,26 +3,28 @@
     <Header title="Home"></Header>
 
     <ion-content>
-      <h1>Herzlich Willkommen bei goodies!</h1>
-      <p>Hier helfen Nachbarn Nachbarn.</p>
+      <div class="wrapper">
+        <h1>Herzlich Willkommen bei goodies!</h1>
+        <p>Hier helfen Nachbarn Nachbarn.</p>
 
-      <p><strong>Triff deine Auswahl:</strong></p>
-      <p>Möchtest du<br /><strong>Deinen Nachbarn unterstützen?</strong></p>
+        <p><strong>Triff deine Auswahl:</strong></p>
+        <p>Möchtest du<br /><strong>Deinen Nachbarn unterstützen?</strong></p>
 
-      <router-link to="/deliver">
-        <img src="../assets/images/liefern.png" alt="Einkaufen und Liefern" />
-      </router-link>
-      <br />
+        <router-link to="/deliver">
+          <img src="../assets/images/liefern.png" alt="Einkaufen und Liefern" />
+        </router-link>
+        <br />
 
-      <p>Oder möchtest du<br /><strong> dir etwas liefern lassen?</strong></p>
-      <router-link to="/orders">
-        <img src="../assets/images/bestellen.png" alt="Bestellen" />
-      </router-link>
+        <p>Oder möchtest du<br /><strong> dir etwas liefern lassen?</strong></p>
+        <router-link to="/orders">
+          <img src="../assets/images/bestellen.png" alt="Bestellen" />
+        </router-link>
 
-      <p>
-        Oder zurück zum
-        <router-link to="/onboarding"> Onboarding </router-link>
-      </p>
+        <p>
+          Oder zurück zum
+          <router-link to="/onboarding"> Onboarding </router-link>
+        </p>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -47,6 +49,10 @@ ion-content {
 h1 {
   font-size: 24px;
   margin-bottom: 20px;
+}
+
+.wrapper {
+  margin-bottom: 40px;
 }
 
 img {

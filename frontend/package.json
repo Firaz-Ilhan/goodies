@@ -4,12 +4,13 @@
   "private": true,
   "description": "An Ionic project",
   "scripts": {
+    "dev": "ionic serve --livereload",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "ionic build",
+    "deploy": "firebase deploy",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint",
-    "dev": "ionic serve --livereload"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@capacitor/app": "1.0.7",

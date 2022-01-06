@@ -34,4 +34,5 @@ npm-debug.log*
 .env.local
 .env.production
 
-/public
+/.firebase
+hosting.*
