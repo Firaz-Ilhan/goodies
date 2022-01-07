@@ -63,5 +63,5 @@ export const auth = firebase.auth();
 
 // google maps loader
 export const loader = new Loader({
-  apiKey: process.env.VUE_APP_GOOGLE_MAPS_API_KEY,
+  apiKey: process.env.VUE_APP_GOOGLE_MAPS_API_KEY as string,
 });

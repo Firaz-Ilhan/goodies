@@ -14,6 +14,19 @@
         :markerPosition="markerPosition"
         :centerPosition="centerPosition"
       ></Map>
+
+      <ion-button @click="getToken">Get Token</ion-button>
+      <ion-button @click="sub('testtopic')">Subscribe</ion-button>
+      <ion-button @click="unsub('testtopic')">Unsubscripe</ion-button>
+      <ion-button
+        @click="
+          sendToTopic({
+            topic: 'testtopic',
+            notification: { title: 'test', body: 'body' },
+          })
+        "
+        >Send to topic</ion-button
+      >
     </ion-content>
   </ion-page>
 </template>
@@ -31,6 +44,7 @@ import {
 import { defineComponent } from 'vue';
 import Map from '../components/Map.vue';
 import { useGeolocation } from '../composables/useGeolocation';
+import { useFcm } from '../composables/useFcm';
 import * as geofire from 'geofire-common';
 
 export default defineComponent({
@@ -61,9 +75,13 @@ export default defineComponent({
   },
   data() {
     const distanceInKm = geofire.distanceBetween([48.1, 10.2], [46.2, 9.1]);
-    console.log(distanceInKm);
+    const { sub, unsub, getToken, sendToTopic } = useFcm();
 
     return {
+      sub,
+      unsub,
+      getToken,
+      sendToTopic,
       useGeolocation,
       markerPosition: { lat: 0, lng: 0 },
       centerPosition: { lat: 0, lng: 0 },
