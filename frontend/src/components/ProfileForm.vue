@@ -1,6 +1,6 @@
 <template>
   <ion-card>
-    <ion-card-content @input="emit('update:profile', profileRef)">
+    <ion-card-content @input="emit('updateProfile', profileRef)">
       <h1 class="caption">Persönliche Angaben</h1>
       <ion-item>
         <ion-label position="floating">Vorname</ion-label>
@@ -66,7 +66,7 @@
           name="payment"
           v-model="profileRef.payment"
           value="barzahlung"
-          @click="radioTouched"
+          @click="emit('radioTouched')"
         >
           <ion-item>
             <ion-label>Barzahlung</ion-label>
@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref, defineEmits } from 'vue';
+import { ref, defineEmits } from 'vue';
 import {
   IonCard,
   IonCardContent,
@@ -95,15 +95,22 @@ import {
   IonInput,
 } from '@ionic/vue';
 import { IProfile } from '../interfaces/IProfile';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { useProfile } from '../composables/useProfile';
 
-const props = defineProps<{
-  profile: IProfile;
-  // needed workaround to detect a a change in the radioform
-  radioTouched?: () => void;
-}>();
+const emit = defineEmits(['updateProfile', 'radioTouched']);
+const profileRef = ref({} as IProfile);
 
-const emit = defineEmits(['update:profile']);
-const profileRef = ref(props.profile);
+// fetch profile data and update state
+const user = firebase.auth().currentUser;
+
+if (user) {
+  const setProfile = (profileData: IProfile) => {
+    profileRef.value = { ...profileData };
+  };
+  useProfile().resolveProfileId(user.uid, setProfile);
+}
 </script>
 
 <style scoped lang="scss"></style>

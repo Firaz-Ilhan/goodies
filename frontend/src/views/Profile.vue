@@ -3,11 +3,7 @@
     <Header title="Profil" :hasBackButton="true"></Header>
     <ion-content>
       <form @submit.prevent="handleSave" @input="isTouched = true">
-        <ProfileForm
-          v-if="profile.payment"
-          :profile="profile"
-          :radioTouched="() => (isTouched = true)"
-        ></ProfileForm>
+        <ProfileForm @radioTouched="() => (isTouched = true)"></ProfileForm>
 
         <ion-button
           class="btn-center ion-margin-vertical"
@@ -34,7 +30,6 @@
 <script lang="ts">
 import { IonContent, IonButton, IonToast } from '@ionic/vue';
 import { defineComponent, reactive, toRefs, ref } from 'vue';
-import firebase from 'firebase';
 
 import type { IProfile } from '../interfaces/IProfile';
 import Header from '../components/Header.vue';
@@ -62,13 +57,6 @@ export default defineComponent({
     const setToastActive = (state: boolean) => {
       toastActive.value = state;
     };
-
-    // fetch profile data and update state
-    const user = firebase.auth().currentUser!;
-    const setProfile = (profileData: IProfile) => {
-      state.profile = { ...profileData };
-    };
-    useProfile().resolveProfileId(user.uid, setProfile);
 
     // handle saving / updating profile data
     const handleSave = () => {

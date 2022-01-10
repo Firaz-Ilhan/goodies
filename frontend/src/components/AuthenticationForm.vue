@@ -9,15 +9,7 @@
     </ion-header>
 
     <ion-content>
-      <form
-        @submit.prevent="
-          isLogin
-            ? useAuth().login(email, password, (message: string) => {
-                errorMsg = message;
-              })
-            : handleSignUp()
-        "
-      >
+      <form @submit.prevent="handleSubmit">
         <ion-card>
           <ion-card-header>
             <ion-card-title>
@@ -65,8 +57,9 @@
         </ion-card>
 
         <div v-if="!isLogin">
-          <ProfileForm :profile="profileData"></ProfileForm>
-
+          <ProfileForm
+            @updateProfile="(dataChange) => (profileData = dataChange)"
+          ></ProfileForm>
           <ion-button
             class="ion-margin-top btn-center"
             type="submit"
@@ -126,6 +119,9 @@ export default defineComponent({
     ProfileForm,
   },
   setup(props) {
+    const isLogin = props.mode === 'login';
+    const { login, register } = useAuth();
+
     const state = reactive({
       email: '',
       password: '',
@@ -133,22 +129,27 @@ export default defineComponent({
       profileData: {} as IProfile,
     });
 
-    const handleSignUp = () => {
-      useAuth().register(
-        state.email,
-        state.password,
-        state.profileData,
-        (message: string) => {
+    const handleSubmit = () => {
+      if (isLogin) {
+        login(state.email, state.password, (message: string) => {
           state.errorMsg = message;
-        },
-      );
+        });
+      } else {
+        register(
+          state.email,
+          state.password,
+          state.profileData,
+          (message: string) => {
+            state.errorMsg = message;
+          },
+        );
+      }
     };
 
     return {
       ...toRefs(state),
-      isLogin: props.mode === 'login',
-      handleSignUp,
-      useAuth,
+      isLogin,
+      handleSubmit,
     };
   },
 });
