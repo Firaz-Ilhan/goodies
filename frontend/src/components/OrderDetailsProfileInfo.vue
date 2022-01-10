@@ -1,15 +1,25 @@
 <template>
   <div>
-    <p>
+    <h1>{{ order.name }}</h1>
+    <p class="date">
+      Erstellt am
+      {{ new Date(order.createdAt).toLocaleDateString('de-EU') }}
+    </p>
+
+    <p v-if="profile.firstname">
       {{ profileRole === 'creator' ? 'Erstellt von' : 'Angenommen von' }}
-      <strong>{{ profile.firstname + ' ' + profile.lastname }}</strong>
+      <strong>{{ profile.firstname + ' ' + props.profile.lastname }}</strong>
     </p>
-    <p v-if="profileRole === 'creator'">
-      {{ profile.street + ', ' + profile.city + ' ' + profile.postalcode }}
-    </p>
-    <a :href="'tel:' + profile.telephone">
-      <ion-icon :icon="callOutline"></ion-icon>{{ profile.telephone }}</a
-    >
+
+    <div v-if="order.orderState !== 'offen' && profile.street">
+      <p v-if="profileRole === 'creator'">
+        {{ profile.street + ', ' + profile.city + ' ' + profile.postalcode }}
+      </p>
+
+      <a :href="'tel:' + profile.telephone">
+        <ion-icon :icon="callOutline"></ion-icon>{{ profile.telephone }}
+      </a>
+    </div>
   </div>
 </template>
 
@@ -19,18 +29,24 @@ import { IonIcon } from '@ionic/vue';
 import { callOutline } from 'ionicons/icons';
 
 import type { IProfile } from '@/interfaces/IProfile';
+import type { IOrder } from '@/interfaces/IOrder';
 
 interface Props {
   profile: IProfile;
+  order: IOrder;
   profileRole: 'creator' | 'supplier';
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   profileRole: 'supplier',
 });
 </script>
 
 <style scoped lang="scss">
+.date {
+  color: var(--ion-color-medium);
+}
+
 a {
   display: flex;
   align-content: center;

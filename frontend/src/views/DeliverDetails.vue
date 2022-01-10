@@ -3,15 +3,13 @@
     <Header title="Liefer Details" :hasBackButton="true" />
     <ion-content>
       <div class="wrapper">
-        <h1>{{ deliverDetails.name }}</h1>
-        <OrderBadges :order="deliverDetails" :distance="distance"></OrderBadges>
-
         <OrderDetailsProfileInfo
-          v-if="deliverDetails.orderState !== 'offen' && creator.firstname"
-          class="ion-margin-top"
           :profile="creator"
+          :order="deliverDetails"
           profileRole="creator"
         ></OrderDetailsProfileInfo>
+
+        <OrderBadges :order="deliverDetails" :distance="distance"></OrderBadges>
 
         <ShoppingListDetails
           :list="deliverDetails.list"
@@ -134,10 +132,6 @@ export default defineComponent({
   },
 
   computed: {
-    getCreatorName(): string {
-      const { firstname, lastname } = this.creator;
-      return firstname + ' ' + lastname;
-    },
     getCreatorLocation(): ILocation {
       const { lat, lng } = this.creator.geocoords;
       return { lat, lng };

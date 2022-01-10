@@ -3,11 +3,9 @@
     <Header title="Meine Bestellungen" :hasBackButton="true" />
     <ion-content>
       <div class="wrapper">
-        <h1>{{ orderDetails.name }}</h1>
-
         <OrderDetailsProfileInfo
-          v-if="orderDetails.orderState !== 'offen' && supplier.firstname"
           class="ion-margin-top"
+          :order="orderDetails"
           :profile="supplier"
           profileRole="supplier"
         ></OrderDetailsProfileInfo>
@@ -126,10 +124,6 @@ export default defineComponent({
   },
 
   computed: {
-    getSupplierName(): string {
-      const { firstname, lastname } = this.supplier;
-      return firstname + ' ' + lastname;
-    },
     getSupplierCoordinates(): ILocation | null {
       if (this.supplier.lastPosition) {
         const { lat, lng } = this.supplier.lastPosition;
