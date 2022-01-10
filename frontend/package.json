@@ -28,6 +28,7 @@
     "firebase": "^8.10.0",
     "geofire-common": "^5.2.0",
     "ionicons": "^6.0.0",
+    "pwacompat": "^2.0.17",
     "register-service-worker": "^1.7.1",
     "swiper": "^6.8.4",
     "vue": "^3.2.21",
