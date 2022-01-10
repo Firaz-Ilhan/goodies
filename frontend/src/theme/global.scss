@@ -66,3 +66,7 @@ ion-card-title {
 .wrapper {
   padding: 0 20px;
 }
+
+link[rel='manifest'] {
+  --pwacompat-splash-font: 24px 'Rubik';
+}

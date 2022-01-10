@@ -17,21 +17,19 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
 
-    <link
-      rel="shortcut icon"
-      type="image/png"
-      href="<%= BASE_URL %>img/icons/favicon.png"
-    />
-
-    <!-- add to homescreen for ios -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Goodies" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="manifest" href="/manifest.json" />
     <script
       async
-      src="https://unpkg.com/pwacompat"
+      src="https://cdn.jsdelivr.net/npm/pwacompat"
       crossorigin="anonymous"
     ></script>
+
+    <link
+      rel="icon"
+      type="image/png"
+      href=".img/icons/icon-256.png"
+      sizes="256x256"
+    />
   </head>
 
   <body>
