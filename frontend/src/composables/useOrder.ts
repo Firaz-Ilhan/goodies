@@ -1,11 +1,13 @@
-import { IListEntry } from '@/interfaces/IListEntry';
-import { IOrder } from '@/interfaces/IOrder';
-import { IProfile } from '@/interfaces/IProfile';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import { db } from '@/main';
-import firebase from 'firebase';
 import * as geofire from 'geofire-common';
 
 import { useProfile } from './useProfile';
+import type { IListEntry } from '../interfaces/IListEntry';
+import type { IOrder } from '../interfaces/IOrder';
+import type { IProfile } from '../interfaces/IProfile';
 
 export function useOrder() {
   const user = firebase.auth().currentUser!;
@@ -169,10 +171,11 @@ export function useOrder() {
             if (setProfileDetails) {
               // check if user is the supplier or creator
               let idToResolve: string;
-              if (user.uid === doc.data().supplier) {
-                idToResolve = doc.data().createdBy;
-              } else {
+
+              if (user.uid === doc.data().createdBy) {
                 idToResolve = doc.data().supplier;
+              } else {
+                idToResolve = doc.data().createdBy;
               }
 
               if (idToResolve) {

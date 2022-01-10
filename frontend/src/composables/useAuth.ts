@@ -1,7 +1,8 @@
-import { IProfile } from '@/interfaces/IProfile';
 import router from '@/router';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import { useProfile } from './useProfile';
+import type { IProfile } from '../interfaces/IProfile';
 
 export function useAuth() {
   // sign in user

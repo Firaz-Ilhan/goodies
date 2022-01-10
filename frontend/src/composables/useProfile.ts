@@ -1,7 +1,8 @@
-import { IProfile } from '../interfaces/IProfile';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import { db } from '@/main';
-import firebase from 'firebase';
 import { useGeolocation } from './useGeolocation';
+import type { IProfile } from '../interfaces/IProfile';
 import type { ILocation } from '../interfaces/ILocation';
 
 export function useProfile() {

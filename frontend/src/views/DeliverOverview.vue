@@ -63,7 +63,8 @@
 <script lang="ts">
 import { IonSegment, IonSegmentButton } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import Header from '../components/Header.vue';
 import OrderCard from '../components/OrderCard.vue';
 import { useOrder } from '../composables/useOrder';

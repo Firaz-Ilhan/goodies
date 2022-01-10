@@ -1,7 +1,9 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 import { IonContent, IonicVue, IonPage } from '@ionic/vue';
 
 // Add service worker
@@ -49,6 +51,7 @@ app.component('ion-page', IonPage);
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
+  databaseUrl: `https://${process.env.VUE_APP_FB_PROJECT_ID}.firebaseio.com`,
   apiKey: process.env.VUE_APP_FB_API_KEY,
   authDomain: process.env.VUE_APP_FB_AUTH_DOMAIN,
   projectId: process.env.VUE_APP_FB_PROJECT_ID,
@@ -58,6 +61,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 export const db = firebase.firestore();
 export const auth = firebase.auth();
 
@@ -65,3 +69,10 @@ export const auth = firebase.auth();
 export const loader = new Loader({
   apiKey: process.env.VUE_APP_GOOGLE_MAPS_API_KEY,
 });
+
+// if production enable offline caching
+const isProduction = !['localhost', '127.0.0.1', ''].includes(
+  window.location.hostname,
+);
+
+isProduction && firebase.firestore().enablePersistence();
