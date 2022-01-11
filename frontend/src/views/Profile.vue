@@ -8,18 +8,23 @@
         <ion-button
           class="btn-center ion-margin-vertical"
           type="submit"
-          :disabled="!isTouched"
+          :disabled="!isTouched || isLoading"
         >
           Speichern
+          <ion-spinner
+            v-if="isLoading"
+            color="light"
+            name="bubbles"
+          ></ion-spinner>
         </ion-button>
 
         <ion-toast
-          :is-open="toastActive"
+          :is-open="isToastActive"
           message="Änderungen gespeichert."
-          color="medium"
+          color="success"
           position="top"
           :duration="2000"
-          @didDismiss="setToastActive(false)"
+          @didDismiss="() => (isToastActive = false)"
         >
         </ion-toast>
       </form>
@@ -29,7 +34,7 @@
 
 <script lang="ts">
 import { IonContent, IonButton, IonToast } from '@ionic/vue';
-import { defineComponent, reactive, toRefs, ref } from 'vue';
+import { defineComponent, reactive, toRefs } from 'vue';
 
 import type { IProfile } from '../interfaces/IProfile';
 import Header from '../components/Header.vue';
@@ -50,25 +55,22 @@ export default defineComponent({
     const state = reactive({
       profile: {} as IProfile,
       isTouched: false,
+      isLoading: false,
+      isToastActive: false,
     });
-
-    // show toast state
-    const toastActive = ref(false);
-    const setToastActive = (state: boolean) => {
-      toastActive.value = state;
-    };
 
     // handle saving / updating profile data
     const handleSave = () => {
-      useProfile().saveProfileWithGeocoding(state.profile, () =>
-        setToastActive(true),
-      );
+      state.isLoading = true;
+      useProfile().saveProfileWithGeocoding(state.profile, () => {
+        state.isToastActive = true;
+        state.isLoading = false;
+        state.isTouched = false;
+      });
     };
 
     return {
       ...toRefs(state),
-      toastActive,
-      setToastActive,
       handleSave,
     };
   },
