@@ -105,5 +105,3 @@ const props = defineProps<{
 const emit = defineEmits(['update:profile']);
 const profileRef = ref(props.profile);
 </script>
-
-<style scoped lang="scss"></style>
