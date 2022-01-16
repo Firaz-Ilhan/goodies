@@ -43,6 +43,15 @@
         >
           Waren erhalten
         </ion-button>
+
+        <ion-button
+          v-if="orderDetails.orderState === 'abgeschlossen'"
+          class="btn-center"
+          fill="clear"
+          @click="openModal"
+        >
+          Neue Bestellung aus Vorlage
+        </ion-button>
       </div>
     </ion-content>
   </ion-page>
@@ -50,12 +59,13 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core';
-import { IonContent, IonButton } from '@ionic/vue';
+import { IonContent, IonButton, modalController } from '@ionic/vue';
 import Header from '../components/Header.vue';
 import OrderBadges from '../components/OrderBadges.vue';
 import ShoppingListDetails from '../components/ShoppingListDetails.vue';
 import OrderDetailsProfileInfo from '@/components/OrderDetailsProfileInfo.vue';
 import Map from '../components/Map.vue';
+import CreateOrderModal from '../components/CreateOrderModal.vue';
 import { useOrder } from '../composables/useOrder';
 import { useGeolocation } from '../composables/useGeolocation';
 import type { ILocation } from '../interfaces/ILocation';
@@ -84,6 +94,14 @@ export default defineComponent({
         this.centerPosition = this.markerPosition;
       }
       this.updateCounter++;
+    },
+
+    async openModal() {
+      const modal = await modalController.create({
+        component: CreateOrderModal,
+        componentProps: { order: { ...this.orderDetails } },
+      });
+      return modal.present();
     },
   },
 
