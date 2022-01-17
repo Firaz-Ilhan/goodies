@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, withDefaults } from 'vue';
+import { withDefaults } from 'vue';
 import { IonBadge } from '@ionic/vue';
 import { useOrder } from '../composables/useOrder';
 import type { IOrder } from '../interfaces/IOrder';
@@ -27,7 +27,7 @@ const { getOrderStateColor, calculateTotalArticleAmount, formatDistance } =
 
 interface Props {
   order: IOrder;
-  distance?: number;
+  distance: number;
 }
 
 withDefaults(defineProps<Props>(), {

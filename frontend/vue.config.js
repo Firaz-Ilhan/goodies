@@ -6,6 +6,7 @@ module.exports = {
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
     manifestOptions: {
+      // eslint-disable-next-line @typescript-eslint/camelcase
       background_color: '#f0f0f0',
       icons: [
         {

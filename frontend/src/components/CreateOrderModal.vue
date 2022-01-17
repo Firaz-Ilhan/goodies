@@ -58,7 +58,7 @@ import {
   IonItem,
   modalController,
 } from '@ionic/vue';
-import { defineProps, withDefaults, ref } from 'vue';
+import { withDefaults, ref } from 'vue';
 import { IListEntry } from '../interfaces/IListEntry';
 import { IOrder } from '../interfaces/IOrder';
 import AddListItem from './AddListItem.vue';
@@ -74,7 +74,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const name = ref(props.order.name || '');
-const list = ref([]);
+const list = ref(props.order.list || []);
+console.log(props.order.list || []);
+console.log(props.order.list);
 const { createOrder } = useOrder();
 
 const closeModal = async () => {

@@ -17,7 +17,7 @@
 import { useOrder } from '@/composables/useOrder';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { computed, defineProps, withDefaults } from 'vue';
+import { computed, withDefaults } from 'vue';
 
 import type { IOrder } from '../interfaces/IOrder';
 

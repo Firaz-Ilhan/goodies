@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, withDefaults } from 'vue';
+import { withDefaults } from 'vue';
 import { IonIcon } from '@ionic/vue';
 import { callOutline } from 'ionicons/icons';
 
