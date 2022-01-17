@@ -106,8 +106,7 @@ export default defineComponent({
     acceptedOrders(): IOrder[] {
       return this.orders.filter(
         (order: IOrder) =>
-          (order.orderState === 'angenommen' ||
-            order.orderState === 'in Lieferung') &&
+          ['angenommen', 'in Lieferung'].includes(order.orderState) &&
           order.supplier === this.user.uid,
       );
     },

@@ -4,12 +4,6 @@
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import AuthenticationForm from '../components/AuthenticationForm.vue';
-
-export default {
-  components: { AuthenticationForm },
-};
 </script>
-
-<style scoped></style>

@@ -112,5 +112,3 @@ if (user) {
   useProfile().resolveProfileId(user.uid, setProfile);
 }
 </script>
-
-<style scoped lang="scss"></style>

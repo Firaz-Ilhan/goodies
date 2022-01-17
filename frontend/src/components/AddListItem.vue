@@ -3,13 +3,13 @@
     <h1 class="caption">Artikel hinzufügen</h1>
     <ion-row class="ion-align-items-end">
       <ion-col size="6">
-        <ion-item>
+        <ion-item class="ion-no-padding">
           <ion-label position="floating">Artikel</ion-label>
           <ion-input v-model="article" autofocus></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size="3">
-        <ion-item>
+        <ion-item class="ion-no-padding">
           <ion-label position="floating">Anzahl</ion-label>
           <ion-input type="number" v-model="amount" required></ion-input>
         </ion-item>
@@ -57,7 +57,7 @@ export default defineComponent({
         this.list.push(listEntry);
         this.article = '';
         this.amount = 1;
-        this.setList(this.list);
+        this.setList(listEntry);
       } else {
         console.log('invalid input');
       }

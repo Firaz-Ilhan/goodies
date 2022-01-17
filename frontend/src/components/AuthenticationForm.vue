@@ -40,14 +40,24 @@
                 required
               ></ion-input>
             </ion-item>
-
+            <ion-item v-if="!isLogin" lines="none">
+              <ion-label class="legals"
+                >Ich akzeptiere die <a href="/">AGB</a> und die
+                <a href="/">Datenschutzerklräung</a>.</ion-label
+              >
+              <ion-checkbox
+                button
+                slot="start"
+                :modelValue="legalAccepted"
+              ></ion-checkbox>
+            </ion-item>
             <ion-button
               v-if="isLogin"
               class="ion-margin-top btn-center"
               type="submit"
               :disabled="email.length === 0 || password.length === 0"
             >
-              {{ isLogin ? 'Login' : 'Registrieren' }}
+              Login
             </ion-button>
           </ion-card-content>
 
@@ -65,7 +75,7 @@
             type="submit"
             :disabled="email.length === 0 || password.length === 0"
           >
-            {{ isLogin ? 'Login' : 'Registrieren' }}
+            Registrieren
           </ion-button>
         </div>
       </form>
@@ -127,6 +137,7 @@ export default defineComponent({
       password: '',
       errorMsg: '',
       profileData: {} as IProfile,
+      legalAccepted: false,
     });
 
     const handleSubmit = () => {
@@ -155,9 +166,22 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 ion-card-title {
+  margin-top: 8px;
   font-size: 24px;
+}
+
+form {
+  max-width: 500px;
+  margin: 3rem auto 0;
+}
+
+ion-checkbox {
+  margin-right: 16px;
+}
+.legals {
+  font-size: 14px;
 }
 
 p {

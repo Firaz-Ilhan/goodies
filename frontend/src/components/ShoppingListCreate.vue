@@ -68,8 +68,4 @@ export default defineComponent({
   color: var(--ion-color-medium);
   margin-top: 8px;
 }
-
-ion-item {
-  padding-left: 0 !important;
-}
 </style>

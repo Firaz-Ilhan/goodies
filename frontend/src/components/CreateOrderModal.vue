@@ -11,12 +11,17 @@
 
     <ion-content>
       <form
-        @submit.prevent="useOrder().createOrder(name, list, closeModal)"
+        @submit.prevent="
+          createOrder(name, list, () => {
+            closeModal();
+            $router.push('/orders');
+          })
+        "
         class="wrapper"
       >
-        <h1 class="caption">Deine Bestellung</h1>
+        <h1>Deine Bestellung</h1>
 
-        <ion-item>
+        <ion-item class="ion-no-padding">
           <ion-label position="floating">Name</ion-label>
           <ion-input v-model="name" required />
         </ion-item>
@@ -30,7 +35,7 @@
         </div>
 
         <ion-button
-          class="btn-center create-btn"
+          class="btn-center"
           type="submit"
           :disabled="list.length <= 0"
         >
@@ -41,9 +46,8 @@
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
-  IonContent,
   IonHeader,
   IonTitle,
   IonToolbar,
@@ -54,45 +58,32 @@ import {
   IonItem,
   modalController,
 } from '@ionic/vue';
-import { defineComponent } from 'vue';
+import { defineProps, withDefaults, ref } from 'vue';
 import { IListEntry } from '../interfaces/IListEntry';
+import { IOrder } from '../interfaces/IOrder';
 import AddListItem from './AddListItem.vue';
 import ShoppingListCreate from './ShoppingListCreate.vue';
 import { useOrder } from '../composables/useOrder';
 
-export default defineComponent({
-  name: 'CreateOrderModal',
-  methods: {
-    async closeModal() {
-      await modalController.dismiss();
-    },
+interface Props {
+  order?: IOrder;
+}
 
-    setList(list: IListEntry[]) {
-      this.list = list;
-    },
-  },
-  components: {
-    IonContent,
-    IonHeader,
-    IonTitle,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonLabel,
-    IonInput,
-    IonItem,
-    AddListItem,
-    ShoppingListCreate,
-  },
-  data() {
-    return {
-      name: '',
-      list: new Array<IListEntry>(),
-      useOrder,
-      AddListItem,
-    };
-  },
+const props = withDefaults(defineProps<Props>(), {
+  order: () => ({} as IOrder),
 });
+
+const name = ref(props.order.name || '');
+const list = ref(props.order.list.slice() || []);
+const { createOrder } = useOrder();
+
+const closeModal = async () => {
+  await modalController.dismiss();
+};
+
+const setList = (entry: IListEntry) => {
+  list.value.push(entry);
+};
 </script>
 
 <style scoped lang="scss">

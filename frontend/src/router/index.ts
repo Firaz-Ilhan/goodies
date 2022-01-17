@@ -30,11 +30,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/Onboarding.vue'),
   },
   {
-    path: '/example',
-    name: 'Example',
-    component: () => import('@/views/Example.vue'),
-  },
-  {
     path: '/orders',
     name: 'OrderOverview',
     component: () => import('@/views/OrderOverview.vue'),
@@ -50,12 +45,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/deliver/:id',
     name: 'DeliverDetails',
     component: () => import('@/views/DeliverDetails.vue'),
+    meta: { requiresAuth: true },
   },
 
   {
     path: '/orders/:id',
     name: 'OrderDetails',
     component: () => import('@/views/OrderDetails.vue'),
+    meta: { requiresAuth: true },
   },
   {
     path: '/profile',
@@ -64,9 +61,10 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/deliveryconfirmation',
-    name: 'DeliveryConfirmation',
-    component: () => import('@/views/DeliveryConfirmation.vue'),
+    path: '/orders/:id/confirmation',
+    name: 'OrderConfirmation',
+    component: () => import('@/views/OrderConfirmation.vue'),
+    meta: { requiresAuth: true },
   },
 ];
 
