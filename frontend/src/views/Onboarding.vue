@@ -63,7 +63,19 @@
 </template>
 
 <script lang="ts">
-import { IonContent, IonPage, IonicSwiper } from '@ionic/vue';
+import {
+  IonContent,
+  IonPage,
+  IonicSwiper,
+  IonTitle,
+  IonButton,
+  IonToolbar,
+  IonHeader,
+  IonCard,
+  IonCardContent,
+  IonCardTitle,
+  IonButtons,
+} from '@ionic/vue';
 import { defineComponent } from 'vue';
 import SwiperCore, { Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -80,6 +92,14 @@ export default defineComponent({
     IonPage,
     Swiper,
     SwiperSlide,
+    IonTitle,
+    IonButton,
+    IonToolbar,
+    IonHeader,
+    IonCard,
+    IonCardContent,
+    IonCardTitle,
+    IonButtons,
   },
 });
 </script>

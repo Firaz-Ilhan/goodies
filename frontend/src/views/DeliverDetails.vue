@@ -60,20 +60,28 @@
         >
           Annehmen</ion-button
         >
+        
         <ion-button
           v-if="deliverDetails.orderState == 'angenommen'"
           class="btn-center"
-          @click="useOrder().setOrderState($route.params.id as string ,'in Lieferung')"
+          @click="useOrder().setOrderState($route.params.id as string ,'in Lieferung'); presentAlert()"
         >
-          Hab alles bin los</ion-button
+          Hab alles bin los
+        </ion-button>
+
+          <ion-button
+          v-if="deliverDetails.orderState == 'abgeschlossen'"
+          class="btn-center"
+          @click="stopWatch()"
         >
+          Standort Tracking beenden</ion-button>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonContent, IonButton, IonIcon } from '@ionic/vue';
+import { IonContent, IonButton, IonIcon, alertController } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import Header from '../components/Header.vue';
 import OrderBadges from '../components/OrderBadges.vue';
@@ -84,7 +92,8 @@ import type { IOrder } from '../interfaces/IOrder';
 import type { IProfile } from '../interfaces/IProfile';
 import { useOrder } from '../composables/useOrder';
 import { locationOutline } from 'ionicons/icons';
-import OrderDetailsProfileInfo from '@/components/OrderDetailsProfileInfo.vue';
+import OrderDetailsProfileInfo from '../components/OrderDetailsProfileInfo.vue';
+import { useGeolocation } from '../composables/useGeolocation';
 
 export default defineComponent({
   name: 'DeliverDetails',
@@ -99,8 +108,30 @@ export default defineComponent({
     OrderDetailsProfileInfo,
   },
 
+  methods: {
+ async presentAlert() {
+      const alert = await alertController.create({
+        header: 'Tracking starten?',
+        buttons: [
+          {
+            text: 'Abbrechen',
+            role: 'cancel',
+          },
+          {
+            text: 'Tracking starten',
+            handler: () =>  {
+              this.startWatch()
+            },
+          },
+        ],
+      });
+      return alert.present();
+    },
+  },
+
   data() {
     const deliverDetails = {} as IOrder;
+    const { startWatch, stopWatch } = useGeolocation();
 
     return {
       deliverDetails,
@@ -112,6 +143,8 @@ export default defineComponent({
       updateCounter: 0,
       useOrder,
       locationOutline,
+      startWatch,
+      stopWatch,
     };
   },
 

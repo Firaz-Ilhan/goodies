@@ -1,6 +1,8 @@
-import { loader } from '@/main';
+import { db, loader } from '@/main';
 import { Geolocation, Position } from '@capacitor/geolocation';
 import geodata from '@/assets/mocking/geodata';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import * as geofire from 'geofire-common';
 import { useProfile } from './useProfile';
 import type { ILocation } from '@/interfaces/ILocation';
@@ -9,6 +11,8 @@ import type { IProfile } from '@/interfaces/IProfile';
 let watchId: string | null = null;
 
 export function useGeolocation() {
+  const user = firebase.auth().currentUser!;
+
   // start watching geolocation changes of a user
   const startWatch = async () => {
     // reassure that only one watch at a time is running
@@ -34,11 +38,20 @@ export function useGeolocation() {
     }
   };
 
-  // use if user got no more orders in the in Lieferung state
+  // use if user got no more orders in the inLieferung state
   // stop the watch subscription
-  const stopWatch = () => {
+  const stopWatch = async () => {
     if (watchId) {
-      Geolocation.clearWatch({ id: watchId });
+      const countQueriedOrder = await db
+        .collection('orders')
+        .where('supplier', '==', user.uid)
+        .where('orderState', '==', 'in Lieferung')
+        .get();
+
+      if (countQueriedOrder.docs.length > 1) {
+        await Geolocation.clearWatch({ id: watchId });
+      }
+
       console.log(`Watch with id ${watchId} is cleared`);
       watchId = null;
     }

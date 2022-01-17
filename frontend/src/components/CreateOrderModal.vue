@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const name = ref(props.order.name || '');
-const list = ref(props.order.list.slice() || []);
+const list = ref([]);
 const { createOrder } = useOrder();
 
 const closeModal = async () => {

@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { IonContent, IonButton, IonToast } from '@ionic/vue';
+import { IonContent, IonButton, IonToast, IonSpinner } from '@ionic/vue';
 import { defineComponent, reactive, toRefs } from 'vue';
 
 import type { IProfile } from '../interfaces/IProfile';
@@ -49,6 +49,7 @@ export default defineComponent({
     IonContent,
     IonButton,
     IonToast,
+    IonSpinner,
   },
 
   setup() {
