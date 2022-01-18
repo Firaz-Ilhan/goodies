@@ -101,7 +101,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import { useProfile } from '../composables/useProfile';
 
-defineEmits(['updateProfile', 'radioTouched']);
+const emit = defineEmits(['updateProfile', 'radioTouched']);
 const profileRef = ref({} as IProfile);
 
 // fetch profile data and update state

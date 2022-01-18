@@ -19,7 +19,7 @@
           </ion-item>
 
           <ion-item
-            :class="$route.path === '/orders' && 'active-link'"
+            :class="$route.path.includes('/orders') && 'active-link'"
             @click="navigateMenu('/orders')"
             detail="false"
             button
@@ -29,7 +29,7 @@
           </ion-item>
 
           <ion-item
-            :class="$route.path === '/deliver' && 'active-link'"
+            :class="$route.path.includes('/deliver') && 'active-link'"
             @click="navigateMenu('/deliver')"
             detail="false"
             button

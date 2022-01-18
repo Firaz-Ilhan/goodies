@@ -31,4 +31,8 @@ export default defineComponent({
 .vue-map-container {
   height: 400px;
 }
+
+ion-card {
+  margin-bottom: 30px;
+}
 </style>

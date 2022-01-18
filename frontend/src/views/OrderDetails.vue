@@ -31,6 +31,12 @@
           </p>
         </div>
 
+        <OrderDetailsRewards
+          v-if="orderDetails.list && distance > 0"
+          :order="orderDetails"
+          :distance="distance"
+        ></OrderDetailsRewards>
+
         <ion-button
           v-if="orderDetails.orderState === 'in Lieferung'"
           class="btn-center"
@@ -64,6 +70,7 @@ import ShoppingListDetails from '../components/ShoppingListDetails.vue';
 import OrderDetailsProfileInfo from '@/components/OrderDetailsProfileInfo.vue';
 import Map from '../components/Map.vue';
 import CreateOrderModal from '../components/CreateOrderModal.vue';
+import OrderDetailsRewards from '../components/OrderDetailsRewards.vue';
 import { useOrder } from '../composables/useOrder';
 import { useGeolocation } from '../composables/useGeolocation';
 import { useProfile } from '../composables/useProfile';
@@ -79,6 +86,7 @@ export default defineComponent({
     Header,
     OrderBadges,
     OrderDetailsProfileInfo,
+    OrderDetailsRewards,
     ShoppingListDetails,
     Map,
   },
@@ -166,7 +174,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 h1 {
   margin-bottom: 12px;
 }

@@ -3,7 +3,10 @@
     <Header title="Profil" :hasBackButton="true"></Header>
     <ion-content>
       <form @submit.prevent="handleSave" @input="isTouched = true">
-        <ProfileForm @radioTouched="() => (isTouched = true)"></ProfileForm>
+        <ProfileForm
+          @updateProfile="(profileData) => (profile = profileData)"
+          @radioTouched="() => (isTouched = true)"
+        ></ProfileForm>
 
         <ion-button
           class="btn-center ion-margin-vertical"

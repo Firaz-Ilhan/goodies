@@ -42,16 +42,11 @@
           ></Map>
         </div>
 
-        <div v-if="deliverDetails.list && distance > 0">
-          <h2>Rewards</h2>
-          <p>
-            Die Rewards ergeben sich aus der Anzahl zu liefernder Artikel und
-            der Distanz zwischen deinem Wohnort und dem Empfänger.
-          </p>
-          <p class="reward">
-            Du erhältst: <span>{{ getRewardsValue }} €</span>
-          </p>
-        </div>
+        <OrderDetailsRewards
+          v-if="deliverDetails.list && distance > 0"
+          :order="deliverDetails"
+          :distance="distance"
+        ></OrderDetailsRewards>
 
         <ion-button
           v-if="deliverDetails.orderState == 'offen'"
@@ -60,39 +55,41 @@
         >
           Annehmen</ion-button
         >
-        
+
         <ion-button
           v-if="deliverDetails.orderState == 'angenommen'"
           class="btn-center"
-          @click="useOrder().setOrderState($route.params.id as string ,'in Lieferung'); presentAlert()"
+          @click="presentAlert()"
         >
           Hab alles bin los
         </ion-button>
 
-          <ion-button
+        <ion-button
           v-if="deliverDetails.orderState == 'abgeschlossen'"
           class="btn-center"
           @click="stopWatch()"
         >
-          Standort Tracking beenden</ion-button>
+          Standort Tracking beenden</ion-button
+        >
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonContent, IonButton, IonIcon, alertController } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
+import { IonContent, IonButton, IonIcon, alertController } from '@ionic/vue';
+import { locationOutline } from 'ionicons/icons';
+import OrderDetailsProfileInfo from '../components/OrderDetailsProfileInfo.vue';
 import Header from '../components/Header.vue';
 import OrderBadges from '../components/OrderBadges.vue';
 import Map from '../components/Map.vue';
 import ShoppingListDetails from '../components/ShoppingListDetails.vue';
+import OrderDetailsRewards from '../components/OrderDetailsRewards.vue';
 import type { ILocation } from '../interfaces/ILocation';
 import type { IOrder } from '../interfaces/IOrder';
 import type { IProfile } from '../interfaces/IProfile';
 import { useOrder } from '../composables/useOrder';
-import { locationOutline } from 'ionicons/icons';
-import OrderDetailsProfileInfo from '../components/OrderDetailsProfileInfo.vue';
 import { useGeolocation } from '../composables/useGeolocation';
 
 export default defineComponent({
@@ -100,27 +97,34 @@ export default defineComponent({
   components: {
     Header,
     IonContent,
+    IonIcon,
     Map,
     IonButton,
     ShoppingListDetails,
-    IonIcon,
+    OrderDetailsRewards,
     OrderBadges,
     OrderDetailsProfileInfo,
   },
 
   methods: {
- async presentAlert() {
+    async presentAlert() {
       const alert = await alertController.create({
-        header: 'Tracking starten?',
+        header: 'Live Tracking starten?',
+        message:
+          'Mit deiner Bestätigung wird der Standort deines Gerätes dem Besteller live angezeigt. Sobald diese abgeschlossen ist kannst du das Live Tracking über die Bestelldetails wieder beenden.',
         buttons: [
           {
             text: 'Abbrechen',
             role: 'cancel',
           },
           {
-            text: 'Tracking starten',
-            handler: () =>  {
-              this.startWatch()
+            text: 'Starten',
+            handler: () => {
+              this.startWatch();
+              useOrder().setOrderState(
+                this.$route.params.id as string,
+                'in Lieferung',
+              );
             },
           },
         ],
@@ -168,14 +172,6 @@ export default defineComponent({
     getCreatorLocation(): ILocation {
       const { lat, lng } = this.creator.geocoords;
       return { lat, lng };
-    },
-    getRewardsValue(): string {
-      const articleAmount = useOrder().calculateTotalArticleAmount(
-        this.deliverDetails.list,
-      );
-      const ditanceInKm = this.distance;
-
-      return ((articleAmount * ditanceInKm) / 10 + 2).toFixed(2);
     },
   },
 });
