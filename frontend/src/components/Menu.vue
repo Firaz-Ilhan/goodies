@@ -29,8 +29,8 @@
           </ion-item>
 
           <ion-item
-            :class="$route.path.includes('/deliver') && 'active-link'"
-            @click="navigateMenu('/deliver')"
+            :class="$route.path.includes('/deliveries') && 'active-link'"
+            @click="navigateMenu('/deliveries')"
             detail="false"
             button
           >

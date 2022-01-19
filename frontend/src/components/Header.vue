@@ -46,7 +46,7 @@ export default defineComponent({
 
     if (route.path.includes('orders')) {
       menuBgImg.value = 'menu_background_order.svg';
-    } else if (route.path.includes('deliver')) {
+    } else if (route.path.includes('deliveries')) {
       menuBgImg.value = 'menu_background_deliver.svg';
     }
 
