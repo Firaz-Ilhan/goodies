@@ -1,8 +1,7 @@
-import { db, loader } from '@/main';
+import { auth, db, loader } from '@/main';
 import { Geolocation, Position } from '@capacitor/geolocation';
 import geodata from '@/assets/mocking/geodata';
-import firebase from 'firebase/app';
-import 'firebase/auth';
+
 import * as geofire from 'geofire-common';
 import { useProfile } from './useProfile';
 import type { ILocation } from '@/interfaces/ILocation';
@@ -11,7 +10,7 @@ import type { IProfile } from '@/interfaces/IProfile';
 let watchId: string | null = null;
 
 export function useGeolocation() {
-  const user = firebase.auth().currentUser!;
+  const user = auth.currentUser!;
 
   // start watching geolocation changes of a user
   const startWatch = async () => {

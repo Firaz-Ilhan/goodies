@@ -66,11 +66,13 @@ export default defineComponent({
     // handle saving / updating profile data
     const handleSave = () => {
       state.isLoading = true;
-      useProfile().saveProfileWithGeocoding(state.profile, () => {
-        state.isToastActive = true;
-        state.isLoading = false;
-        state.isTouched = false;
-      });
+      useProfile()
+        .saveProfileWithGeocoding(state.profile)
+        .then(() => {
+          state.isToastActive = true;
+          state.isLoading = false;
+          state.isTouched = false;
+        });
     };
 
     return {

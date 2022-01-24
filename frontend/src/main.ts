@@ -66,14 +66,13 @@ firebase.initializeApp(firebaseConfig);
 export const db = firebase.firestore();
 export const auth = firebase.auth();
 
-// google maps loader
-export const loader = new Loader({
-  apiKey: process.env.VUE_APP_GOOGLE_MAPS_API_KEY,
-});
-
 // if production enable offline caching
 const isProduction = !['localhost', '127.0.0.1', ''].includes(
   window.location.hostname,
 );
+isProduction && db.enablePersistence();
 
-isProduction && firebase.firestore().enablePersistence();
+// initialize google maps loader
+export const loader = new Loader({
+  apiKey: process.env.VUE_APP_GOOGLE_MAPS_API_KEY,
+});

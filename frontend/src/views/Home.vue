@@ -10,7 +10,7 @@
         <p><strong>Triff deine Auswahl:</strong></p>
         <p>Möchtest du<br /><strong>Deinen Nachbarn unterstützen?</strong></p>
 
-        <router-link to="/deliver">
+        <router-link to="/deliveries">
           <img src="../assets/images/liefern.png" alt="Einkaufen und Liefern" />
         </router-link>
         <br />
@@ -42,16 +42,13 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-ion-content {
-  text-align: center;
-}
-
 h1 {
   font-size: 24px;
   margin-bottom: 20px;
 }
 
 .wrapper {
+  text-align: center;
   margin-bottom: 40px;
 }
 

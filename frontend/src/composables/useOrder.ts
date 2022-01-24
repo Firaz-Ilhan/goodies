@@ -1,7 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { db } from '@/main';
+import { auth, db } from '@/main';
 import * as geofire from 'geofire-common';
 
 import { useProfile } from './useProfile';
@@ -10,27 +10,23 @@ import type { IOrder } from '../interfaces/IOrder';
 import type { IProfile } from '../interfaces/IProfile';
 
 export function useOrder() {
-  const user = firebase.auth().currentUser!;
+  const user = auth.currentUser!;
   const ordersCollection = db.collection('orders');
 
   // create a new order
-  const createOrder = (
-    name: string,
-    list: IListEntry[],
-    onSuccess?: () => void,
-  ) => {
+  const createOrder = (name: string, list: IListEntry[]) => {
     const order: Omit<IOrder, 'id'> = {
       name: name,
       list: list,
       orderState: 'offen',
-      createdBy: firebase.auth().currentUser!.uid,
+      createdBy: user.uid,
       createdAt: new Date().getTime(),
       supplier: null,
     };
 
     // create document in fb collection
-    ordersCollection.add(order).then(() => {
-      onSuccess && onSuccess();
+    return new Promise((resolve) => {
+      resolve(ordersCollection.add(order));
     });
   };
 
@@ -62,11 +58,7 @@ export function useOrder() {
 
   // updates the supplier of a certain order
   const setSupplier = (docId: string) => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        db.collection('orders').doc(docId).update({ supplier: user.uid });
-      }
-    });
+    ordersCollection.doc(docId).update({ supplier: user.uid });
   };
 
   // fetches all orders of a user and update a reactive array
@@ -158,7 +150,7 @@ export function useOrder() {
     setOrderDetails: (orderDetails: IOrder) => void,
     setProfileDetails?: (profileDetails: IProfile) => void,
   ) => {
-    firebase.auth().onAuthStateChanged((user) => {
+    auth.onAuthStateChanged((user) => {
       if (user) {
         ordersCollection
           .doc(orderId)
@@ -179,7 +171,9 @@ export function useOrder() {
               }
 
               if (idToResolve) {
-                useProfile().resolveProfileId(idToResolve, setProfileDetails);
+                useProfile()
+                  .resolveProfileId(idToResolve)
+                  .then((profileData) => setProfileDetails(profileData));
               }
             }
           });

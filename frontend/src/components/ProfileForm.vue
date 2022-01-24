@@ -67,7 +67,10 @@
             name="payment"
             v-model="profileRef.payment"
             value="barzahlung"
-            @click="emit('radioTouched')"
+            @click="
+              emit('radioTouched');
+              emit('updateProfile', profileRef);
+            "
           >
             <ion-item>
               <ion-label>Barzahlung</ion-label>
@@ -97,20 +100,20 @@ import {
   IonInput,
 } from '@ionic/vue';
 import { IProfile } from '../interfaces/IProfile';
-import firebase from 'firebase/app';
-import 'firebase/auth';
 import { useProfile } from '../composables/useProfile';
+import { auth } from '@/main';
 
 const emit = defineEmits(['updateProfile', 'radioTouched']);
 const profileRef = ref({} as IProfile);
 
 // fetch profile data and update state
-const user = firebase.auth().currentUser;
+const user = auth.currentUser;
 
 if (user) {
-  const setProfile = (profileData: IProfile) => {
-    profileRef.value = { ...profileData };
-  };
-  useProfile().resolveProfileId(user.uid, setProfile);
+  useProfile()
+    .resolveProfileId(user.uid)
+    .then((profileData) => {
+      profileRef.value = { ...profileData };
+    });
 }
 </script>

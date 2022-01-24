@@ -141,19 +141,15 @@ export default defineComponent({
     });
 
     const handleSubmit = () => {
+      const { email, password, profileData } = state;
       if (isLogin) {
-        login(state.email, state.password, (message: string) => {
-          state.errorMsg = message;
+        login(email, password, (error: Error) => {
+          state.errorMsg = error.message;
         });
       } else {
-        register(
-          state.email,
-          state.password,
-          state.profileData,
-          (message: string) => {
-            state.errorMsg = message;
-          },
-        );
+        register(email, password, profileData, (error: Error) => {
+          state.errorMsg = error.message;
+        });
       }
     };
 

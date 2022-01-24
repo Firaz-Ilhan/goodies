@@ -12,7 +12,7 @@
     <ion-content>
       <form
         @submit.prevent="
-          createOrder(name, list, () => {
+          createOrder(name, list).then(() => {
             closeModal();
             $router.push('/orders');
           })

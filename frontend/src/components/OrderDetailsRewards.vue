@@ -15,8 +15,7 @@
 
 <script setup lang="ts">
 import { useOrder } from '@/composables/useOrder';
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import { auth } from '@/main';
 import { computed, withDefaults } from 'vue';
 
 import type { IOrder } from '../interfaces/IOrder';
@@ -30,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   distance: 0,
 });
 
-const isCreator = firebase.auth().currentUser!.uid === props.order.createdBy;
+const isCreator = auth.currentUser!.uid === props.order.createdBy;
 const headline = isCreator ? 'Kosten' : 'Rewards';
 
 const getRewardsValue = computed(() => {
