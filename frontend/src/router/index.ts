@@ -42,7 +42,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/deliver/:id',
+    path: '/deliveries/:id',
     name: 'DeliverDetails',
     component: () => import('@/views/DeliverDetails.vue'),
     meta: { requiresAuth: true },

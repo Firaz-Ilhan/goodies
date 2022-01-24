@@ -20,7 +20,7 @@
             :key="order.id"
             :order="order"
             :showDistance="true"
-            @click="$router.push('/deliver/' + order.id)"
+            @click="$router.push('/deliveries/' + order.id)"
           />
           <EmptyState
             v-if="openOrders.length <= 0"
@@ -34,7 +34,7 @@
             :key="order.id"
             :order="order"
             :showDistance="true"
-            @click="$router.push('/deliver/' + order.id)"
+            @click="$router.push('/deliveries/' + order.id)"
           />
           <EmptyState
             v-if="acceptedOrders.length <= 0"
@@ -48,7 +48,7 @@
             :key="order.id"
             :order="order"
             :showDistance="true"
-            @click="$router.push('/deliver/' + order.id)"
+            @click="$router.push('/deliveries/' + order.id)"
           />
           <EmptyState
             v-if="completedOrders.length <= 0"
@@ -64,12 +64,12 @@
 import { IonSegment, IonSegmentButton } from '@ionic/vue';
 import { defineComponent } from '@vue/runtime-core';
 import firebase from 'firebase/app';
-import 'firebase/auth';
+import { auth } from '@/main';
 import Header from '../components/Header.vue';
 import OrderCard from '../components/OrderCard.vue';
+import EmptyState from '../components/EmptyState.vue';
 import { useOrder } from '../composables/useOrder';
 import type { IOrder } from '../interfaces/IOrder';
-import EmptyState from '@/components/EmptyState.vue';
 
 export default defineComponent({
   name: 'DeliverOverview',
@@ -91,7 +91,7 @@ export default defineComponent({
   },
 
   created() {
-    this.user = firebase.auth().currentUser!;
+    this.user = auth.currentUser!;
     useOrder().populateOrders(this.orders, false);
   },
 
