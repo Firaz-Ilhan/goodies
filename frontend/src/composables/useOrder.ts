@@ -1,9 +1,6 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
 import { auth, db } from '@/main';
+import firebase from 'firebase/app';
 import * as geofire from 'geofire-common';
-
 import { useProfile } from './useProfile';
 import type { IListEntry } from '../interfaces/IListEntry';
 import type { IOrder } from '../interfaces/IOrder';
