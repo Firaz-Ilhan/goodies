@@ -22,7 +22,7 @@ build_app:
     - echo "Run build"
     - npm install
     - npm i @ionic/cli
-    - npm build
+    - npm run build
 
 deploy_app:
   stage: deploy
