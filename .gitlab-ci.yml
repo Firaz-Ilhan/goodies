@@ -21,6 +21,7 @@ build_app:
   script:
     - echo "Run build"
     - npm install
+    - npm i @ionic/cli
     - npm build
 
 deploy_app:
