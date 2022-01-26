@@ -1,0 +1,35 @@
+image: node:latest
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - lint
+  - build
+  - deploy
+
+lint:
+  stage: lint
+  script:
+    - echo "Run linter"
+    - npm install
+    - npm run lint
+
+build:
+  stage: build
+  needs: [lint]
+  script:
+    - echo "Run build"
+    - npm install
+    - npm build
+
+deploy:
+  stage: deploy
+  needs: [build]
+  script:
+    - echo "Run deployment"
+    - npm i firebase-tools
+    - firebase deploy:ci
+  only:
+    - main
