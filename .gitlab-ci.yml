@@ -6,7 +6,6 @@ cache:
 
 stages:
   - lint
-  - build
   - deploy
 
 lint_app:
@@ -16,20 +15,14 @@ lint_app:
     - npm ci
     - npm run lint
 
-build_app:
-  stage: build
-  script:
-    - echo "Run build"
-    - npm ci
-    - npm i @ionic/cli
-    - npm run build
-
 deploy_app:
   stage: deploy
-  needs: [build_app]
+  needs: []
   script:
-    - echo "Run deployment"
-    - npm install -g firebase-tools
+    - echo "Build and deploy the app"
+    - npm ci
+    - npm install -g firebase-tools @ionic/cli
+    - npm run build
     - firebase deploy
   only:
     - main
