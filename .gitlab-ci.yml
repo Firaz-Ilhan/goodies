@@ -30,7 +30,6 @@ deploy_app:
   script:
     - echo "Run deployment"
     - npm install -g firebase-tools
-    - firebase login:ci --interactive
     - firebase deploy
   only:
     - main
