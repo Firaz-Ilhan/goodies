@@ -29,7 +29,8 @@ deploy_app:
   needs: [build_app]
   script:
     - echo "Run deployment"
-    - npm i firebase-tools
-    - firebase deploy:ci
+    - npm install -g firebase-tools
+    - firebase login:ci
+    - firebase deploy
   only:
     - main
