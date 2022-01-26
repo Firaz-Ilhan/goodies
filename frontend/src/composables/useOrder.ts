@@ -58,6 +58,19 @@ export function useOrder() {
     ordersCollection.doc(docId).update({ supplier: user.uid });
   };
 
+  //deletes a certain order of a user
+  const deleteOrder = (docId: string) => {
+    ordersCollection
+      .doc(docId)
+      .delete()
+      .then(() => {
+        console.log('Document deleted');
+      })
+      .catch((error) => {
+        console.error('Error removing document: ', error);
+      });
+  };
+
   // fetches all orders of a user and update a reactive array
   // optionally set isPersonal to false to get all orders that were not created by yourself (delivery-mode)
   const populateOrders = (orders: IOrder[], isPersonal = true) => {
@@ -184,6 +197,7 @@ export function useOrder() {
     getOrderStateColor,
     setOrderState,
     setSupplier,
+    deleteOrder,
     populateOrders,
     getOrderDistance,
     formatDistance,

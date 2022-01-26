@@ -38,6 +38,14 @@
         ></OrderDetailsRewards>
 
         <ion-button
+          v-if="orderDetails.orderState === 'offen'"
+          class="btn-center"
+          @click="deleteAlert"
+        >
+          Bestellung löschen
+        </ion-button>
+
+        <ion-button
           v-if="orderDetails.orderState === 'in Lieferung'"
           class="btn-center"
           @click="
@@ -63,7 +71,13 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core';
-import { IonContent, IonButton, modalController } from '@ionic/vue';
+import {
+  IonContent,
+  IonButton,
+  modalController,
+  alertController,
+  //toastController,
+} from '@ionic/vue';
 import Header from '../components/Header.vue';
 import OrderBadges from '../components/OrderBadges.vue';
 import ShoppingListDetails from '../components/ShoppingListDetails.vue';
@@ -108,6 +122,38 @@ export default defineComponent({
         componentProps: { order: { ...this.orderDetails } },
       });
       return modal.present();
+    },
+
+    // shows an toast when an order was deleted
+    /*async showToast() {
+      const toast = await toastController.create({
+        message: 'Bestellung gelöscht',
+        duration: 2000,
+        color: 'success',
+        position: 'top',
+      });
+      return await toast.present();
+    },*/
+
+    async deleteAlert() {
+      const alert = await alertController.create({
+        header: 'Möchtest du diese Bestellung wirklich löschen?',
+        buttons: [
+          {
+            text: 'Abbrechen',
+            role: 'cancel',
+          },
+          {
+            text: 'Löschen',
+            handler: () => {
+              useOrder().deleteOrder(this.orderId);
+              //this.navigateMenu('/orders');
+              this.$router.push('/orders');
+            },
+          },
+        ],
+      });
+      return alert.present();
     },
   },
 
