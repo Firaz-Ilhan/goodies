@@ -15,42 +15,43 @@
         <swiper-slide>
           <ion-card>
             <ion-card-content>
-              <img src="../assets/images/orderPic.png" />
+              <img src="../assets/images/peopleOnSofa.svg" />
               <h1>Kreiere deine Einkaufsliste</h1>
               <p>
                 Mit Goodies kannst du dir Lebensmittel von zuhause aus bestellen
                 und liefern lassen. Über den Bestellen Button gibst du hierfür
                 deine Einkaufsliste an und beschreibst deine Artikel möglichst
-                genau.
+                genau. Auf der Karte siehst du immer wo sich deine Bestellung befindet.
               </p>
+              <br>
+              <img src="../assets/images/mapAndPerson.svg" />
             </ion-card-content>
           </ion-card>
         </swiper-slide>
         <swiper-slide>
           <ion-card>
-            <img src="../assets/images/deliveryPic.png" />
-            <ion-card-title>Tu etwas Gutes</ion-card-title>
+            <img src="../assets/images/shopping.svg" />
             <ion-card-content>
+              <h1>Deine Hilfe ist gefragt</h1>
               <p>
                 Als Lieferant suchst du dir eine passende Bestellung in deiner
                 Nähe, stellst sie zusammen und lieferst sie gegen eine Belohnung
                 aus. Denke daran den Kassenzettel mitzunehmen.
               </p>
+              <img src="../assets/images/driving.svg" />
             </ion-card-content>
           </ion-card>
         </swiper-slide>
         <swiper-slide>
           <ion-card>
             <ion-card-content>
-              <ion-card-title>Tu etwas Gutes</ion-card-title>
-              <p>
-                Auf der Karte siehst du als Besteller immer wo sich deine
-                Lieferung befindet.
-              </p>
+            <img src="../assets/images/packageDelivery.svg" />
+              <h1>Jeden Tag eine gute Tat</h1>
               <p>
                 Ist deine Bestellung da, überprüfe den Kassenzettel und bezahle
-                deinen Lieferanten - fertig!
+                deinen Lieferanten - fertig! Viel Spaß mit Goodies!
               </p>
+              <img src="../assets/images/FinishedDelivery.svg" />
               <ion-button @click="() => $router.push('/home')">
                 Return
               </ion-button>
@@ -73,7 +74,6 @@ import {
   IonHeader,
   IonCard,
   IonCardContent,
-  IonCardTitle,
   IonButtons,
 } from '@ionic/vue';
 import { defineComponent } from 'vue';
@@ -98,7 +98,6 @@ export default defineComponent({
     IonHeader,
     IonCard,
     IonCardContent,
-    IonCardTitle,
     IonButtons,
   },
 });
