@@ -81,12 +81,11 @@ export default defineComponent({
 .list-heading {
   display: flex;
   align-items: center;
-  margin: 30px 0 0;
+  margin: 32px 0 16px;
   cursor: pointer;
 }
 
 .list-header {
-  margin-top: 16px;
   margin-bottom: 8px;
   padding-bottom: 8px;
   font-size: 14px;

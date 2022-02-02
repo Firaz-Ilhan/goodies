@@ -5,7 +5,7 @@
       <ion-col size="6">
         <ion-item class="ion-no-padding">
           <ion-label position="floating">Artikel</ion-label>
-          <ion-input v-model="article" autofocus></ion-input>
+          <ion-input v-model="article"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size="3">

@@ -43,7 +43,7 @@
             <ion-item v-if="!isLogin" lines="none">
               <ion-label class="legals"
                 >Ich akzeptiere die <a href="/">AGB</a> und die
-                <a href="/">Datenschutzerklräung</a>.</ion-label
+                <a href="/">Datenschutzerklärung</a>.</ion-label
               >
               <ion-checkbox
                 button
