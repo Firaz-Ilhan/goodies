@@ -60,15 +60,7 @@ export function useOrder() {
 
   //deletes a certain order of a user
   const deleteOrder = (docId: string) => {
-    ordersCollection
-      .doc(docId)
-      .delete()
-      .then(() => {
-        console.log('Document deleted');
-      })
-      .catch((error) => {
-        console.error('Error removing document: ', error);
-      });
+    return ordersCollection.doc(docId).delete();
   };
 
   // fetches all orders of a user and update a reactive array
