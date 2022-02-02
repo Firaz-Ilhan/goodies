@@ -65,7 +65,7 @@
         </ion-button>
 
         <ion-button
-          v-if="deliverDetails.orderState == 'abgeschlossen'"
+          v-if="deliverDetails.orderState == 'abgeschlossen' && watchId"
           class="btn-center"
           @click="stopWatch()"
         >
@@ -134,11 +134,10 @@ export default defineComponent({
   },
 
   data() {
-    const deliverDetails = {} as IOrder;
-    const { startWatch, stopWatch } = useGeolocation();
+    const { watchId, startWatch, stopWatch } = useGeolocation();
 
     return {
-      deliverDetails,
+      deliverDetails: {} as IOrder,
       creator: {} as IProfile,
       supplier: {} as IProfile,
       distance: 0,
@@ -147,6 +146,7 @@ export default defineComponent({
       updateCounter: 0,
       useOrder,
       locationOutline,
+      watchId,
       startWatch,
       stopWatch,
     };
@@ -178,10 +178,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.btn-center {
-  margin: 40px auto;
-}
-
 h1 {
   margin-bottom: 12px;
 }
@@ -192,6 +188,10 @@ h2 {
 
 p {
   text-align: start;
+}
+
+.btn-center {
+  margin: 40px auto;
 }
 
 .reward {

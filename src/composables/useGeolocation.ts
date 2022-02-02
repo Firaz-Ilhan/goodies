@@ -1,13 +1,14 @@
+import { ref } from 'vue';
 import { auth, db, loader } from '@/main';
 import { Geolocation, Position } from '@capacitor/geolocation';
+import { geohashForLocation } from 'geofire-common';
 import geodata from '@/assets/mocking/geodata';
 
-import * as geofire from 'geofire-common';
 import { useProfile } from './useProfile';
 import type { ILocation } from '@/interfaces/ILocation';
 import type { IProfile } from '@/interfaces/IProfile';
 
-let watchId: string | null = null;
+const watchId = ref<string | null>(null);
 
 export function useGeolocation() {
   const user = auth.currentUser!;
@@ -15,20 +16,19 @@ export function useGeolocation() {
   // start watching geolocation changes of a user
   const startWatch = async () => {
     // reassure that only one watch at a time is running
-    if (!watchId) {
+    if (!watchId.value) {
       const watcher = await Geolocation.watchPosition(
         {},
         (position: Position | null) => {
-          console.log('pos', position);
-          console.log('watchId', watchId);
+          console.log('watchId', watchId.value);
           if (position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            const geohash = geofire.geohashForLocation([lat, lng]);
+            const geohash = geohashForLocation([lat, lng]);
 
             const lastPosition: ILocation = { lat, lng, geohash };
             useProfile().saveProfile({ ...({} as IProfile), lastPosition });
-            if (watcher) watchId = watcher;
+            if (watcher) watchId.value = watcher;
           }
         },
       ).catch((e: Error) => {
@@ -37,22 +37,22 @@ export function useGeolocation() {
     }
   };
 
-  // use if user got no more orders in the inLieferung state
-  // stop the watch subscription
+  // clear watch if no other orders should be watched
   const stopWatch = async () => {
-    if (watchId) {
+    // only if a watch is currently active
+    if (watchId.value) {
       const countQueriedOrder = await db
         .collection('orders')
         .where('supplier', '==', user.uid)
         .where('orderState', '==', 'in Lieferung')
         .get();
 
-      if (countQueriedOrder.docs.length > 1) {
-        await Geolocation.clearWatch({ id: watchId });
+      // only clear if there are no other orders in delivery state
+      if (countQueriedOrder.docs.length <= 1) {
+        await Geolocation.clearWatch({ id: watchId.value });
+        console.log(`Watch with id ${watchId.value} is cleared`);
+        watchId.value = null;
       }
-
-      console.log(`Watch with id ${watchId} is cleared`);
-      watchId = null;
     }
   };
 
@@ -77,7 +77,7 @@ export function useGeolocation() {
     for (let i = 0; i < coordinates.length; i += 5) {
       const [lng, lat] = coordinates[i] as number[];
       setterFunction({ lat, lng });
-      // wait 5seconds
+      // wait 5 seconds
       await timer(5);
     }
   };
@@ -92,7 +92,7 @@ export function useGeolocation() {
             lat: res[0].geometry.location.lat(),
             lng: res[0].geometry.location.lng(),
           };
-          const geohash = geofire.geohashForLocation([
+          const geohash = geohashForLocation([
             resPosition.lat,
             resPosition.lng,
           ]);
@@ -104,6 +104,7 @@ export function useGeolocation() {
   };
 
   return {
+    watchId,
     startWatch,
     stopWatch,
     getCurrentCoordinates,
