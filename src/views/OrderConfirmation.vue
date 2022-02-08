@@ -5,7 +5,7 @@
       <div class="wrapper">
         <img
           class="order-img"
-          src="@/assets/images/order-confirmation.svg"
+          src="@/assets/images/order-confirmation.png"
           alt="Familie empfängt Lebensmitteltüte"
         />
         <p>
@@ -45,8 +45,9 @@ export default defineComponent({
 <style scoped>
 .order-img {
   display: block;
-  margin: 0 auto;
-  max-width: 500px;
+  margin: 0px auto;
+  min-width: 350px;
+  width: 60%;
 }
 
 .wrapper {
