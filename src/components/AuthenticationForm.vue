@@ -106,6 +106,7 @@ import {
   IonButton,
   IonLabel,
   IonItem,
+  IonCheckbox,
 } from '@ionic/vue';
 import { defineComponent, reactive, toRefs } from 'vue';
 import { useAuth } from '../composables/useAuth';
@@ -126,6 +127,7 @@ export default defineComponent({
     IonItem,
     IonLabel,
     IonButton,
+    IonCheckbox,
     ProfileForm,
   },
   setup(props) {

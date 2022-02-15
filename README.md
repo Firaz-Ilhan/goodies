@@ -12,10 +12,10 @@ Mobile Webanwendung im Rahmen der Veranstaltung 119645A Spezielle Themen der mob
    $ npm install -g @ionic/cli
    ```
 
-   Open the Install packages via
+   Install packages with
 
    ```shell
-   $ cd frontend && npm install
+   $ npm install
    ```
 
    You need to copy the _.env.local.sample_ file and rename it to _.env.local_ and configure it with your environment variables and your API keys.
@@ -28,7 +28,7 @@ Mobile Webanwendung im Rahmen der Veranstaltung 119645A Spezielle Themen der mob
    $ npm run dev
    ```
 
-   Now you can open your favourite Browser at http://localhost:8100/ and start working.
+   Now you can open your favourite browser at http://localhost:8100/ and start devloping.
 
 3. **Deployment**
 
@@ -50,3 +50,5 @@ Mobile Webanwendung im Rahmen der Veranstaltung 119645A Spezielle Themen der mob
    $ npm install -g firebase-tools
    $ firebase login
    ```
+
+   Alternatively a push to the main branch will trigger a pipeline to deploy the app to firebase hosting.

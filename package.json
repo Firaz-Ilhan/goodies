@@ -1,8 +1,8 @@
 {
-  "name": "frontend",
+  "name": "goodies",
   "version": "0.0.1",
   "private": true,
-  "description": "An Ionic project",
+  "description": "Ionic Vue App",
   "scripts": {
     "dev": "ionic serve --livereload",
     "serve": "vue-cli-service serve",
