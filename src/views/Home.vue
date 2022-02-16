@@ -10,14 +10,26 @@
         <p><strong>Triff deine Auswahl:</strong></p>
         <p>Möchtest du<br /><strong>Deinen Nachbarn unterstützen?</strong></p>
 
+    
         <router-link to="/deliveries">
-          <img src="../assets/images/liefern.png" alt="Einkaufen und Liefern" />
+          <div class="ion-activatable ripple-parent">
+           <img src="../assets/images/liefern_orange.png"  alt="Einkaufen und Liefern">
+           <div class="text_bottom_centered"> Einkaufen & <br/> Liefern</div>
+            <ion-ripple-effect></ion-ripple-effect>
+          </div>        
         </router-link>
-        <br />
+
+
+       
 
         <p>Oder möchtest du<br /><strong> dir etwas liefern lassen?</strong></p>
-        <router-link to="/orders">
-          <img src="../assets/images/bestellen.png" alt="Bestellen" />
+      
+        <router-link to="/deliveries">
+          <div class="ion-activatable ripple-parent">
+           <img src="../assets/images/bestellen_green.png"  alt="Einkaufen und Liefern">
+           <div class="text_bottom_centered"> Bestellen</div>
+            <ion-ripple-effect></ion-ripple-effect>
+          </div>        
         </router-link>
 
         <p>
@@ -45,6 +57,24 @@ export default defineComponent({
 h1 {
   font-size: 24px;
   margin-bottom: 20px;
+}
+.button {
+  background-color: none; 
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.text_bottom_centered{
+  position:relative;
+  bottom: 60px;
+  left: 50%;
+  color: black;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
 }
 
 .wrapper {
