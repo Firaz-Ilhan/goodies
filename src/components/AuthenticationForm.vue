@@ -43,7 +43,7 @@
             <ion-item v-if="!isLogin" lines="none">
               <ion-label class="legals"
                 >Ich akzeptiere die <a href="/">AGB</a> und die
-                <a href="/">Datenschutzerklräung</a>.</ion-label
+                <a href="/">Datenschutzerklärung</a>.</ion-label
               >
               <ion-checkbox
                 button
@@ -106,6 +106,7 @@ import {
   IonButton,
   IonLabel,
   IonItem,
+  IonCheckbox,
 } from '@ionic/vue';
 import { defineComponent, reactive, toRefs } from 'vue';
 import { useAuth } from '../composables/useAuth';
@@ -126,6 +127,7 @@ export default defineComponent({
     IonItem,
     IonLabel,
     IonButton,
+    IonCheckbox,
     ProfileForm,
   },
   setup(props) {

@@ -43,6 +43,7 @@
           <ion-label position="floating">Postleitzahl</ion-label>
           <ion-input
             type="text"
+            inputmode="numeric"
             v-model="profileRef.postalcode"
             autocomplete="postal-code"
             required
@@ -52,6 +53,7 @@
           <ion-label position="floating">Telefon</ion-label>
           <ion-input
             type="text"
+            inputmode="tel"
             v-model="profileRef.telephone"
             autocomplete="tel"
             required

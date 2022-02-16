@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "frontend",
-	"webDir": "dist",
-	"bundledWebRuntime": false
+  "appId": "io.ionic.starter",
+  "appName": "Goodies",
+  "webDir": "dist",
+  "bundledWebRuntime": false
 }

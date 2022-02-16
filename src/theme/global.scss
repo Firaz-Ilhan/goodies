@@ -22,6 +22,7 @@
     font-weight: 700;
     margin-bottom: 20px;
   }
+
   .caption {
     font-family: 'Karla', sans-serif;
     font-weight: 400;
@@ -46,11 +47,20 @@ p {
 
 a {
   text-decoration: none;
+  font-weight: 700;
 }
 
 ion-title,
 ion-card-title {
   font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+}
+
+ion-toast {
+  top: 56px;
+}
+
+ion-button {
   font-weight: 700;
 }
 

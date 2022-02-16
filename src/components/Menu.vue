@@ -48,6 +48,16 @@
             <ion-icon :icon="personCircle" slot="start"></ion-icon>
             <ion-label>Profil</ion-label>
           </ion-item>
+          <ion-item>
+            <ion-icon :icon="isDarkMode ? moon : sunny" slot="start"></ion-icon>
+            <ion-label>Dark Mode </ion-label>
+            <ion-toggle
+              :checked="isDarkMode"
+              @ionChange="($ev) => handleDarkMode($ev)"
+            >
+            </ion-toggle>
+          </ion-item>
+
           <ion-item button detail="false" @click="presentLogoutAlert">
             <ion-icon :icon="logOut" slot="start"></ion-icon>
             <ion-label>Abmelden</ion-label>
@@ -70,11 +80,20 @@ import {
   IonLabel,
   IonToolbar,
   IonTitle,
+  IonToggle,
   alertController,
   menuController,
 } from '@ionic/vue';
-import { home, bagCheck, cart, logOut, personCircle } from 'ionicons/icons';
-import { defineComponent } from 'vue';
+import {
+  home,
+  bagCheck,
+  cart,
+  logOut,
+  personCircle,
+  sunny,
+  moon,
+} from 'ionicons/icons';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'Menu',
@@ -88,12 +107,21 @@ export default defineComponent({
     IonLabel,
     IonToolbar,
     IonTitle,
+    IonToggle,
   },
   methods: {
     // navigate to path and close the menu
     async navigateMenu(path: string) {
       this.$router.push(path);
       menuController.close('app-menu');
+    },
+
+    handleDarkMode($ev: CustomEvent) {
+      const isChecked = $ev.detail.checked;
+      document.body.setAttribute('color-theme', isChecked ? 'dark' : 'light');
+
+      localStorage.darkmode = isChecked;
+      this.isDarkMode = isChecked;
     },
 
     // open alert to confirm logout
@@ -117,13 +145,22 @@ export default defineComponent({
       return alert.present();
     },
   },
+  mounted() {
+    if (localStorage.darkmode === 'true') {
+      document.body.setAttribute('color-theme', 'dark');
+    }
+  },
   setup() {
+    const isDarkMode = ref(localStorage.darkmode === 'true');
     return {
+      isDarkMode,
       home,
       personCircle,
       cart,
       bagCheck,
       logOut,
+      sunny,
+      moon,
     };
   },
 

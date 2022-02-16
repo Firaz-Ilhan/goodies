@@ -28,6 +28,11 @@
           ></Map>
           <p style="font-size: 12px">
             {{ isDevEnv ? '*Simulierte Daten für Development' : '' }}
+            {{
+              !isDevEnv && !supplier.lastPosition
+                ? '*Dein Lieferant hat dem Live Tracking nicht zugestimmt. Du siehst dessen statische Addresse.'
+                : ''
+            }}
           </p>
         </div>
 
@@ -37,9 +42,21 @@
           :distance="distance"
         ></OrderDetailsRewards>
 
+        <ion-toast
+          :is-open="isToastActive"
+          message="Bestellung wurde gelöscht."
+          color="dark"
+          position="top"
+          :duration="2000"
+          @didDismiss="() => (isToastActive = false)"
+        >
+        </ion-toast>
+
         <ion-button
           v-if="orderDetails.orderState === 'offen'"
           class="btn-center"
+          color="danger"
+          fill="outline"
           @click="deleteAlert"
         >
           Bestellung löschen
@@ -59,7 +76,6 @@
         <ion-button
           v-if="orderDetails.orderState === 'abgeschlossen'"
           class="btn-center"
-          fill="clear"
           @click="openModal"
         >
           Neue Bestellung aus Vorlage
@@ -76,7 +92,8 @@ import {
   IonButton,
   modalController,
   alertController,
-  //toastController,
+  IonToast,
+  toastController,
 } from '@ionic/vue';
 import Header from '../components/Header.vue';
 import OrderBadges from '../components/OrderBadges.vue';
@@ -97,6 +114,7 @@ export default defineComponent({
   components: {
     IonContent,
     IonButton,
+    IonToast,
     Header,
     OrderBadges,
     OrderDetailsProfileInfo,
@@ -125,7 +143,7 @@ export default defineComponent({
     },
 
     // shows an toast when an order was deleted
-    /*async showToast() {
+    async showToast() {
       const toast = await toastController.create({
         message: 'Bestellung gelöscht',
         duration: 2000,
@@ -133,7 +151,7 @@ export default defineComponent({
         position: 'top',
       });
       return await toast.present();
-    },*/
+    },
 
     async deleteAlert() {
       const alert = await alertController.create({
@@ -146,9 +164,10 @@ export default defineComponent({
           {
             text: 'Löschen',
             handler: () => {
-              useOrder().deleteOrder(this.orderId);
-              //this.navigateMenu('/orders');
-              this.$router.push('/orders');
+              useOrder()
+                .deleteOrder(this.orderId)
+                .then(() => this.$router.push('/orders'));
+              this.isToastActive = true;
             },
           },
         ],
@@ -169,6 +188,7 @@ export default defineComponent({
       markerPosition: {} as ILocation,
       centerPosition: {} as ILocation,
       updateCounter: 0,
+      isToastActive: false,
       useGeolocation,
       useOrder,
     };
@@ -210,11 +230,14 @@ export default defineComponent({
 
   computed: {
     getSupplierCoordinates(): ILocation | null {
+      let position: ILocation;
       if (this.supplier.lastPosition) {
-        const { lat, lng } = this.supplier.lastPosition;
-        return { lat, lng };
+        position = this.supplier.lastPosition;
+      } else {
+        position = this.supplier.geocoords;
       }
-      return null;
+      const { lat, lng } = position;
+      return { lat, lng };
     },
   },
 });

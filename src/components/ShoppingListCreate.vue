@@ -62,10 +62,14 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .list-header {
   font-size: 14px;
   color: var(--ion-color-medium);
-  margin-top: 8px;
+  border-bottom: 1px solid #c8c8c8;
+}
+ion-list {
+  padding-top: 0;
+  margin-top: 5px;
 }
 </style>

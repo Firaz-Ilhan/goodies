@@ -11,59 +11,48 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <swiper :pagination="{ clickable: true }">
-        <swiper-slide>
-          <ion-card>
-            <ion-card-content>
-              <img src="../assets/images/peopleOnSofa.svg" />
-              <h1>Kreiere deine Einkaufsliste</h1>
-              <p>
-                Mit Goodies kannst du dir Lebensmittel von zuhause aus bestellen
-                und liefern lassen. Über den Bestellen Button gibst du hierfür
-                deine Einkaufsliste an und beschreibst deine Artikel möglichst
-                genau. Auf der Karte siehst du immer wo sich deine Bestellung befindet.
-              </p>
-              <br>
-              <img src="../assets/images/mapAndPerson.svg" />
-            </ion-card-content>
-          </ion-card>
-        </swiper-slide>
-        <swiper-slide>
-          <ion-card>
+      <div class="wrapper">
+        <swiper :pagination="{ clickable: true }">
+          <swiper-slide>
+            <img src="../assets/images/mapAndPerson.svg" />
+
+            <h1>Kreiere deine Einkaufsliste</h1>
+            <p>
+              Mit Goodies kannst du dir Lebensmittel von zuhause aus bestellen
+              und liefern lassen. Über den Bestellen Button gibst du hierfür
+              deine Einkaufsliste an und beschreibst deine Artikel möglichst
+              genau. Auf der Karte siehst du immer wo sich deine Bestellung
+              befindet.
+            </p>
+          </swiper-slide>
+          <swiper-slide>
             <img src="../assets/images/shopping.svg" />
-            <ion-card-content>
-              <h1>Deine Hilfe ist gefragt</h1>
-              <p>
-                Als Lieferant suchst du dir eine passende Bestellung in deiner
-                Nähe, stellst sie zusammen und lieferst sie gegen eine Belohnung
-                aus. Denke daran den Kassenzettel mitzunehmen.
-              </p>
-              <img src="../assets/images/driving.svg" />
-            </ion-card-content>
-          </ion-card>
-        </swiper-slide>
-        <swiper-slide>
-          <ion-card>
-            <ion-card-content>
-            <img src="../assets/images/packageDelivery.svg" />
-              <h1>Jeden Tag eine gute Tat</h1>
-              <p>
-                Ist deine Bestellung da, überprüfe den Kassenzettel und bezahle
-                deinen Lieferanten - fertig! Viel Spaß mit Goodies!
-              </p>
-              <img src="../assets/images/FinishedDelivery.svg" />
-              <ion-button @click="() => $router.push('/home')">
-                Return
-              </ion-button>
-            </ion-card-content>
-          </ion-card>
-        </swiper-slide>
-      </swiper>
+            <h1>Deine Hilfe ist gefragt</h1>
+            <p>
+              Als Lieferant suchst du dir eine passende Bestellung in deiner
+              Nähe, stellst sie zusammen und lieferst sie gegen eine Belohnung
+              aus. Denke daran den Kassenzettel mitzunehmen.
+            </p>
+          </swiper-slide>
+          <swiper-slide>
+            <img src="../assets/images/FinishedDelivery.svg" />
+
+            <h1>Jeden Tag eine gute Tat</h1>
+            <p>
+              Ist deine Bestellung da, überprüfe den Kassenzettel und bezahle
+              deinen Lieferanten - fertig! Viel Spaß mit Goodies!
+            </p>
+            <ion-button class="ion-margin" @click="() => $router.push('/home')">
+              Jetzt Starten
+            </ion-button>
+          </swiper-slide>
+        </swiper>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
   IonContent,
   IonPage,
@@ -72,11 +61,8 @@ import {
   IonButton,
   IonToolbar,
   IonHeader,
-  IonCard,
-  IonCardContent,
   IonButtons,
 } from '@ionic/vue';
-import { defineComponent } from 'vue';
 import SwiperCore, { Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 
@@ -84,27 +70,25 @@ import 'swiper/swiper-bundle.min.css';
 import '@ionic/vue/css/ionic-swiper.css';
 
 SwiperCore.use([IonicSwiper, Pagination]);
-
-export default defineComponent({
-  name: 'Onboarding',
-  components: {
-    IonContent,
-    IonPage,
-    Swiper,
-    SwiperSlide,
-    IonTitle,
-    IonButton,
-    IonToolbar,
-    IonHeader,
-    IonCard,
-    IonCardContent,
-    IonButtons,
-  },
-});
 </script>
 
 <style scoped>
-ion-card {
-  margin-bottom: 60px;
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  padding-bottom: 2.5rem;
+}
+
+h1,
+img,
+p {
+  max-width: 500px;
+}
+
+img {
+  margin-bottom: 30px;
 }
 </style>
