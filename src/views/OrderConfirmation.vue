@@ -5,7 +5,7 @@
       <div class="wrapper">
         <img
           class="order-img"
-          src="@/assets/images/order-confirmation.png"
+          src="@/assets/images/order-confirmation.svg"
           alt="Familie empfängt Lebensmitteltüte"
         />
         <p>
