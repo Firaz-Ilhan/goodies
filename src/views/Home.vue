@@ -23,7 +23,7 @@
         <p>Oder möchtest du<br /><strong> dir etwas liefern lassen?</strong></p>
       
         <router-link to="/orders">
-          <div class="ion-activatable ripple-parent2">
+          <div class="ion-activatable ripple-parent green-shadow">
            <img class="order_img" src="../assets/images/order.png"  alt="Einkaufen und Liefern">
            <p class="order_txt">Bestellen</p>
             <ion-ripple-effect></ion-ripple-effect>
@@ -62,34 +62,27 @@ h1 {
 .ripple-parent {
     position: relative;
     overflow: hidden;
-    background-color: none;
     width: 200px;
     height: 170px;
     border-width: 3px; 
     border-color: #FF9E16; 
     border-radius: 100px 100px 100px 100px; 
-      box-shadow: 0px 3px 3px 3px #FF9E16;
-    color: black;
+    box-shadow: 0px 3px 3px 2px;
+    color: #FF9E16;
     text-align: center;
     display: inline-block;
     font-size: 16px;
-  }
+    p{
+    color: var(--ion-color-light-contrast);
+    }
+    }body[color-theme='dark'] .ripple-parent {
+    background-color: var(--ion-color-light);
+    }
 
-  .ripple-parent2 {
-    position: relative;
-    overflow: hidden;
-    background-color: none;
-    width: 200px;
-    height: 170px;
-    border-width: 3px; 
-    border-color: #60D58E; 
-    border-radius: 100px 100px 100px 100px; 
-     box-shadow: 0px 3px 3px 3px #60D58E;
-    color: black;
-    text-align: center;
-    display: inline-block;
-    font-size: 16px;
-  }
+ .green-shadow {
+    color: #60D58E;    
+    }
+
 .deliver_img{
   width:70%;
 }
