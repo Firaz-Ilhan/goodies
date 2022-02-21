@@ -6,32 +6,31 @@
       <div class="wrapper">
         <h1>Herzlich Willkommen bei goodies!</h1>
         <p>Hier helfen Nachbarn Nachbarn.</p>
-
+        <br/>
         <p><strong>Triff deine Auswahl:</strong></p>
         <p>Möchtest du<br /><strong>Deinen Nachbarn unterstützen?</strong></p>
 
     
         <router-link to="/deliveries">
           <div class="ion-activatable ripple-parent">
-           <img src="../assets/images/liefern_orange.png"  alt="Einkaufen und Liefern">
-           <div class="text_bottom_centered"> Einkaufen & <br/> Liefern</div>
+          <img class="deliver_img" src="../assets/images/deliver.png"  alt="Einkaufen und Liefern">
+            <p class="delvier_txt"> Einkaufen & <br/> Liefern</p>
             <ion-ripple-effect></ion-ripple-effect>
           </div>        
-        </router-link>
-
-
-       
-
+        </router-link>    
+        <br/>
+        <br/>
         <p>Oder möchtest du<br /><strong> dir etwas liefern lassen?</strong></p>
       
-        <router-link to="/deliveries">
-          <div class="ion-activatable ripple-parent">
-           <img src="../assets/images/bestellen_green.png"  alt="Einkaufen und Liefern">
-           <div class="text_bottom_centered"> Bestellen</div>
+        <router-link to="/orders">
+          <div class="ion-activatable ripple-parent green-shadow">
+           <img class="order_img" src="../assets/images/order.png"  alt="Einkaufen und Liefern">
+           <p class="order_txt">Bestellen</p>
             <ion-ripple-effect></ion-ripple-effect>
           </div>        
         </router-link>
-
+        <br/>
+        <br/>
         <p>
           Oder zurück zum
           <router-link to="/onboarding"> Onboarding </router-link>
@@ -43,12 +42,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { IonContent, IonRippleEffect } from '@ionic/vue';
 import Header from '../components/Header.vue';
 
 export default defineComponent({
   name: 'Home',
   components: {
-    Header,
+    Header, IonContent, IonRippleEffect
+
   },
 });
 </script>
@@ -58,23 +59,47 @@ h1 {
   font-size: 24px;
   margin-bottom: 20px;
 }
-.button {
-  background-color: none; 
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
+.ripple-parent {
+    position: relative;
+    overflow: hidden;
+    width: 200px;
+    height: 170px;
+    border-width: 3px; 
+    border-color: #FF9E16; 
+    border-radius: 100px 100px 100px 100px; 
+    box-shadow: 0px 3px 3px 2px;
+    color: #FF9E16;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    p{
+    color: var(--ion-color-light-contrast);
+    }
+    }body[color-theme='dark'] .ripple-parent {
+    background-color: var(--ion-color-light);
+    }
+
+ .green-shadow {
+    color: #60D58E;    
+    }
+
+.deliver_img{
+  width:70%;
 }
-.text_bottom_centered{
-  position:relative;
-  bottom: 60px;
-  left: 50%;
-  color: black;
-  transform: translate(-50%, -50%);
-  font-size: 16px;
+.delvier_txt{
+ position: absolute;
+ bottom: 0px;
+ left: 50%;
+ transform: translate(-50%);
+}
+.order_img{
+  width: 80%;
+ }
+.order_txt{
+ position: absolute;
+ bottom: 0px;
+ left: 50%;
+ transform: translate(-50%);
 }
 
 .wrapper {
@@ -89,5 +114,7 @@ img {
   &:hover {
     transform: scale(1.05);
   }
+
+
 }
 </style>
