@@ -14,7 +14,10 @@
       <div class="wrapper">
         <swiper :pagination="{ clickable: true }">
           <swiper-slide>
-            <img src="../assets/images/mapAndPerson.svg" />
+            <img
+              src="../assets/images/mapAndPerson.svg"
+              alt="woman looking at a map on a phone"
+            />
 
             <h1>Kreiere deine Einkaufsliste</h1>
             <p>
@@ -26,7 +29,7 @@
             </p>
           </swiper-slide>
           <swiper-slide>
-            <img src="../assets/images/shopping.svg" />
+            <img src="../assets/images/shopping.svg" alt="woman shopping" />
             <h1>Deine Hilfe ist gefragt</h1>
             <p>
               Als Lieferant suchst du dir eine passende Bestellung in deiner
@@ -35,7 +38,10 @@
             </p>
           </swiper-slide>
           <swiper-slide>
-            <img src="../assets/images/FinishedDelivery.svg" />
+            <img
+              src="../assets/images/FinishedDelivery.svg"
+              alt="happy customers"
+            />
 
             <h1>Jeden Tag eine gute Tat</h1>
             <p>
