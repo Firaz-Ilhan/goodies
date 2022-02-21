@@ -40,8 +40,9 @@
             <h1>Jeden Tag eine gute Tat</h1>
             <p>
               Ist deine Bestellung da, überprüfe den Kassenzettel und bezahle
-              deinen Lieferanten - fertig! Viel Spaß mit Goodies!
+              deinen Lieferanten - fertig!
             </p>
+            <p>Viel Spaß mit Goodies!</p>
             <ion-button class="ion-margin" @click="() => $router.push('/home')">
               Jetzt Starten
             </ion-button>
@@ -74,6 +75,7 @@ SwiperCore.use([IonicSwiper, Pagination]);
 
 <style scoped>
 .swiper-slide {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -82,13 +84,14 @@ SwiperCore.use([IonicSwiper, Pagination]);
   padding-bottom: 2.5rem;
 }
 
-h1,
-img,
-p {
-  max-width: 500px;
-}
-
 img {
   margin-bottom: 30px;
+  width: 60vw;
+  max-width: 400px;
+}
+
+h1,
+p {
+  max-width: 500px;
 }
 </style>

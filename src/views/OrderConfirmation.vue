@@ -8,10 +8,7 @@
           src="@/assets/images/order-confirmation.png"
           alt="Familie empfängt Lebensmitteltüte"
         />
-        <p>
-          Prima, <br />
-          du hast deine erste Lieferung erhalten.
-        </p>
+        <h1>Prima, du hast deine Lieferung erhalten.</h1>
 
         <p>
           Wir hoffen, dass alles wie erwartet war und wünschen dir viel Spaß mit
@@ -43,11 +40,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
+h1 {
+  text-align: center;
+}
 .order-img {
   display: block;
   margin: 0px auto;
-  min-width: 350px;
-  width: 60%;
+  width: 90vw;
+  max-width: 600px;
 }
 
 .wrapper {
