@@ -43,8 +43,10 @@ export function useOrder() {
         return 'success';
       case 'abgeschlossen':
         return 'danger';
-      default:
+      case 'angenommen':
         return 'primary';
+      default:
+        return 'tertiary';
     }
   };
 
