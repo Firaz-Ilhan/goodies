@@ -63,7 +63,7 @@
 import {
   IonContent,
   IonPage,
-  IonicSwiper,
+  IonicSlides,
   IonTitle,
   IonButton,
   IonToolbar,
@@ -76,7 +76,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/swiper-bundle.min.css';
 import '@ionic/vue/css/ionic-swiper.css';
 
-SwiperCore.use([IonicSwiper, Pagination]);
+SwiperCore.use([IonicSlides, Pagination]);
 </script>
 
 <style scoped>
