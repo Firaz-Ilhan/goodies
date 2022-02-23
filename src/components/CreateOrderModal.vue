@@ -26,7 +26,7 @@
           <ion-input v-model="name" required />
         </ion-item>
 
-        <AddListItem :setList="setList" />
+        <AddListItem :setList="addEntryToList" />
 
         <div v-if="list.length > 0">
           <h1 class="caption">Einkaufsliste</h1>
@@ -73,22 +73,22 @@ const props = withDefaults(defineProps<Props>(), {
   order: () => ({} as IOrder),
 });
 
-const name = ref(props.order.name || '');
-const list = ref(props.order.list || []);
-console.log(props.order.list || []);
-console.log(props.order.list);
+const order = { ...props.order };
+const name = ref(order.name || '');
+const list = ref(order.list || []);
+
 const { createOrder } = useOrder();
 
 const closeModal = async () => {
   await modalController.dismiss();
 };
 
-const setList = (entry: IListEntry) => {
+const addEntryToList = (entry: IListEntry) => {
   list.value.push(entry);
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 form {
   margin: 20px 0;
 }

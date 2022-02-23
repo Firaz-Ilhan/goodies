@@ -2,11 +2,11 @@ import { ref } from 'vue';
 import { auth, db, loader } from '@/main';
 import { Geolocation, Position } from '@capacitor/geolocation';
 import { geohashForLocation } from 'geofire-common';
-import geodata from '@/assets/mocking/geodata';
 
 import { useProfile } from './useProfile';
 import type { ILocation } from '@/interfaces/ILocation';
 import type { IProfile } from '@/interfaces/IProfile';
+import geodata from '@/assets/mocking/geodata';
 
 const watchId = ref<string | null>(null);
 
@@ -20,20 +20,17 @@ export function useGeolocation() {
       const watcher = await Geolocation.watchPosition(
         {},
         (position: Position | null) => {
-          console.log('watchId', watchId.value);
           if (position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             const geohash = geohashForLocation([lat, lng]);
 
             const lastPosition: ILocation = { lat, lng, geohash };
-            useProfile().saveProfile({ ...({} as IProfile), lastPosition });
-            if (watcher) watchId.value = watcher;
+            useProfile().saveProfile({ lastPosition } as IProfile);
           }
         },
-      ).catch((e: Error) => {
-        console.log(e.message);
-      });
+      );
+      if (watcher) watchId.value = watcher;
     }
   };
 
@@ -50,19 +47,9 @@ export function useGeolocation() {
       // only clear if there are no other orders in delivery state
       if (countQueriedOrder.docs.length <= 1) {
         await Geolocation.clearWatch({ id: watchId.value });
-        console.log(`Watch with id ${watchId.value} is cleared`);
         watchId.value = null;
       }
     }
-  };
-
-  // get object of current geolocation coordinates
-  const getCurrentCoordinates = async () => {
-    const geoposition = await Geolocation.getCurrentPosition();
-    return {
-      lat: Number(geoposition.coords.latitude.toFixed(4)),
-      lng: Number(geoposition.coords.longitude.toFixed(4)),
-    };
   };
 
   // simulates a movement by emitting a new position every 5 seconds
@@ -82,7 +69,7 @@ export function useGeolocation() {
     }
   };
 
-  // translates an address into a coordinates with a firestore geohash
+  // translates an address into a coordinates with a geohash
   const geoCodeAdress = (address: string) => {
     return new Promise((resolve) => {
       loader.load().then((google) => {
@@ -96,7 +83,6 @@ export function useGeolocation() {
             resPosition.lat,
             resPosition.lng,
           ]);
-
           resolve({ ...resPosition, geohash });
         });
       });
@@ -107,7 +93,6 @@ export function useGeolocation() {
     watchId,
     startWatch,
     stopWatch,
-    getCurrentCoordinates,
     geoCodeAdress,
     getMockedLocation,
   };

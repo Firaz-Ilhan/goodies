@@ -13,10 +13,7 @@
 
         <ShoppingListDetails
           :list="deliverDetails.list"
-          :isCheckable="
-            deliverDetails.orderState !== 'abgeschlossen' &&
-            deliverDetails.orderState !== 'offen'
-          "
+          :isCheckable="deliverDetails.orderState === 'angenommen'"
         ></ShoppingListDetails>
 
         <div v-if="creator.geocoords" class="ion-margin-bottom">
